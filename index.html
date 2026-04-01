@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GH's Personal Assistant</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-hover: #334155;
+    --border: #334155;
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
+    --accent: #3b82f6;
+    --accent-light: #60a5fa;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --purple: #a78bfa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #1e3a5f, #2d1b69);
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .header .date {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+
+  /* Section cards */
+  .section {
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .section-header:hover { background: var(--surface-hover); }
+  .section-header h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-header .badge {
+    background: var(--accent);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .section-header .chevron {
+    transition: transform 0.2s;
+    color: var(--text-muted);
+  }
+  .section.collapsed .chevron { transform: rotate(-90deg); }
+  .section.collapsed .section-body { display: none; }
+  .section-body { padding: 0 18px 16px; }
+
+  /* Hot item badge */
+  .hot-badge {
+    display: inline-block;
+    background: var(--danger);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 6px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* Task items */
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-checkbox {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .task-checkbox:hover { border-color: var(--accent); }
+  .task-checkbox.checked {
+    background: var(--success);
+    border-color: var(--success);
+  }
+  .task-checkbox.checked::after {
+    content: 'â';
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .task-text { flex: 1; }
+  .task-text .title { font-weight: 500; }
+  .task-text .meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .task-text.done .title {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  /* Appointment items */
+  .appt-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .appt-item:last-child { border-bottom: none; }
+  .appt-time {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-light);
+    min-width: 70px;
+    flex-shrink: 0;
+  }
+  .appt-details .title { font-weight: 500; }
+  .appt-details .location {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* Email items */
+  .email-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .email-item:last-child { border-bottom: none; }
+  .email-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .email-dot.unread { background: var(--warning); }
+  .email-text .from { font-weight: 500; font-size: 0.9rem; }
+  .email-text .subject { font-size: 0.85rem; color: var(--text-muted); margin-top: 1px; }
+  .email-text .snippet { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; opacity: 0.7; }
+
+  /* Quick actions */
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .action-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .action-btn:hover {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+  }
+  .action-btn .icon { font-size: 1.4rem; margin-bottom: 4px; }
+  .action-btn .label { font-size: 0.8rem; font-weight: 500; }
+
+  /* Empty state */
+  .empty {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  /* Status bar */
+  .status-bar {
+    display: flex;
+    gap: 16px;
+    padding: 10px 18px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+  }
+  .status-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+  .status-dot.green { background: var(--success); }
+  .status-dot.yellow { background: var(--warning); }
+  .status-dot.red { background: var(--danger); }
+
+  /* Waiting section */
+  .waiting-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .waiting-item:last-child { border-bottom: none; }
+  .waiting-icon {
+    color: var(--warning);
+    font-size: 1rem;
+    margin-top: 2px;
+  }
+
+  /* Add task form */
+  .add-form {
+    display: none;
+    padding: 12px 18px;
+    border-top: 1px solid var(--border);
+  }
+  .add-form.active { display: block; }
+  .add-form input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-size: 0.9rem;
+    outline: none;
+  }
+  .add-form input:focus { border-color: var(--accent); }
+  .add-form .hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  /* Equipment cards */
+  .equip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+  }
+  .equip-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .equip-card:hover { border-color: var(--accent); }
+  .equip-card .equip-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+  .equip-card .equip-last {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .equip-card .equip-status {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 6px;
+    margin-top: 6px;
+    font-weight: 600;
+  }
+  .equip-card .equip-status.good { background: rgba(34,197,94,0.15); color: var(--success); }
+  .equip-card .equip-status.due { background: rgba(245,158,11,0.15); color: var(--warning); }
+  .equip-card .equip-status.overdue { background: rgba(239,68,68,0.15); color: var(--danger); }
+
+  /* Equipment detail modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    max-width: 550px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 20px;
+  }
+  .modal h3 { font-size: 1.1rem; margin-bottom: 12px; }
+  .modal .close-btn {
+    float: right;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  .modal table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin-top: 10px;
+  }
+  .modal th {
+    text-align: left;
+    color: var(--text-muted);
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal td {
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .modal .specs { margin-top: 12px; font-size: 0.82rem; color: var(--text-muted); }
+  .add-log-form {
+    display: flex;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .add-log-form input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px;
+    color: var(--text);
+    font-size: 0.82rem;
+  }
+  .add-log-form button {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  /* Archive button on tasks */
+  .archive-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    margin-left: 8px;
+  }
+  .archive-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Project Status */
+  .project-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .project-card:last-child { margin-bottom: 0; }
+  .project-card .project-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .project-card .project-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .project-card .project-status-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .project-status-badge.active { background: rgba(34,197,94,0.15); color: var(--success); }
+  .project-status-badge.waiting { background: rgba(245,158,11,0.15); color: var(--warning); }
+  .project-bullet {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .project-bullet .bullet { color: var(--accent-light); flex-shrink: 0; }
+  .project-updated {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+    margin-top: 6px;
+    text-align: right;
+  }
+
+  /* Sync indicator */
+  .sync-banner {
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin-bottom: 12px;
+    font-size: 0.8rem;
+    color: var(--accent-light);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sync-banner.error {
+    background: rgba(239,68,68,0.1);
+    border-color: rgba(239,68,68,0.3);
+    color: var(--danger);
+  }
+  .sync-banner.success {
+    background: rgba(34,197,94,0.1);
+    border-color: rgba(34,197,94,0.3);
+    color: var(--success);
+  }
+  .sync-spinner {
+    width: 14px; height: 14px;
+    border: 2px solid var(--accent-light);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .header { padding: 16px; }
+    .header h1 { font-size: 1.2rem; }
+    .container { padding: 12px; }
+    .quick-actions { grid-template-columns: repeat(2, 1fr); }
+    .section-header { padding: 12px 14px; }
+    .section-body { padding: 0 14px 14px; }
+  }
+
+  @media (min-width: 768px) {
+    .header { padding: 24px 32px; }
+    .container { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>ð Good morning, GH</h1>
+  <div class="date" id="currentDate"></div>
+</div>
+
+<div class="container">
+
+  <!-- Sync Status Banner -->
+  <div class="sync-banner" id="syncBanner" style="display:none;">
+    <div class="sync-spinner" id="syncSpinner"></div>
+    <span id="syncMessage">Syncing with Google Sheets...</span>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <div class="action-btn" onclick="showAddTask()">
+      <div class="icon">â</div>
+      <div class="label">Add Task</div>
+    </div>
+    <div class="action-btn" onclick="showAddAppt()">
+      <div class="icon">ð</div>
+      <div class="label">Add Reminder</div>
+    </div>
+    <div class="action-btn" onclick="loadTasksFromSheet()">
+      <div class="icon">ð</div>
+      <div class="label">Refresh</div>
+    </div>
+    <div class="action-btn" onclick="toggleDone()">
+      <div class="icon">â</div>
+      <div class="label">Show Done</div>
+    </div>
+  </div>
+
+  <!-- CoWork Project Status -->
+  <div class="section" id="projectsSection">
+    <div class="section-header" onclick="toggleSection('projectsSection')">
+      <h2>ð CoWork Projects <span class="badge" id="projectCount">3</span></h2>
+      <span class="chevron">â¼</span>
+    </div>
+    <div class="section-body" id="projectList"></div>
+  </div>
+
+  <!-- Active Tasks -->
+  <div class="section" id="tasksSection">
+    <div class="section-header" onclick="toggleSection('tasksSection')">
+      <h2>ð Active Tasks <span class="badge" id="taskCount">0</span></h2>
+      <span class="chevron">â¼</span>
+    </div>
+    <div class="section-body">
+      <div id="taskList">
+        <div class="empty">Loading tasks from Google Sheets...</div>
+      </div>
+    </div>
+    <div class="add-form" id="addTaskForm">
+      <input type="text" id="newTaskInput" placeholder="What needs to be done?" onkeydown="if(event.key==='Enter')addTask()">
+      <div class="hint">Press Enter to add. Tip: start with ! for high priority, ? for someday</div>
+    </div>
+  </div>
+
+  <!-- Appointments & Reminders -->
+  <div class="section" id="apptsSection">
+    <div class="section-header" onclick="toggleSection('apptsSection')">
+      <h2>ð Appointments & Reminders <span class="badge" id="apptCount">0</span></h2>
+      <span class="chevron">â¼</span>
+    </div>
+    <div class="section-body">
+      <div id="apptList">
+        <div class="empty">No upcoming appointments.</div>
+      </div>
+    </div>
+    <div class="add-form" id="addApptForm">
+      <input type="text" id="newApptInput" placeholder="e.g. Doctor at 2pm Thursday" onkeydown="if(event.key==='Enter')addAppt()">
+      <div class="hint">Press Enter to add. Include time and date if possible.</div>
+    </div>
+  </div>
+
+  <!-- Email Follow-ups -->
+  <div class="section" id="emailSection">
+    <div class="section-header" onclick="toggleSection('emailSection')">
+      <h2>ð§ Email Follow-ups <span class="badge" id="emailCount">0</span></h2>
+      <span class="chevron">â¼</span>
+    </div>
+    <div class="section-body">
+      <div id="emailList">
+        <div class="empty">No email follow-ups tracked yet. Ask Claude to check your Gmail!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Waiting On -->
+  <div class="section" id="waitingSection">
+    <div class="section-header" onclick="toggleSection('waitingSection')">
+      <h2>â³ Waiting On <span class="badge" id="waitingCount">0</span></h2>
+      <span class="chevron">â¼</span>
+    </div>
+    <div class="section-body">
+      <div id="waitingList">
+        <div class="empty">Nothing in the waiting queue.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Equipment Maintenance -->
+  <div class="section" id="equipSection">
+    <div class="section-header" onclick="toggleSection('equipSection')">
+      <h2>ð§ Equipment Maintenance <span class="badge" id="equipCount">10</span></h2>
+      <span class="chevron">â¼</span>
+    </div>
+    <div class="section-body">
+      <div class="equip-grid" id="equipGrid"></div>
+    </div>
+  </div>
+
+  <!-- Someday / Backlog -->
+  <div class="section collapsed" id="somedaySection">
+    <div class="section-header" onclick="toggleSection('somedaySection')">
+      <h2>ð­ Someday / Backlog <span class="badge" id="somedayCount">0</span></h2>
+      <span class="chevron">â¼</span>
+    </div>
+    <div class="section-body">
+      <div id="somedayList"></div>
+    </div>
+  </div>
+
+  <!-- Completed (hidden by default) -->
+  <div class="section collapsed" id="doneSection" style="display:none;">
+    <div class="section-header" onclick="toggleSection('doneSection')">
+      <h2>â Recently Completed <span class="badge" id="doneCount">0</span></h2>
+      <span class="chevron">â¼</span>
+    </div>
+    <div class="section-body">
+      <div id="doneList"></div>
+    </div>
+  </div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <div class="status-item">
+      <div class="status-dot" id="sheetStatus"></div>
+      <span id="sheetStatusText">Sheets: connecting...</span>
+    </div>
+    <div class="status-item">
+      <div class="status-dot" id="emailStatus"></div>
+      <span id="emailStatusText">Gmail</span>
+    </div>
+    <div class="status-item" id="lastUpdated">
+      Last updated: --
+    </div>
+  </div>
+
+</div>
+
+<!-- Equipment Detail Modal -->
+<div class="modal-overlay" id="equipModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal()">â</button>
+    <h3 id="modalTitle"></h3>
+    <div id="modalType" style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px"></div>
+    <table>
+      <thead><tr><th>Date</th><th>Service</th><th>Notes</th></tr></thead>
+      <tbody id="modalLogBody"></tbody>
+    </table>
+    <div class="add-log-form">
+      <input type="hidden" id="logEquipId">
+      <input type="text" id="logDesc" placeholder="Add maintenance entry..." onkeydown="if(event.key==='Enter')addLogEntry()">
+      <button onclick="addLogEntry()">Add</button>
+    </div>
+    <div class="specs" id="modalSpecs"></div>
+  </div>
+</div>
+
+<script>
+  // ââââââââââââââââââââââââââââââââââââââââââââââ
+  // â  GOOGLE SHEETS API CONFIG                  â
+  // â  Replace this URL after deploying the      â
+  // â  Apps Script as a web app                  â
+  // ââââââââââââââââââââââââââââââââââââââââââââââ
+  const API_URL = 'https://script.google.com/macros/s/AKfycbw2-K2BQXFfmnzfV5hf7Mi4Q8gI3SZkOoLBtMLo4qdSIaS5P24JujVXPd5kED40Su1n/exec';
+
+  // ââ STATE ââ
+  let tasks = [];
+  let waitingOn = [];
+  let showDone = false;
+  let sheetsConnected = false;
+
+  // ââ FALLBACK DATA (used if Sheets isn't connected yet) ââ
+  const FALLBACK_TASKS = [
+    { id: 'f1', title: "Put PVC governor back on gator â due April (before baby shower)", priority: "high", done: false, section: "active" },
+    { id: 'f2', title: "Taillight bulb â replace", priority: "high", done: false, section: "active" },
+    { id: 'f3', title: "Lowes run â C-Channel track + 4x4 Posts", priority: "high", done: false, section: "active" },
+    { id: 'f4', title: "Propagate plants â lingstrum x30, Pigeon Peas, Ground Cherries, rosemary & oregano for chickens, food forest in chicken yard", priority: "high", done: false, section: "active" },
+    { id: 'f5', title: "Well pump status â installed 10/2017, lifespan 8-15 yrs (due window: 2025-2032)", priority: "high", done: false, section: "active" },
+    { id: 'f6', title: "Covers for 4\" posts â purchase", priority: "medium", done: false, section: "active" },
+    { id: 'f7', title: "Track line build for TreeHouse", priority: "medium", done: false, section: "active" },
+    { id: 'f8', title: "Fix Lincoln welder amp switch â move to C", priority: "medium", done: false, section: "active" },
+    { id: 'f9', title: "Modify 5x8 trailer â removeable side & reinforce tongue", priority: "medium", done: false, section: "active" },
+    { id: 'f10', title: "Add back tailgate drop section â hinge & pin setup", priority: "medium", done: false, section: "active" },
+    { id: 'f11', title: "Measure hitch height & modify gator to match", priority: "medium", done: false, section: "active" },
+    { id: 'f12', title: "Build the last raised bed", priority: "medium", done: false, section: "active" },
+    { id: 'f13', title: "Go thru AC paperwork â look at JB warranty", priority: "medium", done: false, section: "active" },
+    { id: 'f14', title: "Oil change: Tiller & check Generator", priority: "medium", done: false, section: "active" },
+    { id: 'f15', title: "Fix sidewalk edges", priority: "medium", done: false, section: "active" },
+    { id: 'f16', title: "Pool cage â replace screws", priority: "medium", done: false, section: "active" },
+    { id: 'f17', title: "Install programmable thermostat at Jared's", priority: "medium", done: false, section: "active" },
+    { id: 'f18', title: "Jared 2022 Teco â follow up", priority: "medium", done: false, section: "active" },
+    { id: 'f19', title: "Well filter system â check inside unit (installed 3/2020)", priority: "medium", done: false, section: "active" },
+    { id: 'f20', title: "Learn to make own chicken feed", priority: "low", done: false, section: "someday" },
+    { id: 'f21', title: "Black soldier fly larva â build the box", priority: "low", done: false, section: "someday" },
+    { id: 'f22', title: "Build Bronco & Buggy â display on shelf in sand", priority: "low", done: false, section: "someday" },
+    { id: 'f23', title: "Make bed extender for hauling lumber â 2\" tubing", priority: "low", done: false, section: "someday" },
+    { id: 'f24', title: "Design & develop storm shutters for chicken run", priority: "low", done: false, section: "someday" },
+    { id: 'f25', title: "Figure out where to put all the signs", priority: "low", done: false, section: "someday" },
+    { id: 'f26', title: "Wiring diagram for blower 220v â watch videos to build fan", priority: "low", done: false, section: "someday" },
+    { id: 'f27', title: "Hobby Lobby â acrylic sheet", priority: "low", done: false, section: "someday" },
+    { id: 'f28', title: "Build shelving in carport", priority: "low", done: false, section: "someday" },
+    { id: 'f29', title: "3/8 bar sculpt the nest & build a bench to sit at", priority: "low", done: false, section: "someday" },
+    { id: 'f30', title: "Build permanent chicken patio / picnic table", priority: "low", done: false, section: "someday" },
+    { id: 'f31', title: "Build photo booth for dioramas & photograph", priority: "low", done: false, section: "someday" },
+    { id: 'f32', title: "Make own paint retarder â 1 part glycerin to 9 parts water", priority: "low", done: false, section: "someday" },
+    { id: 'f33', title: "GuitarCreative.com â go thru tutorial", priority: "low", done: false, section: "someday" },
+    { id: 'f34', title: "Guitar practice â unlocking the fretboard video", priority: "low", done: false, section: "someday" },
+  ];
+
+  const FALLBACK_WAITING = [
+    { title: "Borrow the plasma cutter â confirm plug fits", since: "2026-03-31" },
+  ];
+
+  // ââ SHEETS API FUNCTIONS ââ
+
+  async function loadTasksFromSheet() {
+    if (API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+      // Not connected yet â use fallback data
+      tasks = [...FALLBACK_TASKS];
+      waitingOn = [...FALLBACK_WAITING];
+      document.getElementById('sheetStatus').classList.add('yellow');
+      document.getElementById('sheetStatusText').textContent = 'Sheets: not connected yet';
+      renderTasks();
+      return;
+    }
+
+    showSync('Syncing tasks from Google Sheets...');
+    try {
+      const response = await fetch(API_URL);
+      const data = await response.json();
+
+      if (data.error) throw new Error(data.error);
+
+      tasks = data.tasks || [];
+      waitingOn = data.waitingOn || [];
+      sheetsConnected = true;
+
+      document.getElementById('sheetStatus').className = 'status-dot green';
+      document.getElementById('sheetStatusText').textContent = 'Sheets: connected';
+      showSync('Tasks synced!', 'success', 2000);
+    } catch (err) {
+      console.error('Failed to load from Sheets:', err);
+      showSync('Sync failed â using cached data', 'error', 3000);
+      document.getElementById('sheetStatus').className = 'status-dot red';
+      document.getElementById('sheetStatusText').textContent = 'Sheets: offline';
+
+      // Fall back to cached data if we have no tasks
+      if (tasks.length === 0) {
+        tasks = [...FALLBACK_TASKS];
+        waitingOn = [...FALLBACK_WAITING];
+      }
+    }
+
+    renderTasks();
+    document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+  }
+
+  async function addTaskToSheet(title, priority, section) {
+    if (!sheetsConnected) {
+      // Add locally if not connected
+      tasks.push({ id: 'local_' + Date.now(), title, priority, done: false, section, added: new Date().toISOString() });
+      renderTasks();
+      return;
+    }
+
+    showSync('Adding task...');
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'add', title, priority, section })
+      });
+      const data = await response.json();
+      if (data.success) {
+        showSync('Task added!', 'success', 1500);
+        await loadTasksFromSheet(); // refresh from sheet
+      }
+    } catch (err) {
+      console.error('Failed to add task:', err);
+      showSync('Failed to add â saved locally', 'error', 2000);
+      tasks.push({ id: 'local_' + Date.now(), title, priority, done: false, section });
+      renderTasks();
+    }
+  }
+
+  async function toggleTaskOnSheet(taskId) {
+    if (!sheetsConnected) {
+      const t = tasks.find(t => t.id === taskId);
+      if (t) { t.done = !t.done; t.completed = t.done ? new Date().toISOString() : ''; }
+      renderTasks();
+      return;
+    }
+
+    showSync('Updating...');
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'toggle', id: taskId })
+      });
+      const data = await response.json();
+      if (data.success) {
+        showSync('Updated!', 'success', 1000);
+        await loadTasksFromSheet();
+      }
+    } catch (err) {
+      console.error('Failed to toggle:', err);
+      showSync('Update failed', 'error', 2000);
+      // toggle locally as fallback
+      const t = tasks.find(t => t.id === taskId);
+      if (t) { t.done = !t.done; }
+      renderTasks();
+    }
+  }
+
+  // ââ SYNC UI ââ
+  function showSync(message, type, autoDismiss) {
+    const banner = document.getElementById('syncBanner');
+    const spinner = document.getElementById('syncSpinner');
+    const msg = document.getElementById('syncMessage');
+
+    banner.style.display = 'flex';
+    banner.className = 'sync-banner' + (type ? ' ' + type : '');
+    spinner.style.display = type ? 'none' : 'block';
+    msg.textContent = message;
+
+    if (autoDismiss) {
+      setTimeout(() => { banner.style.display = 'none'; }, autoDismiss);
+    }
+  }
+
+  // ââ CoWork Projects State (still managed from Cowork sessions) ââ
+  let projects = [
+    {
+      name: "GT Precision Website",
+      icon: "ð­",
+      status: "active",
+      bullets: [
+        "DNS pointed to Wix â site is live at gtprecisionmfg.com. Google Reviews widget integrated with 11 real reviews.",
+        "Next up: Call HIBU to cancel old service, then begin Phase 2 (quote tool, service pages, SEO)."
+      ],
+      updated: "2026-04-01"
+    },
+    {
+      name: "Nanna's Herbal Apothecary",
+      icon: "ð¿",
+      status: "active",
+      bullets: [
+        "Pinterest autopilot running (10 pins queued, daily reminders). Facebook auto-posting MWF. Amazon Associates approved; Awin/Starwest pending.",
+        "Next up: Generate first Amazon affiliate links for top herbs. Complete Awin publisher profile to speed up Starwest approval."
+      ],
+      updated: "2026-04-01"
+    },
+    {
+      name: "Personal Assistant",
+      icon: "ð¤",
+      status: "active",
+      bullets: [
+        "Dashboard live on Netlify. Google Sheets backend for two-way task sync. Daily briefing at 8 AM. Gmail and Google Calendar connected.",
+        "Next up: GitHub auto-deploy, voice workflow from phone."
+      ],
+      updated: "2026-04-01"
+    }
+  ];
+
+  // ââ Appointments â synced from Google Calendar ââ
+  let appointments = [
+    { title: "Castnet look hunter", date: "2026-04-01", time: "3:00 PM", source: "gcal", recurring: false },
+    { title: "Barber 2pm", date: "2026-04-02", time: "All day", source: "gcal", recurring: false },
+    { title: "Happy birthday!", date: "2026-04-17", time: "All day", source: "gcal", recurring: true },
+    { title: "Check water salt level", date: "2026-04-26", time: "All day", source: "gcal", recurring: true },
+  ];
+
+  // ââ Emails â synced from Gmail ââ
+  let emails = [
+    { from: "Fidelity Viewpoints", subject: "Social Security changes ahead", snippet: "RMDs in down markets, tips to lower taxes, boost benefits by up 24%, and more!", unread: true },
+    { from: "Bealls Rewards", subject: "Final Days to use your $5 Bonus Reward!", snippet: "Reminder: you received a $5 Bonus Reward, valid for one time use.", unread: true },
+    { from: "Google", subject: "Security alert", snippet: "You allowed Claude for Gmail access to some of your Google Account data.", unread: true },
+    { from: "Google", subject: "Security alert", snippet: "A new sign-in on Windows to iherschell12@gmail.com was detected.", unread: true },
+  ];
+
+  // ââ Date display ââ
+  function updateDate() {
+    const now = new Date();
+    const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', opts);
+
+    const hour = now.getHours();
+    const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    document.querySelector('.header h1').textContent = `ð ${greeting}, GH`;
+  }
+  updateDate();
+
+  // ââ Section toggle ââ
+  function toggleSection(id) {
+    document.getElementById(id).classList.toggle('collapsed');
+  }
+
+  // ââ Show add forms ââ
+  function showAddTask() {
+    const form = document.getElementById('addTaskForm');
+    form.classList.toggle('active');
+    if (form.classList.contains('active')) {
+      document.getElementById('newTaskInput').focus();
+    }
+  }
+  function showAddAppt() {
+    const form = document.getElementById('addApptForm');
+    form.classList.toggle('active');
+    if (form.classList.contains('active')) {
+      document.getElementById('newApptInput').focus();
+    }
+  }
+
+  // ââ Add task (now writes to Sheets!) ââ
+  function addTask() {
+    const input = document.getElementById('newTaskInput');
+    let text = input.value.trim();
+    if (!text) return;
+
+    let priority = 'medium';
+    let section = 'active';
+    if (text.startsWith('!')) { priority = 'high'; text = text.substring(1).trim(); }
+    if (text.startsWith('?')) { priority = 'low'; section = 'someday'; text = text.substring(1).trim(); }
+
+    input.value = '';
+    addTaskToSheet(text, priority, section);
+  }
+
+  // ââ Add appointment ââ
+  function addAppt() {
+    const input = document.getElementById('newApptInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    appointments.push({ title: text, added: new Date().toISOString() });
+    input.value = '';
+    renderAppts();
+  }
+
+  // ââ Toggle task done (now writes to Sheets!) ââ
+  function toggleTask(taskId) {
+    toggleTaskOnSheet(taskId);
+  }
+
+  // ââ Toggle done section ââ
+  function toggleDone() {
+    showDone = !showDone;
+    document.getElementById('doneSection').style.display = showDone ? 'block' : 'none';
+    renderTasks();
+  }
+
+  // ââ Render projects ââ
+  function renderProjects() {
+    const container = document.getElementById('projectList');
+    document.getElementById('projectCount').textContent = projects.length;
+    if (projects.length === 0) {
+      container.innerHTML = '<div class="empty">No active projects.</div>';
+      return;
+    }
+    container.innerHTML = projects.map(p => `
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-name">${p.icon} ${p.name}</div>
+          <span class="project-status-badge ${p.status}">${p.status === 'active' ? 'Active' : 'Waiting'}</span>
+        </div>
+        ${p.bullets.map(b => `<div class="project-bullet"><span class="bullet">â¸</span><span>${b}</span></div>`).join('')}
+        <div class="project-updated">Updated ${p.updated}</div>
+      </div>
+    `).join('');
+  }
+
+  // ââ Render tasks ââ
+  function renderTasks() {
+    const active = tasks.filter(t => !t.done && t.section === 'active');
+    const someday = tasks.filter(t => !t.done && t.section === 'someday');
+    const done = tasks.filter(t => t.done);
+
+    document.getElementById('taskCount').textContent = active.length;
+    document.getElementById('doneCount').textContent = done.length;
+    document.getElementById('waitingCount').textContent = waitingOn.length;
+
+    // Sort active tasks: high priority (hot) first, then medium, then low
+    const priorityOrder = { high: 0, medium: 1, low: 2 };
+    const sorted = [...active].sort((a, b) => (priorityOrder[a.priority] || 1) - (priorityOrder[b.priority] || 1));
+
+    // Active tasks
+    if (sorted.length === 0) {
+      document.getElementById('taskList').innerHTML = '<div class="empty">No active tasks. Tap "Add Task" to get started!</div>';
+    } else {
+      document.getElementById('taskList').innerHTML = sorted.map((t) => {
+        const hotTag = t.priority === 'high' ? '<span class="hot-badge">ð¥ HOT</span>' : '';
+        return `<div class="task-item">
+          <div class="task-checkbox" onclick="toggleTask('${t.id}')"></div>
+          <div class="task-text">
+            <div class="title">${t.title}${hotTag}</div>
+            <div class="meta">${t.priority === 'high' ? 'ð´ High' : t.priority === 'low' ? 'ðµ Low' : 'ð¡ Medium'} priority</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // Waiting On
+    if (waitingOn.length > 0) {
+      document.getElementById('waitingList').innerHTML = waitingOn.map(w =>
+        `<div class="waiting-item">
+          <div class="waiting-icon">â³</div>
+          <div class="task-text">
+            <div class="title">${w.title}</div>
+            <div class="meta">Since ${w.since || 'unknown'}</div>
+          </div>
+        </div>`
+      ).join('');
+    } else {
+      document.getElementById('waitingList').innerHTML = '<div class="empty">Nothing in the waiting queue.</div>';
+    }
+
+    // Someday section
+    const somedaySection = document.getElementById('somedaySection');
+    if (somedaySection) {
+      document.getElementById('somedayCount').textContent = someday.length;
+      if (someday.length === 0) {
+        document.getElementById('somedayList').innerHTML = '<div class="empty">No someday tasks.</div>';
+      } else {
+        document.getElementById('somedayList').innerHTML = someday.map((t) => {
+          return `<div class="task-item">
+            <div class="task-checkbox" onclick="toggleTask('${t.id}')"></div>
+            <div class="task-text">
+              <div class="title">${t.title}</div>
+            </div>
+          </div>`;
+        }).join('');
+      }
+    }
+
+    // Done list
+    if (done.length > 0) {
+      document.getElementById('doneList').innerHTML = done.map((t) => {
+        return `<div class="task-item">
+          <div class="task-checkbox checked" onclick="toggleTask('${t.id}')"></div>
+          <div class="task-text done" style="flex:1">
+            <div class="title">${t.title}</div>
+            <div class="meta">Completed ${t.completed ? new Date(t.completed).toLocaleDateString() : ''}</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+  }
+
+  // ââ Render appointments ââ
+  function renderAppts() {
+    document.getElementById('apptCount').textContent = appointments.length;
+    if (appointments.length === 0) {
+      document.getElementById('apptList').innerHTML = '<div class="empty">No upcoming appointments.</div>';
+    } else {
+      const sorted = [...appointments].sort((a, b) => new Date(a.date) - new Date(b.date));
+      document.getElementById('apptList').innerHTML = sorted.map(a => {
+        const d = new Date(a.date + 'T12:00:00');
+        const today = new Date();
+        const isToday = d.toDateString() === today.toDateString();
+        const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+        const isTomorrow = d.toDateString() === tomorrow.toDateString();
+        const dateLabel = isToday ? 'Today' : isTomorrow ? 'Tomorrow' : d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        return `<div class="appt-item">
+          <div class="appt-time">${dateLabel}<br><span style="font-size:0.75rem;color:var(--text-muted)">${a.time || ''}</span></div>
+          <div class="appt-details">
+            <div class="title">${a.title}${a.recurring ? ' ð' : ''}</div>
+            ${a.source === 'gcal' ? '<div class="location" style="font-size:0.75rem">ð Google Calendar</div>' : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // ââ Render emails ââ
+  function renderEmails() {
+    document.getElementById('emailCount').textContent = emails.length;
+    if (emails.length === 0) {
+      document.getElementById('emailList').innerHTML = '<div class="empty">No email follow-ups tracked yet. Ask Claude to check your Gmail!</div>';
+    } else {
+      document.getElementById('emailList').innerHTML = emails.map(e =>
+        `<div class="email-item">
+          <div class="email-dot ${e.unread ? 'unread' : ''}"></div>
+          <div class="email-text">
+            <div class="from">${e.from || 'Unknown'}</div>
+            <div class="subject">${e.subject || ''}</div>
+            <div class="snippet">${e.snippet || ''}</div>
+          </div>
+        </div>`
+      ).join('');
+    }
+  }
+
+  // ââ Equipment Data ââ
+  let equipment = [
+    {
+      id: 'hustler', name: 'Hustler Raptor XDX', type: 'Riding Mower', icon: 'ð',
+      specs: ['Hydraulic fluid: Mobile 1 15w-50 or Castrol 5w-50 Syntec'],
+      log: [
+        { date: '2023-03-24', service: 'Fixed mower', notes: '$550' },
+        { date: '2024-08-08', service: 'Oil change & filter', notes: '14 hrs' },
+        { date: '2024-08-25', service: 'Sharpened blades', notes: '20 hrs, ordered 2nd set' },
+        { date: '2025-02-01', service: 'Blades replaced', notes: '' },
+        { date: '2025-07-20', service: 'Trans fluid & filters changed', notes: '60.7 hrs. Next due at 200 hrs or 2 yrs' },
+      ]
+    },
+    {
+      id: 'generator', name: 'XP13000 Generator', type: 'Whole House Generator', icon: 'â¡',
+      purchased: 'July 2023',
+      specs: ['100 gal propane = ~27 hrs', 'Chargeverter 60amp', 'Total run time: ~200 hrs'],
+      log: [
+        { date: '2023-07-01', service: 'Purchased', notes: '' },
+        { date: '2023-08-20', service: 'Built gen shed', notes: '' },
+        { date: '2024-09-01', service: 'Hurricane Helene', notes: '12 hrs on 2x100 gal' },
+        { date: '2024-10-01', service: 'Hurricane Milton', notes: '42 hrs' },
+      ]
+    },
+    {
+      id: 'tiller', name: 'TroyBilt Tiller', type: 'Garden Tiller', icon: 'ð±',
+      purchased: 'March 2023',
+      specs: [],
+      log: [
+        { date: '2023-03-01', service: 'Purchased', notes: '' },
+        { date: '2024-02-01', service: 'Tilled garden', notes: '' },
+      ]
+    },
+    {
+      id: 'gator', name: 'John Deere Gator', type: 'Utility Vehicle', icon: 'ð',
+      specs: [],
+      log: [
+        { date: '2024-07-19', service: 'Oil change', notes: 'Then picked up for head gasket recall' },
+        { date: '2025-02-01', service: 'New tires', notes: '' },
+      ]
+    },
+    {
+      id: 'chipper', name: 'Chipper Shredder', type: 'Wood Chipper', icon: 'ðªµ',
+      purchased: 'July 2023',
+      specs: [],
+      log: [
+        { date: '2023-07-01', service: 'Purchased', notes: '' },
+        { date: '2023-10-01', service: 'Emptied gas for storage', notes: '' },
+      ]
+    },
+    {
+      id: 'weedeater', name: 'Weed Eater', type: 'String Trimmer', icon: 'ð¿',
+      specs: ['Spark plug: BPMR8Y NGK (1 spare on hand)'],
+      log: []
+    },
+    {
+      id: 'pressure', name: 'Pressure Washer', type: 'Pressure Washer', icon: 'ð¦',
+      purchased: 'Early 2024',
+      specs: [],
+      log: [
+        { date: '2024-03-14', service: 'Power washed house', notes: 'Not patio (chicks)' },
+        { date: '2024-04-01', service: 'Finished patio wash', notes: 'After chickens moved to coop' },
+      ]
+    },
+    {
+      id: 'grace', name: "Grace (Iola's 2024 Colorado)", type: 'Truck', icon: 'ð»',
+      specs: ['Trans: MOBIL 1 6 QTS LV ATFHP Blue Label', 'TF922 Trans Filter', 'Pan: 89 in/lbs, Cat Flange: 37 ft/lbs, Hanger: 43 ft/lbs'],
+      log: [
+        { date: '2024-07-01', service: 'Trans fluid changed', notes: '48k miles' },
+        { date: '2024-12-01', service: 'Dent on tailgate', notes: '' },
+        { date: '2025-01-19', service: 'Oil change', notes: '' },
+      ]
+    },
+    {
+      id: 'jewel', name: "Jewel (Greg's 2020 Colorado)", type: 'Truck', icon: 'ð»',
+      specs: [],
+      log: [
+        { date: '2024-11-26', service: 'Transmission change', notes: '30k miles' },
+        { date: '2026-01-04', service: 'Oil change', notes: '' },
+      ]
+    },
+    {
+      id: 'corolla', name: '2024 Corolla', type: 'Car', icon: 'ð',
+      purchased: 'January 2024',
+      specs: ['Spare key in lock box', 'Paid off 2/21/2024'],
+      log: [
+        { date: '2024-01-01', service: 'Purchased', notes: '' },
+      ]
+    },
+  ];
+
+  let archivedTasks = [];
+
+  // ââ Render Equipment ââ
+  function renderEquipment() {
+    const grid = document.getElementById('equipGrid');
+    grid.innerHTML = equipment.map(eq => {
+      const lastLog = eq.log.length > 0 ? eq.log[eq.log.length - 1] : null;
+      const lastDate = lastLog ? new Date(lastLog.date) : null;
+      const daysSince = lastDate ? Math.floor((new Date() - lastDate) / (1000*60*60*24)) : null;
+      let statusClass = 'good';
+      let statusText = 'OK';
+      if (daysSince !== null && daysSince > 365) { statusClass = 'due'; statusText = '12+ mo ago'; }
+      if (daysSince !== null && daysSince > 545) { statusClass = 'overdue'; statusText = '18+ mo ago'; }
+      if (!lastLog) { statusClass = 'due'; statusText = 'No log'; }
+
+      return `<div class="equip-card" onclick="showEquipDetail('${eq.id}')">
+        <div class="equip-name">${eq.icon} ${eq.name}</div>
+        <div class="equip-last">${lastLog ? 'Last: ' + lastLog.service + ' (' + new Date(lastLog.date).toLocaleDateString('en-US',{month:'short',year:'numeric'}) + ')' : 'No maintenance logged'}</div>
+        <span class="equip-status ${statusClass}">${statusText}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ââ Equipment Detail Modal ââ
+  function showEquipDetail(id) {
+    const eq = equipment.find(e => e.id === id);
+    if (!eq) return;
+
+    const modal = document.getElementById('equipModal');
+    document.getElementById('modalTitle').textContent = eq.icon + ' ' + eq.name;
+    document.getElementById('modalType').textContent = eq.type + (eq.purchased ? ' | Purchased: ' + eq.purchased : '');
+
+    const tbody = document.getElementById('modalLogBody');
+    tbody.innerHTML = [...eq.log].reverse().map(l =>
+      `<tr><td>${new Date(l.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td><td>${l.service}</td><td>${l.notes}</td></tr>`
+    ).join('') || '<tr><td colspan="3" style="text-align:center;color:var(--text-muted)">No maintenance logged yet</td></tr>';
+
+    const specsList = document.getElementById('modalSpecs');
+    specsList.innerHTML = eq.specs.length > 0
+      ? eq.specs.map(s => `<div>â¢ ${s}</div>`).join('')
+      : '<div style="color:var(--text-muted)">No specs recorded</div>';
+
+    document.getElementById('logEquipId').value = id;
+    modal.classList.add('active');
+  }
+
+  function closeModal() {
+    document.getElementById('equipModal').classList.remove('active');
+  }
+
+  function addLogEntry() {
+    const id = document.getElementById('logEquipId').value;
+    const desc = document.getElementById('logDesc').value.trim();
+    if (!desc) return;
+    const eq = equipment.find(e => e.id === id);
+    if (!eq) return;
+    eq.log.push({ date: new Date().toISOString().split('T')[0], service: desc, notes: '' });
+    document.getElementById('logDesc').value = '';
+    showEquipDetail(id);
+    renderEquipment();
+  }
+
+  // ââ Gmail status ââ
+  document.getElementById('emailStatus').classList.add('green');
+  document.getElementById('emailStatusText').textContent = 'Gmail: connected';
+
+  // ââ Initial render ââ
+  renderProjects();
+  loadTasksFromSheet(); // Load tasks from Sheets (or fallback)
+  renderAppts();
+  renderEmails();
+  renderEquipment();
+
+  // ââ Auto-refresh every 60 seconds ââ
+  setInterval(() => {
+    if (sheetsConnected) loadTasksFromSheet();
+  }, 60000);
+</script>
+</body>
+</html>
