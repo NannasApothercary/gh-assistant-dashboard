@@ -134,7 +134,7 @@
     border-color: var(--success);
   }
   .task-checkbox.checked::after {
-    content: 'â';
+    content: '&#x2713;';
     color: white;
     font-size: 12px;
     font-weight: bold;
@@ -504,7 +504,7 @@
 <body>
 
 <div class="header">
-  <h1>ð Good morning, GH</h1>
+  <h1>&#x1F44B; Good morning, GH</h1>
   <div class="date" id="currentDate"></div>
 </div>
 
@@ -519,19 +519,19 @@
   <!-- Quick Actions -->
   <div class="quick-actions">
     <div class="action-btn" onclick="showAddTask()">
-      <div class="icon">â</div>
+      <div class="icon">&#x2795;</div>
       <div class="label">Add Task</div>
     </div>
     <div class="action-btn" onclick="showAddAppt()">
-      <div class="icon">ð</div>
+      <div class="icon">&#x1F4C5;</div>
       <div class="label">Add Reminder</div>
     </div>
     <div class="action-btn" onclick="loadTasksFromSheet()">
-      <div class="icon">ð</div>
+      <div class="icon">&#x1F504;</div>
       <div class="label">Refresh</div>
     </div>
     <div class="action-btn" onclick="toggleDone()">
-      <div class="icon">â</div>
+      <div class="icon">&#x2705;</div>
       <div class="label">Show Done</div>
     </div>
   </div>
@@ -539,8 +539,8 @@
   <!-- CoWork Project Status -->
   <div class="section" id="projectsSection">
     <div class="section-header" onclick="toggleSection('projectsSection')">
-      <h2>ð CoWork Projects <span class="badge" id="projectCount">3</span></h2>
-      <span class="chevron">â¼</span>
+      <h2>&#x1F680; CoWork Projects <span class="badge" id="projectCount">3</span></h2>
+      <span class="chevron">&#x25BC;</span>
     </div>
     <div class="section-body" id="projectList"></div>
   </div>
@@ -548,8 +548,8 @@
   <!-- Active Tasks -->
   <div class="section" id="tasksSection">
     <div class="section-header" onclick="toggleSection('tasksSection')">
-      <h2>ð Active Tasks <span class="badge" id="taskCount">0</span></h2>
-      <span class="chevron">â¼</span>
+      <h2>&#x1F4CB; Active Tasks <span class="badge" id="taskCount">0</span></h2>
+      <span class="chevron">&#x25BC;</span>
     </div>
     <div class="section-body">
       <div id="taskList">
@@ -565,8 +565,8 @@
   <!-- Appointments & Reminders -->
   <div class="section" id="apptsSection">
     <div class="section-header" onclick="toggleSection('apptsSection')">
-      <h2>ð Appointments & Reminders <span class="badge" id="apptCount">0</span></h2>
-      <span class="chevron">â¼</span>
+      <h2>&#x1F4C5; Appointments & Reminders <span class="badge" id="apptCount">0</span></h2>
+      <span class="chevron">&#x25BC;</span>
     </div>
     <div class="section-body">
       <div id="apptList">
@@ -582,8 +582,8 @@
   <!-- Email Follow-ups -->
   <div class="section" id="emailSection">
     <div class="section-header" onclick="toggleSection('emailSection')">
-      <h2>ð§ Email Follow-ups <span class="badge" id="emailCount">0</span></h2>
-      <span class="chevron">â¼</span>
+      <h2>&#x1F4E7; Email Follow-ups <span class="badge" id="emailCount">0</span></h2>
+      <span class="chevron">&#x25BC;</span>
     </div>
     <div class="section-body">
       <div id="emailList">
@@ -595,8 +595,8 @@
   <!-- Waiting On -->
   <div class="section" id="waitingSection">
     <div class="section-header" onclick="toggleSection('waitingSection')">
-      <h2>â³ Waiting On <span class="badge" id="waitingCount">0</span></h2>
-      <span class="chevron">â¼</span>
+      <h2>&#x23F3; Waiting On <span class="badge" id="waitingCount">0</span></h2>
+      <span class="chevron">&#x25BC;</span>
     </div>
     <div class="section-body">
       <div id="waitingList">
@@ -608,8 +608,8 @@
   <!-- Equipment Maintenance -->
   <div class="section" id="equipSection">
     <div class="section-header" onclick="toggleSection('equipSection')">
-      <h2>ð§ Equipment Maintenance <span class="badge" id="equipCount">10</span></h2>
-      <span class="chevron">â¼</span>
+      <h2>&#x1F527; Equipment Maintenance <span class="badge" id="equipCount">10</span></h2>
+      <span class="chevron">&#x25BC;</span>
     </div>
     <div class="section-body">
       <div class="equip-grid" id="equipGrid"></div>
@@ -619,8 +619,8 @@
   <!-- Someday / Backlog -->
   <div class="section collapsed" id="somedaySection">
     <div class="section-header" onclick="toggleSection('somedaySection')">
-      <h2>ð­ Someday / Backlog <span class="badge" id="somedayCount">0</span></h2>
-      <span class="chevron">â¼</span>
+      <h2>&#x1F4AD; Someday / Backlog <span class="badge" id="somedayCount">0</span></h2>
+      <span class="chevron">&#x25BC;</span>
     </div>
     <div class="section-body">
       <div id="somedayList"></div>
@@ -630,8 +630,8 @@
   <!-- Completed (hidden by default) -->
   <div class="section collapsed" id="doneSection" style="display:none;">
     <div class="section-header" onclick="toggleSection('doneSection')">
-      <h2>â Recently Completed <span class="badge" id="doneCount">0</span></h2>
-      <span class="chevron">â¼</span>
+      <h2>&#x2705; Recently Completed <span class="badge" id="doneCount">0</span></h2>
+      <span class="chevron">&#x25BC;</span>
     </div>
     <div class="section-body">
       <div id="doneList"></div>
@@ -658,7 +658,7 @@
 <!-- Equipment Detail Modal -->
 <div class="modal-overlay" id="equipModal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
-    <button class="close-btn" onclick="closeModal()">â</button>
+    <button class="close-btn" onclick="closeModal()">&#x2715;</button>
     <h3 id="modalTitle"></h3>
     <div id="modalType" style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px"></div>
     <table>
@@ -675,66 +675,66 @@
 </div>
 
 <script>
-  // ââââââââââââââââââââââââââââââââââââââââââââââ
-  // â  GOOGLE SHEETS API CONFIG                  â
-  // â  Replace this URL after deploying the      â
-  // â  Apps Script as a web app                  â
-  // ââââââââââââââââââââââââââââââââââââââââââââââ
+  // ╔════════════════════════════════════════════╗
+  // ║  GOOGLE SHEETS API CONFIG                  ║
+  // ║  Replace this URL after deploying the      ║
+  // ║  Apps Script as a web app                  ║
+  // ╚════════════════════════════════════════════╝
   const API_URL = 'https://script.google.com/macros/s/AKfycbw2-K2BQXFfmnzfV5hf7Mi4Q8gI3SZkOoLBtMLo4qdSIaS5P24JujVXPd5kED40Su1n/exec';
 
-  // ââ STATE ââ
+  // ── STATE ──
   let tasks = [];
   let waitingOn = [];
   let showDone = false;
   let sheetsConnected = false;
 
-  // ââ FALLBACK DATA (used if Sheets isn't connected yet) ââ
+  // ── FALLBACK DATA (used if Sheets isn't connected yet) ──
   const FALLBACK_TASKS = [
-    { id: 'f1', title: "Put PVC governor back on gator â due April (before baby shower)", priority: "high", done: false, section: "active" },
-    { id: 'f2', title: "Taillight bulb â replace", priority: "high", done: false, section: "active" },
-    { id: 'f3', title: "Lowes run â C-Channel track + 4x4 Posts", priority: "high", done: false, section: "active" },
-    { id: 'f4', title: "Propagate plants â lingstrum x30, Pigeon Peas, Ground Cherries, rosemary & oregano for chickens, food forest in chicken yard", priority: "high", done: false, section: "active" },
-    { id: 'f5', title: "Well pump status â installed 10/2017, lifespan 8-15 yrs (due window: 2025-2032)", priority: "high", done: false, section: "active" },
-    { id: 'f6', title: "Covers for 4\" posts â purchase", priority: "medium", done: false, section: "active" },
+    { id: 'f1', title: "Put PVC governor back on gator — due April (before baby shower)", priority: "high", done: false, section: "active" },
+    { id: 'f2', title: "Taillight bulb — replace", priority: "high", done: false, section: "active" },
+    { id: 'f3', title: "Lowes run — C-Channel track + 4x4 Posts", priority: "high", done: false, section: "active" },
+    { id: 'f4', title: "Propagate plants — lingstrum x30, Pigeon Peas, Ground Cherries, rosemary & oregano for chickens, food forest in chicken yard", priority: "high", done: false, section: "active" },
+    { id: 'f5', title: "Well pump status — installed 10/2017, lifespan 8-15 yrs (due window: 2025-2032)", priority: "high", done: false, section: "active" },
+    { id: 'f6', title: "Covers for 4\" posts — purchase", priority: "medium", done: false, section: "active" },
     { id: 'f7', title: "Track line build for TreeHouse", priority: "medium", done: false, section: "active" },
-    { id: 'f8', title: "Fix Lincoln welder amp switch â move to C", priority: "medium", done: false, section: "active" },
-    { id: 'f9', title: "Modify 5x8 trailer â removeable side & reinforce tongue", priority: "medium", done: false, section: "active" },
-    { id: 'f10', title: "Add back tailgate drop section â hinge & pin setup", priority: "medium", done: false, section: "active" },
+    { id: 'f8', title: "Fix Lincoln welder amp switch — move to C", priority: "medium", done: false, section: "active" },
+    { id: 'f9', title: "Modify 5x8 trailer — removeable side & reinforce tongue", priority: "medium", done: false, section: "active" },
+    { id: 'f10', title: "Add back tailgate drop section — hinge & pin setup", priority: "medium", done: false, section: "active" },
     { id: 'f11', title: "Measure hitch height & modify gator to match", priority: "medium", done: false, section: "active" },
     { id: 'f12', title: "Build the last raised bed", priority: "medium", done: false, section: "active" },
-    { id: 'f13', title: "Go thru AC paperwork â look at JB warranty", priority: "medium", done: false, section: "active" },
+    { id: 'f13', title: "Go thru AC paperwork — look at JB warranty", priority: "medium", done: false, section: "active" },
     { id: 'f14', title: "Oil change: Tiller & check Generator", priority: "medium", done: false, section: "active" },
     { id: 'f15', title: "Fix sidewalk edges", priority: "medium", done: false, section: "active" },
-    { id: 'f16', title: "Pool cage â replace screws", priority: "medium", done: false, section: "active" },
+    { id: 'f16', title: "Pool cage — replace screws", priority: "medium", done: false, section: "active" },
     { id: 'f17', title: "Install programmable thermostat at Jared's", priority: "medium", done: false, section: "active" },
-    { id: 'f18', title: "Jared 2022 Teco â follow up", priority: "medium", done: false, section: "active" },
-    { id: 'f19', title: "Well filter system â check inside unit (installed 3/2020)", priority: "medium", done: false, section: "active" },
+    { id: 'f18', title: "Jared 2022 Teco — follow up", priority: "medium", done: false, section: "active" },
+    { id: 'f19', title: "Well filter system — check inside unit (installed 3/2020)", priority: "medium", done: false, section: "active" },
     { id: 'f20', title: "Learn to make own chicken feed", priority: "low", done: false, section: "someday" },
-    { id: 'f21', title: "Black soldier fly larva â build the box", priority: "low", done: false, section: "someday" },
-    { id: 'f22', title: "Build Bronco & Buggy â display on shelf in sand", priority: "low", done: false, section: "someday" },
-    { id: 'f23', title: "Make bed extender for hauling lumber â 2\" tubing", priority: "low", done: false, section: "someday" },
+    { id: 'f21', title: "Black soldier fly larva — build the box", priority: "low", done: false, section: "someday" },
+    { id: 'f22', title: "Build Bronco & Buggy — display on shelf in sand", priority: "low", done: false, section: "someday" },
+    { id: 'f23', title: "Make bed extender for hauling lumber — 2\" tubing", priority: "low", done: false, section: "someday" },
     { id: 'f24', title: "Design & develop storm shutters for chicken run", priority: "low", done: false, section: "someday" },
     { id: 'f25', title: "Figure out where to put all the signs", priority: "low", done: false, section: "someday" },
-    { id: 'f26', title: "Wiring diagram for blower 220v â watch videos to build fan", priority: "low", done: false, section: "someday" },
-    { id: 'f27', title: "Hobby Lobby â acrylic sheet", priority: "low", done: false, section: "someday" },
+    { id: 'f26', title: "Wiring diagram for blower 220v — watch videos to build fan", priority: "low", done: false, section: "someday" },
+    { id: 'f27', title: "Hobby Lobby — acrylic sheet", priority: "low", done: false, section: "someday" },
     { id: 'f28', title: "Build shelving in carport", priority: "low", done: false, section: "someday" },
     { id: 'f29', title: "3/8 bar sculpt the nest & build a bench to sit at", priority: "low", done: false, section: "someday" },
     { id: 'f30', title: "Build permanent chicken patio / picnic table", priority: "low", done: false, section: "someday" },
     { id: 'f31', title: "Build photo booth for dioramas & photograph", priority: "low", done: false, section: "someday" },
-    { id: 'f32', title: "Make own paint retarder â 1 part glycerin to 9 parts water", priority: "low", done: false, section: "someday" },
-    { id: 'f33', title: "GuitarCreative.com â go thru tutorial", priority: "low", done: false, section: "someday" },
-    { id: 'f34', title: "Guitar practice â unlocking the fretboard video", priority: "low", done: false, section: "someday" },
+    { id: 'f32', title: "Make own paint retarder — 1 part glycerin to 9 parts water", priority: "low", done: false, section: "someday" },
+    { id: 'f33', title: "GuitarCreative.com — go thru tutorial", priority: "low", done: false, section: "someday" },
+    { id: 'f34', title: "Guitar practice — unlocking the fretboard video", priority: "low", done: false, section: "someday" },
   ];
 
   const FALLBACK_WAITING = [
-    { title: "Borrow the plasma cutter â confirm plug fits", since: "2026-03-31" },
+    { title: "Borrow the plasma cutter — confirm plug fits", since: "2026-03-31" },
   ];
 
-  // ââ SHEETS API FUNCTIONS ââ
+  // ── SHEETS API FUNCTIONS ──
 
   async function loadTasksFromSheet() {
     if (API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-      // Not connected yet â use fallback data
+      // Not connected yet — use fallback data
       tasks = [...FALLBACK_TASKS];
       waitingOn = [...FALLBACK_WAITING];
       document.getElementById('sheetStatus').classList.add('yellow');
@@ -759,7 +759,7 @@
       showSync('Tasks synced!', 'success', 2000);
     } catch (err) {
       console.error('Failed to load from Sheets:', err);
-      showSync('Sync failed â using cached data', 'error', 3000);
+      showSync('Sync failed — using cached data', 'error', 3000);
       document.getElementById('sheetStatus').className = 'status-dot red';
       document.getElementById('sheetStatusText').textContent = 'Sheets: offline';
 
@@ -796,7 +796,7 @@
       }
     } catch (err) {
       console.error('Failed to add task:', err);
-      showSync('Failed to add â saved locally', 'error', 2000);
+      showSync('Failed to add — saved locally', 'error', 2000);
       tasks.push({ id: 'local_' + Date.now(), title, priority, done: false, section });
       renderTasks();
     }
@@ -832,7 +832,7 @@
     }
   }
 
-  // ââ SYNC UI ââ
+  // ── SYNC UI ──
   function showSync(message, type, autoDismiss) {
     const banner = document.getElementById('syncBanner');
     const spinner = document.getElementById('syncSpinner');
@@ -848,21 +848,21 @@
     }
   }
 
-  // ââ CoWork Projects State (still managed from Cowork sessions) ââ
+  // ── CoWork Projects State (still managed from Cowork sessions) ──
   let projects = [
     {
       name: "GT Precision Website",
-      icon: "ð­",
+      icon: "\u{1F3ED}",
       status: "active",
       bullets: [
-        "DNS pointed to Wix â site is live at gtprecisionmfg.com. Google Reviews widget integrated with 11 real reviews.",
+        "DNS pointed to Wix — site is live at gtprecisionmfg.com. Google Reviews widget integrated with 11 real reviews.",
         "Next up: Call HIBU to cancel old service, then begin Phase 2 (quote tool, service pages, SEO)."
       ],
       updated: "2026-04-01"
     },
     {
       name: "Nanna's Herbal Apothecary",
-      icon: "ð¿",
+      icon: "\u{1F33F}",
       status: "active",
       bullets: [
         "Pinterest autopilot running (10 pins queued, daily reminders). Facebook auto-posting MWF. Amazon Associates approved; Awin/Starwest pending.",
@@ -872,17 +872,17 @@
     },
     {
       name: "Personal Assistant",
-      icon: "ð¤",
+      icon: "\u{1F916}",
       status: "active",
       bullets: [
-        "Dashboard live on Netlify. Google Sheets backend for two-way task sync. Daily briefing at 8 AM. Gmail and Google Calendar connected.",
-        "Next up: GitHub auto-deploy, voice workflow from phone."
+        "Dashboard live on Netlify with GitHub auto-deploy. Google Sheets backend for two-way task sync. Daily briefing at 8 AM. Gmail and Google Calendar connected.",
+        "Next up: Voice workflow from phone, fix emoji rendering."
       ],
-      updated: "2026-04-01"
+      updated: "2026-04-02"
     }
   ];
 
-  // ââ Appointments â synced from Google Calendar ââ
+  // ── Appointments — synced from Google Calendar ──
   let appointments = [
     { title: "Castnet look hunter", date: "2026-04-01", time: "3:00 PM", source: "gcal", recurring: false },
     { title: "Barber 2pm", date: "2026-04-02", time: "All day", source: "gcal", recurring: false },
@@ -890,7 +890,7 @@
     { title: "Check water salt level", date: "2026-04-26", time: "All day", source: "gcal", recurring: true },
   ];
 
-  // ââ Emails â synced from Gmail ââ
+  // ── Emails — synced from Gmail ──
   let emails = [
     { from: "Fidelity Viewpoints", subject: "Social Security changes ahead", snippet: "RMDs in down markets, tips to lower taxes, boost benefits by up 24%, and more!", unread: true },
     { from: "Bealls Rewards", subject: "Final Days to use your $5 Bonus Reward!", snippet: "Reminder: you received a $5 Bonus Reward, valid for one time use.", unread: true },
@@ -898,7 +898,7 @@
     { from: "Google", subject: "Security alert", snippet: "A new sign-in on Windows to iherschell12@gmail.com was detected.", unread: true },
   ];
 
-  // ââ Date display ââ
+  // ── Date display ──
   function updateDate() {
     const now = new Date();
     const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -906,16 +906,16 @@
 
     const hour = now.getHours();
     const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-    document.querySelector('.header h1').textContent = `ð ${greeting}, GH`;
+    document.querySelector('.header h1').textContent = `\u{1F44B} ${greeting}, GH`;
   }
   updateDate();
 
-  // ââ Section toggle ââ
+  // ── Section toggle ──
   function toggleSection(id) {
     document.getElementById(id).classList.toggle('collapsed');
   }
 
-  // ââ Show add forms ââ
+  // ── Show add forms ──
   function showAddTask() {
     const form = document.getElementById('addTaskForm');
     form.classList.toggle('active');
@@ -931,7 +931,7 @@
     }
   }
 
-  // ââ Add task (now writes to Sheets!) ââ
+  // ── Add task (now writes to Sheets!) ──
   function addTask() {
     const input = document.getElementById('newTaskInput');
     let text = input.value.trim();
@@ -946,7 +946,7 @@
     addTaskToSheet(text, priority, section);
   }
 
-  // ââ Add appointment ââ
+  // ── Add appointment ──
   function addAppt() {
     const input = document.getElementById('newApptInput');
     const text = input.value.trim();
@@ -957,19 +957,19 @@
     renderAppts();
   }
 
-  // ââ Toggle task done (now writes to Sheets!) ââ
+  // ── Toggle task done (now writes to Sheets!) ──
   function toggleTask(taskId) {
     toggleTaskOnSheet(taskId);
   }
 
-  // ââ Toggle done section ââ
+  // ── Toggle done section ──
   function toggleDone() {
     showDone = !showDone;
     document.getElementById('doneSection').style.display = showDone ? 'block' : 'none';
     renderTasks();
   }
 
-  // ââ Render projects ââ
+  // ── Render projects ──
   function renderProjects() {
     const container = document.getElementById('projectList');
     document.getElementById('projectCount').textContent = projects.length;
@@ -983,13 +983,13 @@
           <div class="project-name">${p.icon} ${p.name}</div>
           <span class="project-status-badge ${p.status}">${p.status === 'active' ? 'Active' : 'Waiting'}</span>
         </div>
-        ${p.bullets.map(b => `<div class="project-bullet"><span class="bullet">â¸</span><span>${b}</span></div>`).join('')}
+        ${p.bullets.map(b => `<div class="project-bullet"><span class="bullet">\u25B8</span><span>${b}</span></div>`).join('')}
         <div class="project-updated">Updated ${p.updated}</div>
       </div>
     `).join('');
   }
 
-  // ââ Render tasks ââ
+  // ── Render tasks ──
   function renderTasks() {
     const active = tasks.filter(t => !t.done && t.section === 'active');
     const someday = tasks.filter(t => !t.done && t.section === 'someday');
@@ -1008,12 +1008,12 @@
       document.getElementById('taskList').innerHTML = '<div class="empty">No active tasks. Tap "Add Task" to get started!</div>';
     } else {
       document.getElementById('taskList').innerHTML = sorted.map((t) => {
-        const hotTag = t.priority === 'high' ? '<span class="hot-badge">ð¥ HOT</span>' : '';
+        const hotTag = t.priority === 'high' ? '<span class="hot-badge">\u{1F525} HOT</span>' : '';
         return `<div class="task-item">
           <div class="task-checkbox" onclick="toggleTask('${t.id}')"></div>
           <div class="task-text">
             <div class="title">${t.title}${hotTag}</div>
-            <div class="meta">${t.priority === 'high' ? 'ð´ High' : t.priority === 'low' ? 'ðµ Low' : 'ð¡ Medium'} priority</div>
+            <div class="meta">${t.priority === 'high' ? '\u{1F534} High' : t.priority === 'low' ? '\u{1F535} Low' : '\u{1F7E1} Medium'} priority</div>
           </div>
         </div>`;
       }).join('');
@@ -1023,7 +1023,7 @@
     if (waitingOn.length > 0) {
       document.getElementById('waitingList').innerHTML = waitingOn.map(w =>
         `<div class="waiting-item">
-          <div class="waiting-icon">â³</div>
+          <div class="waiting-icon">\u23F3</div>
           <div class="task-text">
             <div class="title">${w.title}</div>
             <div class="meta">Since ${w.since || 'unknown'}</div>
@@ -1068,7 +1068,7 @@
     document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
   }
 
-  // ââ Render appointments ââ
+  // ── Render appointments ──
   function renderAppts() {
     document.getElementById('apptCount').textContent = appointments.length;
     if (appointments.length === 0) {
@@ -1085,15 +1085,15 @@
         return `<div class="appt-item">
           <div class="appt-time">${dateLabel}<br><span style="font-size:0.75rem;color:var(--text-muted)">${a.time || ''}</span></div>
           <div class="appt-details">
-            <div class="title">${a.title}${a.recurring ? ' ð' : ''}</div>
-            ${a.source === 'gcal' ? '<div class="location" style="font-size:0.75rem">ð Google Calendar</div>' : ''}
+            <div class="title">${a.title}${a.recurring ? ' \u{1F504}' : ''}</div>
+            ${a.source === 'gcal' ? '<div class="location" style="font-size:0.75rem">\u{1F4C5} Google Calendar</div>' : ''}
           </div>
         </div>`;
       }).join('');
     }
   }
 
-  // ââ Render emails ââ
+  // ── Render emails ──
   function renderEmails() {
     document.getElementById('emailCount').textContent = emails.length;
     if (emails.length === 0) {
@@ -1112,10 +1112,10 @@
     }
   }
 
-  // ââ Equipment Data ââ
+  // ── Equipment Data ──
   let equipment = [
     {
-      id: 'hustler', name: 'Hustler Raptor XDX', type: 'Riding Mower', icon: 'ð',
+      id: 'hustler', name: 'Hustler Raptor XDX', type: 'Riding Mower', icon: '\u{1F69C}',
       specs: ['Hydraulic fluid: Mobile 1 15w-50 or Castrol 5w-50 Syntec'],
       log: [
         { date: '2023-03-24', service: 'Fixed mower', notes: '$550' },
@@ -1126,7 +1126,7 @@
       ]
     },
     {
-      id: 'generator', name: 'XP13000 Generator', type: 'Whole House Generator', icon: 'â¡',
+      id: 'generator', name: 'XP13000 Generator', type: 'Whole House Generator', icon: '\u26A1',
       purchased: 'July 2023',
       specs: ['100 gal propane = ~27 hrs', 'Chargeverter 60amp', 'Total run time: ~200 hrs'],
       log: [
@@ -1137,7 +1137,7 @@
       ]
     },
     {
-      id: 'tiller', name: 'TroyBilt Tiller', type: 'Garden Tiller', icon: 'ð±',
+      id: 'tiller', name: 'TroyBilt Tiller', type: 'Garden Tiller', icon: '\u{1F331}',
       purchased: 'March 2023',
       specs: [],
       log: [
@@ -1146,7 +1146,7 @@
       ]
     },
     {
-      id: 'gator', name: 'John Deere Gator', type: 'Utility Vehicle', icon: 'ð',
+      id: 'gator', name: 'John Deere Gator', type: 'Utility Vehicle', icon: '\u{1F699}',
       specs: [],
       log: [
         { date: '2024-07-19', service: 'Oil change', notes: 'Then picked up for head gasket recall' },
@@ -1154,7 +1154,7 @@
       ]
     },
     {
-      id: 'chipper', name: 'Chipper Shredder', type: 'Wood Chipper', icon: 'ðªµ',
+      id: 'chipper', name: 'Chipper Shredder', type: 'Wood Chipper', icon: '\u{1FAB5}',
       purchased: 'July 2023',
       specs: [],
       log: [
@@ -1163,12 +1163,12 @@
       ]
     },
     {
-      id: 'weedeater', name: 'Weed Eater', type: 'String Trimmer', icon: 'ð¿',
+      id: 'weedeater', name: 'Weed Eater', type: 'String Trimmer', icon: '\u{1F33F}',
       specs: ['Spark plug: BPMR8Y NGK (1 spare on hand)'],
       log: []
     },
     {
-      id: 'pressure', name: 'Pressure Washer', type: 'Pressure Washer', icon: 'ð¦',
+      id: 'pressure', name: 'Pressure Washer', type: 'Pressure Washer', icon: '\u{1F4A6}',
       purchased: 'Early 2024',
       specs: [],
       log: [
@@ -1177,7 +1177,7 @@
       ]
     },
     {
-      id: 'grace', name: "Grace (Iola's 2024 Colorado)", type: 'Truck', icon: 'ð»',
+      id: 'grace', name: "Grace (Iola's 2024 Colorado)", type: 'Truck', icon: '\u{1F6FB}',
       specs: ['Trans: MOBIL 1 6 QTS LV ATFHP Blue Label', 'TF922 Trans Filter', 'Pan: 89 in/lbs, Cat Flange: 37 ft/lbs, Hanger: 43 ft/lbs'],
       log: [
         { date: '2024-07-01', service: 'Trans fluid changed', notes: '48k miles' },
@@ -1186,7 +1186,7 @@
       ]
     },
     {
-      id: 'jewel', name: "Jewel (Greg's 2020 Colorado)", type: 'Truck', icon: 'ð»',
+      id: 'jewel', name: "Jewel (Greg's 2020 Colorado)", type: 'Truck', icon: '\u{1F6FB}',
       specs: [],
       log: [
         { date: '2024-11-26', service: 'Transmission change', notes: '30k miles' },
@@ -1194,7 +1194,7 @@
       ]
     },
     {
-      id: 'corolla', name: '2024 Corolla', type: 'Car', icon: 'ð',
+      id: 'corolla', name: '2024 Corolla', type: 'Car', icon: '\u{1F697}',
       purchased: 'January 2024',
       specs: ['Spare key in lock box', 'Paid off 2/21/2024'],
       log: [
@@ -1205,7 +1205,7 @@
 
   let archivedTasks = [];
 
-  // ââ Render Equipment ââ
+  // ── Render Equipment ──
   function renderEquipment() {
     const grid = document.getElementById('equipGrid');
     grid.innerHTML = equipment.map(eq => {
@@ -1226,7 +1226,7 @@
     }).join('');
   }
 
-  // ââ Equipment Detail Modal ââ
+  // ── Equipment Detail Modal ──
   function showEquipDetail(id) {
     const eq = equipment.find(e => e.id === id);
     if (!eq) return;
@@ -1242,7 +1242,7 @@
 
     const specsList = document.getElementById('modalSpecs');
     specsList.innerHTML = eq.specs.length > 0
-      ? eq.specs.map(s => `<div>â¢ ${s}</div>`).join('')
+      ? eq.specs.map(s => `<div>• ${s}</div>`).join('')
       : '<div style="color:var(--text-muted)">No specs recorded</div>';
 
     document.getElementById('logEquipId').value = id;
@@ -1265,18 +1265,18 @@
     renderEquipment();
   }
 
-  // ââ Gmail status ââ
+  // ── Gmail status ──
   document.getElementById('emailStatus').classList.add('green');
   document.getElementById('emailStatusText').textContent = 'Gmail: connected';
 
-  // ââ Initial render ââ
+  // ── Initial render ──
   renderProjects();
   loadTasksFromSheet(); // Load tasks from Sheets (or fallback)
   renderAppts();
   renderEmails();
   renderEquipment();
 
-  // ââ Auto-refresh every 60 seconds ââ
+  // ── Auto-refresh every 60 seconds ──
   setInterval(() => {
     if (sheetsConnected) loadTasksFromSheet();
   }, 60000);
