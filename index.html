@@ -124,22 +124,17 @@
     margin-left: 6px;
     vertical-align: middle;
   }
-
-  /* Demote button for time-sensitive tasks */
-  .demote-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    font-size: 0.72rem;
-    padding: 2px 8px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 8px;
+  .today-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 6px;
+    margin-left: 6px;
     vertical-align: middle;
-    white-space: nowrap;
-    transition: all 0.2s;
   }
-  .demote-btn:hover { border-color: var(--warning); color: var(--warning); }
 
   /* Alert / info boxes */
   .alert-box {
@@ -224,11 +219,6 @@
   .appt-info { flex: 1; }
   .appt-title { font-weight: 600; font-size: 0.95rem; }
   .appt-time  { font-size: 0.82rem; color: var(--text-muted); margin-top: 3px; }
-  .appt-soon {
-    background: rgba(245,158,11,0.15);
-    border-left: 3px solid var(--warning);
-    padding-left: 10px;
-  }
 
   /* Email items */
   .email-item {
@@ -250,6 +240,7 @@
   .email-dot.alert   { background: var(--danger); }
   .email-dot.success { background: var(--success); }
   .email-dot.warn    { background: var(--warning); }
+
   .email-info { flex: 1; }
   .email-subject { font-weight: 500; font-size: 0.9rem; }
   .email-meta    { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
@@ -322,7 +313,7 @@
 
 <div class="header">
   <h1>&#9728;&#65039; GH's Personal Assistant</h1>
-  <div class="date">Monday, April 6, 2026 &nbsp;&middot;&nbsp; Updated 7:55 AM EDT</div>
+  <div class="date">Wednesday, April 8, 2026 &nbsp;&middot;&nbsp; Updated 7:55 AM EDT</div>
 </div>
 
 <div class="container">
@@ -330,8 +321,8 @@
   <!-- NEXT UP -->
   <div class="next-up">
     <div class="next-up-label">&#9889; Next Up</div>
-    <div class="next-up-title">Lena &mdash; iPad history &amp; get iPads + pic</div>
-    <div class="next-up-meta">Tomorrow &middot; Tue Apr 7 &middot; 1:30 &ndash; 2:30 PM</div>
+    <div class="next-up-title">PVC Governor &mdash; Put back on Gator</div>
+    <div class="next-up-meta">Due this month (April) &middot; Before baby shower</div>
   </div>
 
   <!-- PRIORITY ACTIONS -->
@@ -339,7 +330,7 @@
     <div class="section-header" onclick="toggleSection(this)">
       <h2>&#128680; Priority Actions</h2>
       <div style="display:flex;align-items:center;gap:8px">
-        <span class="badge red">2 URGENT</span>
+        <span class="badge red">3 ITEMS</span>
         <span class="chevron">&#9660;</span>
       </div>
     </div>
@@ -350,7 +341,11 @@
       </div>
       <div class="alert-box">
         <div class="alert-title">&#128308; iHerb Affiliate &mdash; Partnership Declined</div>
-        Your iHerb application via impact.com was declined (Mar 30). Action needed: review decline reason and re-apply or explore alternative path. Email is unread in Gmail.
+        Your iHerb application via impact.com was declined (Mar 30). Action needed: review decline reason and re-apply or explore alternative path.
+      </div>
+      <div class="warn-box">
+        <div class="warn-title">&#9888;&#65039; Facebook Comments &mdash; Shawna Rickey</div>
+        Unanswered comments (~1 week old) on both the Nanna's Herbal Apothecary Page and Group. She's asking about herbal products. Iola got a reminder email yesterday &mdash; please follow up.
       </div>
     </div>
   </div>
@@ -358,184 +353,93 @@
   <!-- CALENDAR -->
   <div class="section">
     <div class="section-header" onclick="toggleSection(this)">
-      <h2>&#128197; Upcoming Calendar</h2>
+      <h2>&#128197; Today's Calendar</h2>
       <div style="display:flex;align-items:center;gap:8px">
-        <span class="badge">2 events</span>
+        <span class="badge">Clear day</span>
         <span class="chevron">&#9660;</span>
       </div>
     </div>
     <div class="section-body">
-      <div class="appt-item appt-soon">
-        <div class="appt-date-col">
-          <div class="appt-day">Tue</div>
-          <div class="appt-date-num">7</div>
-          <div class="appt-month">Apr</div>
-        </div>
-        <div class="appt-info">
-          <div class="appt-title">Lena &mdash; iPad history &amp; get iPads + pic <span class="hot-badge">TOMORROW</span></div>
-          <div class="appt-time">1:30 &ndash; 2:30 PM</div>
+      <div class="info-box">
+        <div class="info-title">No events scheduled today</div>
+        Open day &mdash; great time to knock out some tasks from your active list!
+      </div>
+    </div>
+  </div>
+
+  <!-- RECENT EMAILS -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#128236; Recent Emails</h2>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge">3 recent</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="email-item">
+        <div class="email-dot success"></div>
+        <div class="email-info">
+          <div class="email-subject">Fw: Membership active &mdash; Starwest Botanicals (Awin) <span class="ok-badge">AFFILIATE</span></div>
+          <div class="email-meta">From: ghersche12@aol.com &middot; Apr 8, 10:29 AM &middot; Forwarded from AOL</div>
         </div>
       </div>
-      <div class="appt-item">
-        <div class="appt-date-col">
-          <div class="appt-day">Fri</div>
-          <div class="appt-date-num">17</div>
-          <div class="appt-month">Apr</div>
+      <div class="email-item">
+        <div class="email-dot"></div>
+        <div class="email-info">
+          <div class="email-subject">Your Bealls Reward Has Arrived! &mdash; $5.00 reward</div>
+          <div class="email-meta">From: Bealls Rewards &middot; Apr 8, 7:52 AM &middot; Expires 04/08/2027</div>
         </div>
-        <div class="appt-info">
-          <div class="appt-title">&#127874; Birthday</div>
-          <div class="appt-time">All day</div>
+      </div>
+      <div class="email-item">
+        <div class="email-dot warn"></div>
+        <div class="email-info">
+          <div class="email-subject">&#128172; ACTION NEEDED &mdash; Unanswered Facebook Comments from Shawna (1 week old)</div>
+          <div class="email-meta">From: iherschell12@gmail.com &middot; Apr 7, 6:22 PM &middot; Nanna's Herbal Apothecary</div>
+        </div>
+      </div>
+      <div class="email-item">
+        <div class="email-dot success"></div>
+        <div class="email-info">
+          <div class="email-subject">Fw: Membership active &mdash; Starwest Botanicals (Awin) <span class="ok-badge">AFFILIATE</span></div>
+          <div class="email-meta">From: ghersche12@aol.com &middot; Apr 7, 3:39 PM &middot; Forwarded from AOL (duplicate)</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- AFFILIATE PROGRAM STATUS -->
+  <!-- AFFILIATE PROGRAMS -->
   <div class="section warn-border">
     <div class="section-header" onclick="toggleSection(this)">
-      <h2>&#128188; Nanna's Apothecary &mdash; Affiliate Status</h2>
+      <h2>&#128176; Affiliate Programs</h2>
       <div style="display:flex;align-items:center;gap:8px">
-        <span class="badge yellow">1 ACTION</span>
+        <span class="badge yellow">1 declined</span>
         <span class="chevron">&#9660;</span>
       </div>
     </div>
     <div class="section-body">
-      <div class="success-box">
-        <div class="success-title">&#10003; AOL Forwarding Active</div>
-        Affiliate emails received from AOL on April 4 &mdash; forwarding rules are working correctly.
-      </div>
       <div class="affiliate-grid">
         <div class="affiliate-card approved">
-          <div class="affiliate-name">Amazon Associates</div>
-          <div class="affiliate-status ok">&#10003; Approved</div>
-          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:3px">Welcome email Mar 27</div>
-        </div>
-        <div class="affiliate-card approved">
-          <div class="affiliate-name">Awin (Starwest)</div>
-          <div class="affiliate-status ok">&#10003; Approved</div>
-          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:3px">Approved Mar 27 &middot; Onboarding Mar 28</div>
+          <div class="affiliate-name">Starwest Botanicals</div>
+          <div class="affiliate-status ok">&#10003; Active (Awin) &mdash; confirmed Apr 7</div>
         </div>
         <div class="affiliate-card declined">
-          <div class="affiliate-name">iHerb (impact.com)</div>
-          <div class="affiliate-status no">&#10007; Declined</div>
-          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:3px">Declined Mar 30 &mdash; needs action</div>
+          <div class="affiliate-name">iHerb</div>
+          <div class="affiliate-status no">&#10007; Declined (impact.com) &mdash; Mar 30</div>
         </div>
         <div class="affiliate-card pending">
           <div class="affiliate-name">Mountain Rose Herbs</div>
-          <div class="affiliate-status wait">&#8987; No Recent News</div>
-          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:3px">Aspire &mdash; check status</div>
+          <div class="affiliate-status wait">&#9679; No recent email &mdash; check Aspire</div>
+        </div>
+        <div class="affiliate-card pending">
+          <div class="affiliate-name">Amazon Associates</div>
+          <div class="affiliate-status wait">&#9679; No recent email &mdash; check status</div>
         </div>
       </div>
-      <div style="margin-top:12px">
-        <div class="warn-box">
-          <div class="warn-title">&#9888;&#65039; Action: iHerb Declined</div>
-          Open the forwarded email in Gmail &mdash; review decline reason. Consider re-applying or reaching out to iHerb's affiliate team directly.
-        </div>
-        <div class="info-box">
-          <div class="info-title">&#8505;&#65039; iHerb &mdash; Email Verification Pending?</div>
-          Two iHerb emails arrived Mar 27: "Verify your email address" and "Contract Application." Check if the email was verified &mdash; this may be linked to the application being declined.
-        </div>
-        <div class="info-box">
-          <div class="info-title">&#8505;&#65039; Domain Acquired: nannasapothecary.com</div>
-          Domain forwarded Mar 26 &mdash; "nannasapothecary.com is now yours." Site is live on Netlify.
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- EMAIL INBOX -->
-  <div class="section">
-    <div class="section-header" onclick="toggleSection(this)">
-      <h2>&#128108; Gmail &mdash; Unread (12)</h2>
-      <div style="display:flex;align-items:center;gap:8px">
-        <span class="badge">12 unread</span>
-        <span class="chevron">&#9660;</span>
-      </div>
-    </div>
-    <div class="section-body">
-      <div class="email-item">
-        <div class="email-dot alert"></div>
-        <div class="email-info">
-          <div class="email-subject">Fw: Sorry, your partnership request was declined <span class="hot-badge">ACTION</span></div>
-          <div class="email-meta">iHerb / impact.com &middot; Forwarded Apr 4 (originally Mar 30)</div>
-        </div>
-      </div>
-      <div class="email-item">
-        <div class="email-dot warn"></div>
-        <div class="email-info">
-          <div class="email-subject">Fw: Verify your email address to complete your registration</div>
-          <div class="email-meta">iHerb / impact.com &middot; Forwarded Apr 4 (originally Mar 27) &mdash; may be cause of decline</div>
-        </div>
-      </div>
-      <div class="email-item">
-        <div class="email-dot warn"></div>
-        <div class="email-info">
-          <div class="email-subject">Fw: Contract Application</div>
-          <div class="email-meta">iHerb / impact.com &middot; Forwarded Apr 4 (originally Mar 27)</div>
-        </div>
-      </div>
-      <div class="email-item">
-        <div class="email-dot success"></div>
-        <div class="email-info">
-          <div class="email-subject">Fw: Welcome to Amazon Associates! Start earning now. <span class="ok-badge">APPROVED</span></div>
-          <div class="email-meta">Amazon Associates &middot; Forwarded Apr 4 (originally Mar 27)</div>
-        </div>
-      </div>
-      <div class="email-item">
-        <div class="email-dot success"></div>
-        <div class="email-info">
-          <div class="email-subject">Fw: Congratulations &mdash; Your application to join Awin has now been approved <span class="ok-badge">APPROVED</span></div>
-          <div class="email-meta">Awin &middot; Forwarded Apr 4 (originally Mar 27)</div>
-        </div>
-      </div>
-      <div class="email-item">
-        <div class="email-dot success"></div>
-        <div class="email-info">
-          <div class="email-subject">Fw: Welcome to Awin &ndash; Start your affiliate marketing journey today</div>
-          <div class="email-meta">Awin Partner Success &middot; Forwarded Apr 4 (originally Mar 28)</div>
-        </div>
-      </div>
-      <div class="email-item">
-        <div class="email-dot success"></div>
-        <div class="email-info">
-          <div class="email-subject">Fw: Welcome to iHerb!</div>
-          <div class="email-meta">iHerb &middot; Forwarded Apr 4 (originally Mar 27)</div>
-        </div>
-      </div>
-      <div class="email-item">
-        <div class="email-dot"></div>
-        <div class="email-info">
-          <div class="email-subject">Fw: Your receipt from Anthropic, PBC #2547-4483-6316</div>
-          <div class="email-meta">Anthropic &middot; Forwarded Apr 4 (originally Mar 27)</div>
-        </div>
-      </div>
-      <div class="email-item">
-        <div class="email-dot"></div>
-        <div class="email-info">
-          <div class="email-subject">Fw: [GitHub] A third-party GitHub Application has been added to your account</div>
-          <div class="email-meta">GitHub / NannasApothecary &middot; Forwarded Apr 4 (originally Mar 28) &mdash; verify this was you</div>
-        </div>
-      </div>
-      <div class="email-item">
-        <div class="email-dot read"></div>
-        <div class="email-info">
-          <div class="email-subject">Fw: Payment received for Netlify, Inc. invoice (#RUOJZM-00002)</div>
-          <div class="email-meta">Netlify &middot; Forwarded Apr 4 (originally Mar 31)</div>
-        </div>
-      </div>
-      <div class="email-item">
-        <div class="email-dot"></div>
-        <div class="email-info">
-          <div class="email-subject">Fw: nannasapothecary.com is now yours</div>
-          <div class="email-meta">Wix/Registrar &middot; Forwarded Apr 4 (originally Mar 26)</div>
-        </div>
-      </div>
-      <div class="email-item">
-        <div class="email-dot"></div>
-        <div class="email-info">
-          <div class="email-subject">Fw: Control how your data is shared</div>
-          <div class="email-meta">Wix &middot; Forwarded Apr 4 (originally Mar 26)</div>
-        </div>
+      <div class="divider"></div>
+      <div class="success-box" style="margin-top:10px;">
+        <div class="success-title">&#10003; AOL Forwarding Active</div>
+        Starwest/Awin affiliate emails are forwarding from ghersche12@aol.com to iherschell12@gmail.com. Two forwards received in the last 2 days.
       </div>
     </div>
   </div>
@@ -543,158 +447,147 @@
   <!-- ACTIVE TASKS -->
   <div class="section">
     <div class="section-header" onclick="toggleSection(this)">
-      <h2>&#10003; Active Tasks</h2>
+      <h2>&#9989; Active Tasks</h2>
       <div style="display:flex;align-items:center;gap:8px">
-        <span class="badge">19 tasks</span>
+        <span class="badge">22 items</span>
         <span class="chevron">&#9660;</span>
       </div>
     </div>
     <div class="section-body">
-
-      <!-- Time-sensitive -->
-      <div class="sub-label warn" id="time-sensitive-label">&#9201; Time-Sensitive</div>
-      <div id="time-sensitive-list">
-        <div class="task-item" data-task-id="gator">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">
-              <span class="priority-flag">&#128308;</span>Put PVC governor back on gator
-              <button class="demote-btn" onclick="demoteTask('gator', this)" title="Move to regular tasks">&#9660; Cool Down</button>
-            </div>
-            <div class="meta">Due April &mdash; before Sara's baby shower</div>
-          </div>
-        </div>
-        <div class="task-item" data-task-id="oil">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">
-              <span class="time-flag">&#128993;</span>Oil change: Tiller &amp; check Generator
-              <button class="demote-btn" onclick="demoteTask('oil', this)" title="Move to regular tasks">&#9660; Cool Down</button>
-            </div>
-            <div class="meta">Spring seasonal maintenance</div>
-          </div>
-        </div>
-        <div class="task-item" data-task-id="well-pump">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">
-              <span class="time-flag">&#128993;</span>Well pump status check
-              <button class="demote-btn" onclick="demoteTask('well-pump', this)" title="Move to regular tasks">&#9660; Cool Down</button>
-            </div>
-            <div class="meta">Installed Oct 2017 &middot; 8&ndash;15 yr lifespan &middot; now in the window (2025&ndash;2032)</div>
-          </div>
-        </div>
-        <div class="task-item" data-task-id="well-filter">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">
-              <span class="time-flag">&#128993;</span>Well filter system &mdash; check inside unit
-              <button class="demote-btn" onclick="demoteTask('well-filter', this)" title="Move to regular tasks">&#9660; Cool Down</button>
-            </div>
-            <div class="meta">Installed 3/2020</div>
-          </div>
-        </div>
-        <div class="task-item" data-task-id="propagate">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">
-              <span class="time-flag">&#128993;</span>Propagate plants
-              <button class="demote-btn" onclick="demoteTask('propagate', this)" title="Move to regular tasks">&#9660; Cool Down</button>
-            </div>
-            <div class="meta">Ligustrum x30, Pigeon Peas, Ground Cherries, Rosemary &amp; Oregano for chickens &mdash; spring timing</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-      <div class="sub-label muted" id="projects-label">&#128295; Projects &amp; Work</div>
-      <div id="regular-task-list">
-        <div class="task-item">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">Track line build for TreeHouse</div>
-            <div class="meta">Construction project &mdash; Sophia's sandbox under treehouse</div>
-          </div>
-        </div>
-        <div class="task-item">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">Lowes run &mdash; C-Channel track + 4x4 Posts</div>
-            <div class="meta">Needed for treehouse track line</div>
-          </div>
-        </div>
-        <div class="task-item">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">Fix the Lincoln welder amp switch &mdash; move it to C</div>
-          </div>
-        </div>
-        <div class="task-item">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">Modify the 5x8 trailer &mdash; removeable side &amp; reinforce tongue</div>
-          </div>
-        </div>
-        <div class="task-item">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">Add back tailgate drop section &mdash; hinge &amp; pin setup</div>
-          </div>
-        </div>
-        <div class="task-item">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">Measure hitch height &amp; modify gator to match</div>
-          </div>
-        </div>
-        <div class="task-item">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">Build the last raised bed</div>
-            <div class="meta">Spring project</div>
-          </div>
-        </div>
-        <div class="task-item">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">Go thru AC paperwork &mdash; look at the JB warranty</div>
-          </div>
-        </div>
-        <div class="task-item">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">Fix sidewalk edges</div>
-          </div>
-        </div>
-        <div class="task-item">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">Pool cage &mdash; replace screws</div>
-          </div>
-        </div>
-        <div class="task-item">
-          <div class="task-checkbox" onclick="checkTask(this)"></div>
-          <div class="task-text">
-            <div class="title">Install programmable thermostat at Jared's</div>
-            <div class="meta">Jared's 2022 Teco &mdash; follow up on this too</div>
-          </div>
-        </div>
-        <!-- demoted tasks land here via JS -->
-        <div id="demoted-tasks"></div>
-      </div>
-
-      <div class="divider"></div>
-      <div class="sub-label muted">&#128722; Purchases</div>
+      <div class="sub-label warn">Time-Sensitive</div>
       <div class="task-item">
-        <div class="task-checkbox" onclick="checkTask(this)"></div>
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title"><span class="time-flag">&#9200;</span> Put PVC governor back on gator <span class="hot-badge">DUE APRIL</span></div>
+          <div class="meta">Before baby shower</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub-label muted">Home &amp; Property</div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
         <div class="task-text">
           <div class="title">Taillight bulb &mdash; replace</div>
         </div>
       </div>
       <div class="task-item">
-        <div class="task-checkbox" onclick="checkTask(this)"></div>
+        <div class="task-checkbox"></div>
         <div class="task-text">
           <div class="title">Covers for 4" posts &mdash; purchase</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Fix sidewalk edges</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Pool cage &mdash; replace screws</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Well filter system &mdash; check inside unit (installed 3/2020)</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Well pump status &mdash; installed 10/2017 (due 2025&ndash;2032)</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub-label muted">Construction &amp; Shop</div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Track line build for TreeHouse</div>
+          <div class="meta">Construction project</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Lowes run &mdash; C-Channel track + 4x4 Posts</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Fix the Lincoln welder amp switch &mdash; move to C</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Modify the 5x8 trailer &mdash; removeable side + reinforce tongue</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Add back tailgate drop section &mdash; hinge and pin setup</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Build the last raised bed</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub-label muted">Vehicles &amp; Equipment</div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Measure hitch height &amp; modify gator to match</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Oil change: Tiller &amp; check Generator</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub-label muted">Garden &amp; Chickens</div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Propagate plants</div>
+          <div class="meta">Lingstrum x30, Pigeon Peas, Ground Cherries, Rosemary &amp; Oregano for chickens, food forest</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub-label muted">Family</div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Install programmable thermostat at Jared's</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Jared 2022 Teco &mdash; follow up</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub-label muted">Admin</div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Go thru AC paperwork &mdash; look at JB warranty</div>
         </div>
       </div>
     </div>
@@ -705,16 +598,16 @@
     <div class="section-header" onclick="toggleSection(this)">
       <h2>&#9203; Waiting On</h2>
       <div style="display:flex;align-items:center;gap:8px">
-        <span class="badge">1</span>
+        <span class="badge purple">1 item</span>
         <span class="chevron">&#9660;</span>
       </div>
     </div>
     <div class="section-body">
       <div class="task-item">
-        <div class="task-checkbox" onclick="checkTask(this)"></div>
+        <div class="task-checkbox" style="border-color: var(--purple);"></div>
         <div class="task-text">
-          <div class="title">Borrow the plasma cutter</div>
-          <div class="meta">Confirm plug fits before picking up</div>
+          <div class="title">Borrow the plasma cutter &mdash; confirm plug fits</div>
+          <div class="meta">Waiting on someone to confirm</div>
         </div>
       </div>
     </div>
@@ -725,98 +618,88 @@
     <div class="section-header" onclick="toggleSection(this)">
       <h2>&#128161; Someday / Maybe</h2>
       <div style="display:flex;align-items:center;gap:8px">
-        <span class="badge">15</span>
+        <span class="badge" style="background:var(--text-muted);">16 ideas</span>
         <span class="chevron">&#9660;</span>
       </div>
     </div>
     <div class="section-body">
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">Learn to make own chicken feed</div></div></div>
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">Black soldier fly larva &mdash; build the box</div></div></div>
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">Build the Bronco and Buggy &mdash; display on shelf in sand</div></div></div>
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">Make a bed extender for hauling lumber &mdash; 2" tubing</div></div></div>
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">Design and develop storm shutters for chicken run</div></div></div>
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">Figure out where to put all the signs</div></div></div>
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">Wiring diagram for blower 220v &mdash; watch videos to build a fan</div></div></div>
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">Hobby Lobby acrylic sheet &mdash; pick up</div></div></div>
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">Build shelving in carport</div></div></div>
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">3/8 bar sculpt the nest &mdash; build a bench to sit at</div></div></div>
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">Build permanent chicken patio / picnic table</div></div></div>
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">Build a photo booth for dioramas</div></div></div>
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">Make own paint retarder &mdash; 1 part vegetable glycerin to 9 parts water</div></div></div>
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">GuitarCreative.com &mdash; go thru their tutorial</div></div></div>
-      <div class="task-item"><div class="task-checkbox" onclick="checkTask(this)"></div><div class="task-text"><div class="title">Guitar practice &mdash; watch video unlocking the fretboard and learn it</div></div></div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Learn to make own chicken feed</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Black soldier fly larva &mdash; build the box</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Build the Bronco and Buggy &mdash; display on shelf in sand</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Make a bed extender for hauling lumber &mdash; 2" tubing</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Design storm shutters for chicken run</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Figure out where to put all the signs</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Wiring diagram for blower 220v</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Hobby Lobby acrylic sheet &mdash; pick up</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Build shelving in carport</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">3/8 bar sculpt the nest &mdash; build a bench</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Build permanent chicken patio / picnic table</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Build a photo booth for dioramas</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Make own paint retarder</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">GuitarCreative.com &mdash; go thru tutorial</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Guitar practice &mdash; unlocking the fretboard video</div></div>
+      </div>
     </div>
   </div>
 
-  <div class="refresh-note">&#128260; Auto-updated daily at 7:55 AM &nbsp;&middot;&nbsp; Dashboard: gh-assistant-dashboard.netlify.app</div>
+  <!-- COWORK PROJECTS -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#128640; CoWork Projects</h2>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge green">On Track</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="success-box">
+        <div class="success-title">&#10003; Personal Assistant Dashboard</div>
+        Live at <a href="https://gh-assistant-dashboard.netlify.app/" style="color:var(--accent-light);">gh-assistant-dashboard.netlify.app</a> &mdash; daily auto-refresh at 7:55 AM via scheduled task. Gmail and Google Calendar connected and pulling data. Affiliate email monitoring active.
+      </div>
+      <div class="info-box">
+        <div class="info-title">&#128270; Voice-to-Claude Review</div>
+        Pending: review voice-to-Claude options for phone-based task updates. Flagged for next interactive session.
+      </div>
+    </div>
+  </div>
+
+  <div class="refresh-note">Auto-refreshed Wed Apr 8, 2026 at 7:55 AM EDT &middot; Next refresh: Thu Apr 9, 7:55 AM</div>
 
 </div>
 
 <script>
-  function toggleSection(header) {
-    header.closest('.section').classList.toggle('collapsed');
-  }
-
-  function checkTask(checkbox) {
-    const done = checkbox.dataset.checked === 'true';
-    if (done) {
-      checkbox.dataset.checked = 'false';
-      checkbox.innerHTML = '';
-      checkbox.style.background = '';
-      checkbox.style.borderColor = '';
-      const t = checkbox.nextElementSibling;
-      t.style.opacity = '1';
-      t.style.textDecoration = 'none';
-    } else {
-      checkbox.dataset.checked = 'true';
-      checkbox.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-      checkbox.style.background = 'var(--accent)';
-      checkbox.style.borderColor = 'var(--accent)';
-      const t = checkbox.nextElementSibling;
-      t.style.opacity = '0.4';
-      t.style.textDecoration = 'line-through';
-    }
-  }
-
-  // ── Demote a time-sensitive task to regular ──
-  function demoteTask(taskId, btn) {
-    const taskItem = btn.closest('.task-item');
-    if (!taskItem) return;
-
-    // Remove the demote button and priority flag
-    btn.remove();
-    const flag = taskItem.querySelector('.priority-flag, .time-flag');
-    if (flag) flag.remove();
-
-    // Add a "cooled down" note
-    const meta = taskItem.querySelector('.meta');
-    if (meta) {
-      meta.textContent = meta.textContent + ' (moved from Time-Sensitive)';
-    } else {
-      const titleEl = taskItem.querySelector('.title');
-      if (titleEl) {
-        const m = document.createElement('div');
-        m.className = 'meta';
-        m.textContent = 'Moved from Time-Sensitive';
-        titleEl.parentElement.appendChild(m);
-      }
-    }
-
-    // Move to demoted tasks zone
-    const demotedZone = document.getElementById('demoted-tasks');
-    demotedZone.appendChild(taskItem);
-
-    // Check if time-sensitive list is now empty
-    const tsList = document.getElementById('time-sensitive-list');
-    if (!tsList.querySelector('.task-item')) {
-      tsList.innerHTML = '<div style="font-size:0.82rem;color:var(--text-muted);padding:8px 0;">All time-sensitive tasks cooled down.</div>';
-    }
-
-    // Flash confirmation
-    taskItem.style.transition = 'background 0.4s';
-    taskItem.style.background = 'rgba(245,158,11,0.1)';
-    setTimeout(() => { taskItem.style.background = ''; }, 800);
-  }
+function toggleSection(headerEl) {
+  headerEl.closest('.section').classList.toggle('collapsed');
+}
 </script>
 </body>
 </html>
