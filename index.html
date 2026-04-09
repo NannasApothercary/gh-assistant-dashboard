@@ -167,7 +167,7 @@
     border-color: var(--success);
   }
   .task-checkbox.checked::after {
-    content: '✓';
+    content: '&#10003;';
     color: white;
     font-size: 12px;
     font-weight: bold;
@@ -715,7 +715,7 @@
 <body>
 
 <div class="header">
-  <h1>👋 Good morning, GH</h1>
+  <h1>&#128075; Good morning, GH</h1>
   <div class="date" id="currentDate"></div>
 </div>
 
@@ -730,19 +730,19 @@
   <!-- Quick Actions -->
   <div class="quick-actions">
     <div class="action-btn" onclick="showAddTask()">
-      <div class="icon">➕</div>
+      <div class="icon">&#10133;</div>
       <div class="label">Add Task</div>
     </div>
     <div class="action-btn" onclick="showAddAppt()">
-      <div class="icon">📅</div>
+      <div class="icon">&#128197;</div>
       <div class="label">Add Reminder</div>
     </div>
     <div class="action-btn" onclick="loadTasksFromSheet()">
-      <div class="icon">🔄</div>
+      <div class="icon">&#128260;</div>
       <div class="label">Refresh</div>
     </div>
     <div class="action-btn" onclick="toggleDone()">
-      <div class="icon">✅</div>
+      <div class="icon">&#9989;</div>
       <div class="label">Show Done</div>
     </div>
   </div>
@@ -750,8 +750,8 @@
   <!-- CoWork Project Status -->
   <div class="section" id="projectsSection">
     <div class="section-header" onclick="toggleSection('projectsSection')">
-      <h2>🚀 CoWork Projects <span class="badge" id="projectCount">3</span></h2>
-      <span class="chevron">▼</span>
+      <h2>&#128640; CoWork Projects <span class="badge" id="projectCount">3</span></h2>
+      <span class="chevron">&#9660;</span>
     </div>
     <div class="section-body" id="projectList"></div>
   </div>
@@ -759,8 +759,8 @@
   <!-- Active Tasks -->
   <div class="section" id="tasksSection">
     <div class="section-header" onclick="toggleSection('tasksSection')">
-      <h2>📋 Active Tasks <span class="badge" id="taskCount">0</span></h2>
-      <span class="chevron">▼</span>
+      <h2>&#128203; Active Tasks <span class="badge" id="taskCount">0</span></h2>
+      <span class="chevron">&#9660;</span>
     </div>
     <div class="section-body">
       <div id="taskList">
@@ -776,8 +776,8 @@
   <!-- Appointments & Reminders -->
   <div class="section" id="apptsSection">
     <div class="section-header" onclick="toggleSection('apptsSection')">
-      <h2>📅 Appointments & Reminders <span class="badge" id="apptCount">0</span></h2>
-      <span class="chevron">▼</span>
+      <h2>&#128197; Appointments & Reminders <span class="badge" id="apptCount">0</span></h2>
+      <span class="chevron">&#9660;</span>
     </div>
     <div class="section-body">
       <div id="apptList">
@@ -794,7 +794,7 @@
   <div class="section" id="emailSection">
     <div class="section-header" onclick="toggleSection('emailSection')">
       <h2>&#128231; Nanna's Apothecary Emails <span class="badge" id="emailCount">0</span></h2>
-      <span class="chevron">▼</span>
+      <span class="chevron">&#9660;</span>
     </div>
     <div class="section-body">
       <div id="emailList">
@@ -806,8 +806,8 @@
   <!-- Waiting On -->
   <div class="section" id="waitingSection">
     <div class="section-header" onclick="toggleSection('waitingSection')">
-      <h2>⏳ Waiting On <span class="badge" id="waitingCount">0</span></h2>
-      <span class="chevron">▼</span>
+      <h2>&#9203; Waiting On <span class="badge" id="waitingCount">0</span></h2>
+      <span class="chevron">&#9660;</span>
     </div>
     <div class="section-body">
       <div id="waitingList">
@@ -819,8 +819,8 @@
   <!-- Equipment Maintenance -->
   <div class="section" id="equipSection">
     <div class="section-header" onclick="toggleSection('equipSection')">
-      <h2>🔧 Equipment Maintenance <span class="badge" id="equipCount">10</span></h2>
-      <span class="chevron">▼</span>
+      <h2>&#128295; Equipment Maintenance <span class="badge" id="equipCount">10</span></h2>
+      <span class="chevron">&#9660;</span>
     </div>
     <div class="section-body">
       <div class="equip-grid" id="equipGrid"></div>
@@ -830,8 +830,8 @@
   <!-- Someday / Backlog -->
   <div class="section collapsed" id="somedaySection">
     <div class="section-header" onclick="toggleSection('somedaySection')">
-      <h2>💭 Someday / Backlog <span class="badge" id="somedayCount">0</span></h2>
-      <span class="chevron">▼</span>
+      <h2>&#128173; Someday / Backlog <span class="badge" id="somedayCount">0</span></h2>
+      <span class="chevron">&#9660;</span>
     </div>
     <div class="section-body">
       <div id="somedayList"></div>
@@ -841,8 +841,8 @@
   <!-- Completed (hidden by default) -->
   <div class="section collapsed" id="doneSection" style="display:none;">
     <div class="section-header" onclick="toggleSection('doneSection')">
-      <h2>✅ Recently Completed <span class="badge" id="doneCount">0</span></h2>
-      <span class="chevron">▼</span>
+      <h2>&#9989; Recently Completed <span class="badge" id="doneCount">0</span></h2>
+      <span class="chevron">&#9660;</span>
     </div>
     <div class="section-body">
       <div id="doneList"></div>
@@ -869,7 +869,7 @@
 <!-- Equipment Detail Modal -->
 <div class="modal-overlay" id="equipModal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
-    <button class="close-btn" onclick="closeModal()">✕</button>
+    <button class="close-btn" onclick="closeModal()">&#10005;</button>
     <h3 id="modalTitle"></h3>
     <div id="modalType" style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px"></div>
     <table>
@@ -903,7 +903,7 @@
   <div class="note-modal">
     <h3>&#128233; Email Reviewed</h3>
     <div class="task-name" id="emailNoteTaskName"></div>
-    <textarea id="emailNoteInput" placeholder="Which email / what happened? e.g. 'Replied 4/9 — confirmed appointment' or 'No action needed'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveEmailNote()}"></textarea>
+    <textarea id="emailNoteInput" placeholder="Which email / what happened? e.g. 'Replied 4/9 &#8212; confirmed appointment' or 'No action needed'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveEmailNote()}"></textarea>
     <div class="btn-row">
       <button class="btn btn-skip" onclick="skipEmailNote()">Skip</button>
       <button class="btn btn-done" onclick="saveEmailNote()">Done</button>
@@ -925,66 +925,66 @@
 </div>
 
 <script>
-  // ╔════════════════════════════════════════════╗
-  // ║  GOOGLE SHEETS API CONFIG                  ║
-  // ║  Replace this URL after deploying the      ║
-  // ║  Apps Script as a web app                  ║
-  // ╚════════════════════════════════════════════╝
+  // &#9556;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9559;
+  // &#9553;  GOOGLE SHEETS API CONFIG                  &#9553;
+  // &#9553;  Replace this URL after deploying the      &#9553;
+  // &#9553;  Apps Script as a web app                  &#9553;
+  // &#9562;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9565;
   const API_URL = 'https://script.google.com/macros/s/AKfycbw2-K2BQXFfmnzfV5hf7Mi4Q8gI3SZkOoLBtMLo4qdSIaS5P24JujVXPd5kED40Su1n/exec';
 
-  // ── STATE ──
+  // &#9472;&#9472; STATE &#9472;&#9472;
   let tasks = [];
   let waitingOn = [];
   let showDone = false;
   let sheetsConnected = false;
 
-  // ── FALLBACK DATA (used if Sheets isn't connected yet) ──
+  // &#9472;&#9472; FALLBACK DATA (used if Sheets isn't connected yet) &#9472;&#9472;
   const FALLBACK_TASKS = [
-    { id: 'f1', title: "Put PVC governor back on gator — due April (before baby shower)", priority: "high", done: false, section: "active" },
-    { id: 'f2', title: "Taillight bulb — replace", priority: "high", done: false, section: "active" },
-    { id: 'f3', title: "Lowes run — C-Channel track + 4x4 Posts", priority: "high", done: false, section: "active" },
-    { id: 'f4', title: "Propagate plants — lingstrum x30, Pigeon Peas, Ground Cherries, rosemary & oregano for chickens, food forest in chicken yard", priority: "high", done: false, section: "active" },
-    { id: 'f5', title: "Well pump status — installed 10/2017, lifespan 8-15 yrs (due window: 2025-2032)", priority: "high", done: false, section: "active" },
-    { id: 'f6', title: "Covers for 4\" posts — purchase", priority: "medium", done: false, section: "active" },
+    { id: 'f1', title: "Put PVC governor back on gator &#8212; due April (before baby shower)", priority: "high", done: false, section: "active" },
+    { id: 'f2', title: "Taillight bulb &#8212; replace", priority: "high", done: false, section: "active" },
+    { id: 'f3', title: "Lowes run &#8212; C-Channel track + 4x4 Posts", priority: "high", done: false, section: "active" },
+    { id: 'f4', title: "Propagate plants &#8212; lingstrum x30, Pigeon Peas, Ground Cherries, rosemary & oregano for chickens, food forest in chicken yard", priority: "high", done: false, section: "active" },
+    { id: 'f5', title: "Well pump status &#8212; installed 10/2017, lifespan 8-15 yrs (due window: 2025-2032)", priority: "high", done: false, section: "active" },
+    { id: 'f6', title: "Covers for 4\" posts &#8212; purchase", priority: "medium", done: false, section: "active" },
     { id: 'f7', title: "Track line build for TreeHouse", priority: "medium", done: false, section: "active" },
-    { id: 'f8', title: "Fix Lincoln welder amp switch — move to C", priority: "medium", done: false, section: "active" },
-    { id: 'f9', title: "Modify 5x8 trailer — removeable side & reinforce tongue", priority: "medium", done: false, section: "active" },
-    { id: 'f10', title: "Add back tailgate drop section — hinge & pin setup", priority: "medium", done: false, section: "active" },
+    { id: 'f8', title: "Fix Lincoln welder amp switch &#8212; move to C", priority: "medium", done: false, section: "active" },
+    { id: 'f9', title: "Modify 5x8 trailer &#8212; removeable side & reinforce tongue", priority: "medium", done: false, section: "active" },
+    { id: 'f10', title: "Add back tailgate drop section &#8212; hinge & pin setup", priority: "medium", done: false, section: "active" },
     { id: 'f11', title: "Measure hitch height & modify gator to match", priority: "medium", done: false, section: "active" },
     { id: 'f12', title: "Build the last raised bed", priority: "medium", done: false, section: "active" },
-    { id: 'f13', title: "Go thru AC paperwork — look at JB warranty", priority: "medium", done: false, section: "active" },
+    { id: 'f13', title: "Go thru AC paperwork &#8212; look at JB warranty", priority: "medium", done: false, section: "active" },
     { id: 'f14', title: "Oil change: Tiller & check Generator", priority: "medium", done: false, section: "active" },
     { id: 'f15', title: "Fix sidewalk edges", priority: "medium", done: false, section: "active" },
-    { id: 'f16', title: "Pool cage — replace screws", priority: "medium", done: false, section: "active" },
+    { id: 'f16', title: "Pool cage &#8212; replace screws", priority: "medium", done: false, section: "active" },
     { id: 'f17', title: "Install programmable thermostat at Jared's", priority: "medium", done: false, section: "active" },
-    { id: 'f18', title: "Jared 2022 Teco — follow up", priority: "medium", done: false, section: "active" },
-    { id: 'f19', title: "Well filter system — check inside unit (installed 3/2020)", priority: "medium", done: false, section: "active" },
+    { id: 'f18', title: "Jared 2022 Teco &#8212; follow up", priority: "medium", done: false, section: "active" },
+    { id: 'f19', title: "Well filter system &#8212; check inside unit (installed 3/2020)", priority: "medium", done: false, section: "active" },
     { id: 'f20', title: "Learn to make own chicken feed", priority: "low", done: false, section: "someday" },
-    { id: 'f21', title: "Black soldier fly larva — build the box", priority: "low", done: false, section: "someday" },
-    { id: 'f22', title: "Build Bronco & Buggy — display on shelf in sand", priority: "low", done: false, section: "someday" },
-    { id: 'f23', title: "Make bed extender for hauling lumber — 2\" tubing", priority: "low", done: false, section: "someday" },
+    { id: 'f21', title: "Black soldier fly larva &#8212; build the box", priority: "low", done: false, section: "someday" },
+    { id: 'f22', title: "Build Bronco & Buggy &#8212; display on shelf in sand", priority: "low", done: false, section: "someday" },
+    { id: 'f23', title: "Make bed extender for hauling lumber &#8212; 2\" tubing", priority: "low", done: false, section: "someday" },
     { id: 'f24', title: "Design & develop storm shutters for chicken run", priority: "low", done: false, section: "someday" },
     { id: 'f25', title: "Figure out where to put all the signs", priority: "low", done: false, section: "someday" },
-    { id: 'f26', title: "Wiring diagram for blower 220v — watch videos to build fan", priority: "low", done: false, section: "someday" },
-    { id: 'f27', title: "Hobby Lobby — acrylic sheet", priority: "low", done: false, section: "someday" },
+    { id: 'f26', title: "Wiring diagram for blower 220v &#8212; watch videos to build fan", priority: "low", done: false, section: "someday" },
+    { id: 'f27', title: "Hobby Lobby &#8212; acrylic sheet", priority: "low", done: false, section: "someday" },
     { id: 'f28', title: "Build shelving in carport", priority: "low", done: false, section: "someday" },
     { id: 'f29', title: "3/8 bar sculpt the nest & build a bench to sit at", priority: "low", done: false, section: "someday" },
     { id: 'f30', title: "Build permanent chicken patio / picnic table", priority: "low", done: false, section: "someday" },
     { id: 'f31', title: "Build photo booth for dioramas & photograph", priority: "low", done: false, section: "someday" },
-    { id: 'f32', title: "Make own paint retarder — 1 part glycerin to 9 parts water", priority: "low", done: false, section: "someday" },
-    { id: 'f33', title: "GuitarCreative.com — go thru tutorial", priority: "low", done: false, section: "someday" },
-    { id: 'f34', title: "Guitar practice — unlocking the fretboard video", priority: "low", done: false, section: "someday" },
+    { id: 'f32', title: "Make own paint retarder &#8212; 1 part glycerin to 9 parts water", priority: "low", done: false, section: "someday" },
+    { id: 'f33', title: "GuitarCreative.com &#8212; go thru tutorial", priority: "low", done: false, section: "someday" },
+    { id: 'f34', title: "Guitar practice &#8212; unlocking the fretboard video", priority: "low", done: false, section: "someday" },
   ];
 
   const FALLBACK_WAITING = [
-    { id: 'w1', title: "Borrow the plasma cutter — confirm plug fits", since: "2026-03-31", note: '' },
+    { id: 'w1', title: "Borrow the plasma cutter &#8212; confirm plug fits", since: "2026-03-31", note: '' },
   ];
 
-  // ── SHEETS API FUNCTIONS ──
+  // &#9472;&#9472; SHEETS API FUNCTIONS &#9472;&#9472;
 
   async function loadTasksFromSheet() {
     if (API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-      // Not connected yet — use fallback data
+      // Not connected yet &#8212; use fallback data
       tasks = [...FALLBACK_TASKS];
       waitingOn = [...FALLBACK_WAITING];
       document.getElementById('sheetStatus').classList.add('yellow');
@@ -1009,7 +1009,7 @@
       showSync('Tasks synced!', 'success', 2000);
     } catch (err) {
       console.error('Failed to load from Sheets:', err);
-      showSync('Sync failed — using cached data', 'error', 3000);
+      showSync('Sync failed &#8212; using cached data', 'error', 3000);
       document.getElementById('sheetStatus').className = 'status-dot red';
       document.getElementById('sheetStatusText').textContent = 'Sheets: offline';
 
@@ -1025,14 +1025,18 @@
   }
 
   async function addTaskToSheet(title, priority, section) {
+    // Always add locally first (optimistic UI) so it appears instantly
+    const localId = 'local_' + Date.now();
+    tasks.push({ id: localId, title, priority, done: false, section, added: new Date().toISOString() });
+    renderTasks();
+
     if (!sheetsConnected) {
-      // Add locally if not connected
-      tasks.push({ id: 'local_' + Date.now(), title, priority, done: false, section, added: new Date().toISOString() });
-      renderTasks();
+      showSync('Saved locally!', 'success', 1500);
       return;
     }
 
-    showSync('Adding task...');
+    // Sync to Sheet in background
+    showSync('Saved &#8212; syncing...');
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -1041,14 +1045,13 @@
       });
       const data = await response.json();
       if (data.success) {
-        showSync('Task added!', 'success', 1500);
-        await loadTasksFromSheet(); // refresh from sheet
+        showSync('Synced!', 'success', 1500);
+        // Refresh in background to get the real Sheet ID
+        loadTasksFromSheet();
       }
     } catch (err) {
-      console.error('Failed to add task:', err);
-      showSync('Failed to add — saved locally', 'error', 2000);
-      tasks.push({ id: 'local_' + Date.now(), title, priority, done: false, section });
-      renderTasks();
+      console.error('Failed to sync task:', err);
+      showSync('Saved locally &#8212; will sync next refresh', 'error', 2500);
     }
   }
 
@@ -1082,7 +1085,7 @@
     }
   }
 
-  // ── Background sync for toggle (non-blocking) ──
+  // &#9472;&#9472; Background sync for toggle (non-blocking) &#9472;&#9472;
   async function syncToggleToSheet(taskId) {
     try {
       const response = await fetch(API_URL, {
@@ -1096,16 +1099,16 @@
       }
     } catch (err) {
       console.error('Background sync failed:', err);
-      showSync('Saved locally — will sync later', 'error', 2000);
+      showSync('Saved locally &#8212; will sync later', 'error', 2000);
     }
   }
 
-  // ── Demote a HOT task to medium priority ──
+  // &#9472;&#9472; Demote a HOT task to medium priority &#9472;&#9472;
   async function demoteTask(taskId) {
     const t = tasks.find(t => t.id === taskId);
     if (!t) return;
 
-    // Determine new priority: high → medium, medium → low
+    // Determine new priority: high &#8594; medium, medium &#8594; low
     const newPriority = t.priority === 'high' ? 'medium' : 'low';
 
     if (!sheetsConnected) {
@@ -1128,13 +1131,13 @@
       }
     } catch (err) {
       console.error('Failed to demote task:', err);
-      showSync('Demote failed — updated locally', 'error', 2000);
+      showSync('Demote failed &#8212; updated locally', 'error', 2000);
       t.priority = newPriority;
       renderTasks();
     }
   }
 
-  // ── SYNC UI ──
+  // &#9472;&#9472; SYNC UI &#9472;&#9472;
   function showSync(message, type, autoDismiss) {
     const banner = document.getElementById('syncBanner');
     const spinner = document.getElementById('syncSpinner');
@@ -1150,21 +1153,21 @@
     }
   }
 
-  // ── CoWork Projects State (still managed from Cowork sessions) ──
+  // &#9472;&#9472; CoWork Projects State (still managed from Cowork sessions) &#9472;&#9472;
   let projects = [
     {
       name: "GT Precision Website",
-      icon: "🏭",
+      icon: "&#127981;",
       status: "active",
       bullets: [
-        "DNS pointed to Wix — site is live at gtprecisionmfg.com. Google Reviews widget integrated with 11 real reviews.",
+        "DNS pointed to Wix &#8212; site is live at gtprecisionmfg.com. Google Reviews widget integrated with 11 real reviews.",
         "Next up: Call HIBU to cancel old service, then begin Phase 2 (quote tool, service pages, SEO)."
       ],
       updated: "2026-04-01"
     },
     {
       name: "Nanna's Herbal Apothecary",
-      icon: "🌿",
+      icon: "&#127807;",
       status: "active",
       bullets: [
         "Pinterest autopilot running (10 pins queued, daily reminders). Facebook auto-posting MWF. Amazon Associates approved; Awin/Starwest pending.",
@@ -1174,7 +1177,7 @@
     },
     {
       name: "Personal Assistant",
-      icon: "🤖",
+      icon: "&#129302;",
       status: "active",
       bullets: [
         "Dashboard live on Netlify. Google Sheets backend for two-way task sync. Daily briefing at 8 AM. Gmail and Google Calendar connected.",
@@ -1184,7 +1187,7 @@
     }
   ];
 
-  // ── Appointments — synced from Google Calendar ──
+  // &#9472;&#9472; Appointments &#8212; synced from Google Calendar &#9472;&#9472;
   let appointments = [
     { title: "Castnet look hunter", date: "2026-04-01", time: "3:00 PM", source: "gcal", recurring: false },
     { title: "Barber 2pm", date: "2026-04-02", time: "All day", source: "gcal", recurring: false },
@@ -1192,21 +1195,21 @@
     { title: "Check water salt level", date: "2026-04-26", time: "All day", source: "gcal", recurring: true },
   ];
 
-  // ── Emails — Nanna's Apothecary business emails (via iherschell12@gmail.com) ──
+  // &#9472;&#9472; Emails &#8212; Nanna's Apothecary business emails (via iherschell12@gmail.com) &#9472;&#9472;
   let emails = [
-    { id: 'e1', from: "Iola Herschell", subject: "How Your Weekly Blog Review Will Work", snippet: "Starting weekly blog posts — up to 3 per week for Iola to review.", unread: false, date: '2026-04-09' },
-    { id: 'e2', from: "Iola Herschell", subject: "ACTION NEEDED — Unanswered Facebook Comments from Shawna", snippet: "Shawna Rickey left comments on the Page and Group ~1 week ago, no reply yet.", unread: true, date: '2026-04-07' },
+    { id: 'e1', from: "Iola Herschell", subject: "How Your Weekly Blog Review Will Work", snippet: "Starting weekly blog posts &#8212; up to 3 per week for Iola to review.", unread: false, date: '2026-04-09' },
+    { id: 'e2', from: "Iola Herschell", subject: "ACTION NEEDED &#8212; Unanswered Facebook Comments from Shawna", snippet: "Shawna Rickey left comments on the Page and Group ~1 week ago, no reply yet.", unread: true, date: '2026-04-07' },
     { id: 'e3', from: "FL Dept of State (fwd from AOL)", subject: "Corporate Filing - 200470552622", snippet: "Florida LLC filing confirmation.", unread: false, date: '2026-04-07' },
     { id: 'e4', from: "FL Registrations (fwd from AOL)", subject: "LLC Creation", snippet: "LLC creation correspondence from FL Dept of State.", unread: false, date: '2026-04-06' },
-    { id: 'e5', from: "Awin (fwd from AOL)", subject: "Congratulations — Awin application approved", snippet: "Affiliate program application approved. Ready to generate links.", unread: true, date: '2026-04-04' },
+    { id: 'e5', from: "Awin (fwd from AOL)", subject: "Congratulations &#8212; Awin application approved", snippet: "Affiliate program application approved. Ready to generate links.", unread: true, date: '2026-04-04' },
     { id: 'e6', from: "iHerb (fwd from AOL)", subject: "Welcome to iHerb!", snippet: "iHerb account created for sourcing/affiliate.", unread: true, date: '2026-04-04' },
     { id: 'e7', from: "Wix (fwd from AOL)", subject: "Enjoy Your New Wix Premium Plan", snippet: "Wix Premium plan activated for Nanna's site.", unread: false, date: '2026-04-04' },
   ];
 
-  // ── Reviewed email log (persists in this array, rendered on separate page) ──
+  // &#9472;&#9472; Reviewed email log (persists in this array, rendered on separate page) &#9472;&#9472;
   let reviewedEmails = [];
 
-  // ── Date display ──
+  // &#9472;&#9472; Date display &#9472;&#9472;
   function updateDate() {
     const now = new Date();
     const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -1214,16 +1217,16 @@
 
     const hour = now.getHours();
     const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-    document.querySelector('.header h1').textContent = `👋 ${greeting}, GH`;
+    document.querySelector('.header h1').textContent = `&#128075; ${greeting}, GH`;
   }
   updateDate();
 
-  // ── Section toggle ──
+  // &#9472;&#9472; Section toggle &#9472;&#9472;
   function toggleSection(id) {
     document.getElementById(id).classList.toggle('collapsed');
   }
 
-  // ── Show add forms ──
+  // &#9472;&#9472; Show add forms &#9472;&#9472;
   function showAddTask() {
     const form = document.getElementById('addTaskForm');
     form.classList.toggle('active');
@@ -1239,7 +1242,7 @@
     }
   }
 
-  // ── Add task (now writes to Sheets!) ──
+  // &#9472;&#9472; Add task (now writes to Sheets!) &#9472;&#9472;
   function addTask() {
     const input = document.getElementById('newTaskInput');
     let text = input.value.trim();
@@ -1254,7 +1257,7 @@
     addTaskToSheet(text, priority, section);
   }
 
-  // ── Add appointment ──
+  // &#9472;&#9472; Add appointment &#9472;&#9472;
   function addAppt() {
     const input = document.getElementById('newApptInput');
     const text = input.value.trim();
@@ -1265,7 +1268,7 @@
     renderAppts();
   }
 
-  // ── Toggle task done (now writes to Sheets!) ──
+  // &#9472;&#9472; Toggle task done (now writes to Sheets!) &#9472;&#9472;
   let pendingToggleId = null; // track which task is being completed
 
   function toggleTask(taskId) {
@@ -1273,14 +1276,14 @@
     if (!t) return;
 
     if (t.done) {
-      // UNCHECKING — restore to active immediately
+      // UNCHECKING &#8212; restore to active immediately
       t.done = false;
       t.completed = '';
       t.note = '';
       renderTasks();
       if (sheetsConnected) syncToggleToSheet(taskId);
     } else {
-      // CHECKING OFF — show note modal first
+      // CHECKING OFF &#8212; show note modal first
       pendingToggleId = taskId;
       document.getElementById('noteTaskName').textContent = t.title;
       document.getElementById('noteInput').value = '';
@@ -1312,14 +1315,14 @@
     pendingToggleId = null;
   }
 
-  // ── Toggle done section ──
+  // &#9472;&#9472; Toggle done section &#9472;&#9472;
   function toggleDone() {
     showDone = !showDone;
     document.getElementById('doneSection').style.display = showDone ? 'block' : 'none';
     renderTasks();
   }
 
-  // ── Render projects ──
+  // &#9472;&#9472; Render projects &#9472;&#9472;
   function renderProjects() {
     const container = document.getElementById('projectList');
     document.getElementById('projectCount').textContent = projects.length;
@@ -1333,13 +1336,13 @@
           <div class="project-name">${p.icon} ${p.name}</div>
           <span class="project-status-badge ${p.status}">${p.status === 'active' ? 'Active' : 'Waiting'}</span>
         </div>
-        ${p.bullets.map(b => `<div class="project-bullet"><span class="bullet">▸</span><span>${b}</span></div>`).join('')}
+        ${p.bullets.map(b => `<div class="project-bullet"><span class="bullet">&#9656;</span><span>${b}</span></div>`).join('')}
         <div class="project-updated">Updated ${p.updated}</div>
       </div>
     `).join('');
   }
 
-  // ── Render tasks ──
+  // &#9472;&#9472; Render tasks &#9472;&#9472;
   function renderTasks() {
     const active = tasks.filter(t => !t.done && t.section === 'active');
     const someday = tasks.filter(t => !t.done && t.section === 'someday');
@@ -1368,7 +1371,7 @@
       </div>`;
     };
 
-    // Build active tasks HTML — Top 3 fixed, rest scrollable
+    // Build active tasks HTML &#8212; Top 3 fixed, rest scrollable
     let html = '';
     if (sorted.length === 0) {
       html = '<div class="empty">No active tasks. Tap "Add Task" to get started!</div>';
@@ -1389,7 +1392,7 @@
       }
     }
 
-    // Recently completed: last 4, within 3 days — shown inline at bottom
+    // Recently completed: last 4, within 3 days &#8212; shown inline at bottom
     const threeDaysAgo = new Date();
     threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
     const recentDone = done
@@ -1425,7 +1428,7 @@
 
     document.getElementById('taskList').innerHTML = html;
 
-    // Waiting On — with actions
+    // Waiting On &#8212; with actions
     if (waitingOn.length > 0) {
       document.getElementById('waitingList').innerHTML = waitingOn.map((w, i) =>
         `<div class="waiting-item">
@@ -1483,7 +1486,7 @@
     document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
   }
 
-  // ── Render appointments ──
+  // &#9472;&#9472; Render appointments &#9472;&#9472;
   function renderAppts() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -1512,15 +1515,15 @@
         return `<div class="appt-item">
           <div class="appt-time">${dateLabel}<br><span style="font-size:0.75rem;color:var(--text-muted)">${a.time || ''}</span></div>
           <div class="appt-details">
-            <div class="title">${a.title}${a.recurring ? ' 🔄' : ''}</div>
-            ${a.source === 'gcal' ? '<div class="location" style="font-size:0.75rem">📅 Google Calendar</div>' : ''}
+            <div class="title">${a.title}${a.recurring ? ' &#128260;' : ''}</div>
+            ${a.source === 'gcal' ? '<div class="location" style="font-size:0.75rem">&#128197; Google Calendar</div>' : ''}
           </div>
         </div>`;
       }).join('');
     }
   }
 
-  // ── Email follow-up functions ──
+  // &#9472;&#9472; Email follow-up functions &#9472;&#9472;
   let emailNoteTarget = null;
 
   function reviewEmail(emailId) {
@@ -1559,7 +1562,7 @@
     renderEmails();
   }
 
-  // ── Render emails ──
+  // &#9472;&#9472; Render emails &#9472;&#9472;
   function renderEmails() {
     document.getElementById('emailCount').textContent = emails.length;
     if (emails.length === 0 && reviewedEmails.length === 0) {
@@ -1595,7 +1598,7 @@
     }
   }
 
-  // ── Waiting On action functions ──
+  // &#9472;&#9472; Waiting On action functions &#9472;&#9472;
   let waitingNoteTarget = null;
 
   function addWaitingNote(index) {
@@ -1627,7 +1630,7 @@
   function waitingToTask(index) {
     const w = waitingOn[index];
     if (!w) return;
-    const title = w.title + (w.note ? ' — ' + w.note : '');
+    const title = w.title + (w.note ? ' &#8212; ' + w.note : '');
     tasks.push({ id: 'wt_' + Date.now(), title, priority: 'medium', done: false, section: 'active', added: new Date().toISOString() });
     waitingOn.splice(index, 1);
     renderTasks();
@@ -1640,7 +1643,7 @@
   function waitingToCalendar(index) {
     const w = waitingOn[index];
     if (!w) return;
-    const title = w.title + (w.note ? ' — ' + w.note : '');
+    const title = w.title + (w.note ? ' &#8212; ' + w.note : '');
     appointments.push({ title, date: new Date().toISOString().split('T')[0], time: '', source: 'manual' });
     waitingOn.splice(index, 1);
     renderTasks();
@@ -1655,10 +1658,10 @@
     showSync('Dismissed', 'success', 1000);
   }
 
-  // ── Equipment Data ──
+  // &#9472;&#9472; Equipment Data &#9472;&#9472;
   let equipment = [
     {
-      id: 'hustler', name: 'Hustler Raptor XDX', type: 'Riding Mower', icon: '🚜',
+      id: 'hustler', name: 'Hustler Raptor XDX', type: 'Riding Mower', icon: '&#128668;',
       specs: ['Hydraulic fluid: Mobile 1 15w-50 or Castrol 5w-50 Syntec'],
       log: [
         { date: '2023-03-24', service: 'Fixed mower', notes: '$550' },
@@ -1669,7 +1672,7 @@
       ]
     },
     {
-      id: 'generator', name: 'XP13000 Generator', type: 'Whole House Generator', icon: '⚡',
+      id: 'generator', name: 'XP13000 Generator', type: 'Whole House Generator', icon: '&#9889;',
       purchased: 'July 2023',
       specs: ['100 gal propane = ~27 hrs', 'Chargeverter 60amp', 'Total run time: ~200 hrs'],
       log: [
@@ -1680,7 +1683,7 @@
       ]
     },
     {
-      id: 'tiller', name: 'TroyBilt Tiller', type: 'Garden Tiller', icon: '🌱',
+      id: 'tiller', name: 'TroyBilt Tiller', type: 'Garden Tiller', icon: '&#127793;',
       purchased: 'March 2023',
       specs: [],
       log: [
@@ -1689,7 +1692,7 @@
       ]
     },
     {
-      id: 'gator', name: 'John Deere Gator', type: 'Utility Vehicle', icon: '🚙',
+      id: 'gator', name: 'John Deere Gator', type: 'Utility Vehicle', icon: '&#128665;',
       specs: [],
       log: [
         { date: '2024-07-19', service: 'Oil change', notes: 'Then picked up for head gasket recall' },
@@ -1697,7 +1700,7 @@
       ]
     },
     {
-      id: 'chipper', name: 'Chipper Shredder', type: 'Wood Chipper', icon: '🪵',
+      id: 'chipper', name: 'Chipper Shredder', type: 'Wood Chipper', icon: '&#129717;',
       purchased: 'July 2023',
       specs: [],
       log: [
@@ -1706,12 +1709,12 @@
       ]
     },
     {
-      id: 'weedeater', name: 'Weed Eater', type: 'String Trimmer', icon: '🌿',
+      id: 'weedeater', name: 'Weed Eater', type: 'String Trimmer', icon: '&#127807;',
       specs: ['Spark plug: BPMR8Y NGK (1 spare on hand)'],
       log: []
     },
     {
-      id: 'pressure', name: 'Pressure Washer', type: 'Pressure Washer', icon: '💦',
+      id: 'pressure', name: 'Pressure Washer', type: 'Pressure Washer', icon: '&#128166;',
       purchased: 'Early 2024',
       specs: [],
       log: [
@@ -1720,7 +1723,7 @@
       ]
     },
     {
-      id: 'grace', name: "Grace (Iola's 2024 Colorado)", type: 'Truck', icon: '🛻',
+      id: 'grace', name: "Grace (Iola's 2024 Colorado)", type: 'Truck', icon: '&#128763;',
       specs: ['Trans: MOBIL 1 6 QTS LV ATFHP Blue Label', 'TF922 Trans Filter', 'Pan: 89 in/lbs, Cat Flange: 37 ft/lbs, Hanger: 43 ft/lbs'],
       log: [
         { date: '2024-07-01', service: 'Trans fluid changed', notes: '48k miles' },
@@ -1729,7 +1732,7 @@
       ]
     },
     {
-      id: 'jewel', name: "Jewel (Greg's 2020 Colorado)", type: 'Truck', icon: '🛻',
+      id: 'jewel', name: "Jewel (Greg's 2020 Colorado)", type: 'Truck', icon: '&#128763;',
       specs: [],
       log: [
         { date: '2024-11-26', service: 'Transmission change', notes: '30k miles' },
@@ -1737,7 +1740,7 @@
       ]
     },
     {
-      id: 'corolla', name: '2024 Corolla', type: 'Car', icon: '🚗',
+      id: 'corolla', name: '2024 Corolla', type: 'Car', icon: '&#128663;',
       purchased: 'January 2024',
       specs: ['Spare key in lock box', 'Paid off 2/21/2024'],
       log: [
@@ -1748,7 +1751,7 @@
 
   let archivedTasks = [];
 
-  // ── Render Equipment ──
+  // &#9472;&#9472; Render Equipment &#9472;&#9472;
   function renderEquipment() {
     const grid = document.getElementById('equipGrid');
     grid.innerHTML = equipment.map(eq => {
@@ -1769,7 +1772,7 @@
     }).join('');
   }
 
-  // ── Equipment Detail Modal ──
+  // &#9472;&#9472; Equipment Detail Modal &#9472;&#9472;
   function showEquipDetail(id) {
     const eq = equipment.find(e => e.id === id);
     if (!eq) return;
@@ -1785,7 +1788,7 @@
 
     const specsList = document.getElementById('modalSpecs');
     specsList.innerHTML = eq.specs.length > 0
-      ? eq.specs.map(s => `<div>• ${s}</div>`).join('')
+      ? eq.specs.map(s => `<div>&#8226; ${s}</div>`).join('')
       : '<div style="color:var(--text-muted)">No specs recorded</div>';
 
     document.getElementById('logEquipId').value = id;
@@ -1808,18 +1811,18 @@
     renderEquipment();
   }
 
-  // ── Gmail status ──
+  // &#9472;&#9472; Gmail status &#9472;&#9472;
   document.getElementById('emailStatus').classList.add('green');
   document.getElementById('emailStatusText').textContent = 'Gmail: connected';
 
-  // ── Initial render ──
+  // &#9472;&#9472; Initial render &#9472;&#9472;
   renderProjects();
   loadTasksFromSheet(); // Load tasks from Sheets (or fallback)
   renderAppts();
   renderEmails();
   renderEquipment();
 
-  // ── Auto-refresh every 60 seconds ──
+  // &#9472;&#9472; Auto-refresh every 60 seconds &#9472;&#9472;
   setInterval(() => {
     if (sheetsConnected) loadTasksFromSheet();
   }, 60000);
