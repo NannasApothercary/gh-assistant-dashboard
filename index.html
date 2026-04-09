@@ -176,6 +176,112 @@
     text-decoration: line-through;
     opacity: 0.6;
   }
+
+  /* Completion note modal */
+  .note-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .note-modal-overlay.active { display: flex; }
+  .note-modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    max-width: 420px;
+    width: 100%;
+    padding: 20px;
+  }
+  .note-modal h3 {
+    font-size: 1rem;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .note-modal .task-name {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .note-modal textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    color: var(--text);
+    font-size: 0.85rem;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 60px;
+    margin-bottom: 12px;
+  }
+  .note-modal textarea:focus { border-color: var(--accent); outline: none; }
+  .note-modal .btn-row {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .note-modal .btn {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .note-modal .btn-skip {
+    background: var(--surface-hover);
+    color: var(--text-muted);
+  }
+  .note-modal .btn-done {
+    background: var(--success);
+    color: white;
+  }
+
+  /* Recently completed inline section */
+  .done-inline-section {
+    margin-top: 14px;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+  }
+  .done-inline-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--success);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .done-inline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    opacity: 0.75;
+  }
+  .done-inline-item:last-child { border-bottom: none; }
+  .done-note {
+    font-size: 0.78rem;
+    color: var(--accent-light);
+    font-style: italic;
+    margin-top: 3px;
+  }
+  .done-date {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
   .task-text { flex: 1; }
   .task-text .title { font-weight: 500; }
   .task-text .meta {
@@ -219,6 +325,8 @@
     border-bottom: 1px solid rgba(255,255,255,0.05);
   }
   .email-item:last-child { border-bottom: none; }
+  .email-item.resolved { opacity: 0.55; }
+  .email-item.resolved .from { text-decoration: line-through; }
   .email-dot {
     width: 8px; height: 8px;
     background: var(--accent);
@@ -227,9 +335,12 @@
     flex-shrink: 0;
   }
   .email-dot.unread { background: var(--warning); }
+  .email-text { flex: 1; }
   .email-text .from { font-weight: 500; font-size: 0.9rem; }
   .email-text .subject { font-size: 0.85rem; color: var(--text-muted); margin-top: 1px; }
   .email-text .snippet { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; opacity: 0.7; }
+  .email-text .email-note { font-size: 0.78rem; color: var(--accent-light); font-style: italic; margin-top: 3px; }
+  .email-text .email-resolved-date { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
 
   /* Quick actions */
   .quick-actions {
@@ -300,6 +411,38 @@
     font-size: 1rem;
     margin-top: 2px;
   }
+  .waiting-text { flex: 1; }
+  .waiting-text .title { font-weight: 500; }
+  .waiting-text .meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+  .waiting-text .waiting-note { font-size: 0.78rem; color: var(--accent-light); font-style: italic; margin-top: 3px; }
+  .waiting-actions {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+  .waiting-actions .wa-btn {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .waiting-actions .wa-btn:hover { border-color: var(--accent); color: var(--text); }
+
+  /* Scrollable task list */
+  .task-scroll-area {
+    max-height: 280px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .task-scroll-area::-webkit-scrollbar { width: 6px; }
+  .task-scroll-area::-webkit-scrollbar-track { background: transparent; }
+  .task-scroll-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
   /* Add task form */
   .add-form {
@@ -726,6 +869,45 @@
   </div>
 </div>
 
+<!-- Completion Note Modal (Tasks) -->
+<div class="note-modal-overlay" id="noteModal" onclick="if(event.target===this)skipNote()">
+  <div class="note-modal">
+    <h3>&#10003; Nice work!</h3>
+    <div class="task-name" id="noteTaskName"></div>
+    <textarea id="noteInput" placeholder="Add a note (optional)... e.g. 'Used 2 bags of concrete' or 'Ordered part, arrives Friday'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveNote()}"></textarea>
+    <div class="btn-row">
+      <button class="btn btn-skip" onclick="skipNote()">Skip</button>
+      <button class="btn btn-done" onclick="saveNote()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Email Resolve Note Modal -->
+<div class="note-modal-overlay" id="emailNoteModal" onclick="if(event.target===this)skipEmailNote()">
+  <div class="note-modal">
+    <h3>&#128233; Email Resolved</h3>
+    <div class="task-name" id="emailNoteTaskName"></div>
+    <textarea id="emailNoteInput" placeholder="Which email / what happened? e.g. 'Replied 4/9 — confirmed appointment' or 'No action needed'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveEmailNote()}"></textarea>
+    <div class="btn-row">
+      <button class="btn btn-skip" onclick="skipEmailNote()">Skip</button>
+      <button class="btn btn-done" onclick="saveEmailNote()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Waiting On Note Modal -->
+<div class="note-modal-overlay" id="waitingNoteModal" onclick="if(event.target===this)cancelWaitingNote()">
+  <div class="note-modal">
+    <h3>&#9998; Add Note</h3>
+    <div class="task-name" id="waitingNoteItemName"></div>
+    <textarea id="waitingNoteInput" placeholder="e.g. 'Called Todd, will check Saturday' or 'Emailed supplier for quote'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveWaitingNote()}"></textarea>
+    <div class="btn-row">
+      <button class="btn btn-skip" onclick="cancelWaitingNote()">Cancel</button>
+      <button class="btn btn-done" onclick="saveWaitingNote()">Save</button>
+    </div>
+  </div>
+</div>
+
 <script>
   // ╔════════════════════════════════════════════╗
   // ║  GOOGLE SHEETS API CONFIG                  ║
@@ -779,7 +961,7 @@
   ];
 
   const FALLBACK_WAITING = [
-    { title: "Borrow the plasma cutter — confirm plug fits", since: "2026-03-31" },
+    { id: 'w1', title: "Borrow the plasma cutter — confirm plug fits", since: "2026-03-31", note: '' },
   ];
 
   // ── SHEETS API FUNCTIONS ──
@@ -994,12 +1176,12 @@
     { title: "Check water salt level", date: "2026-04-26", time: "All day", source: "gcal", recurring: true },
   ];
 
-  // ── Emails — synced from Gmail ──
+  // ── Emails — synced from Gmail (ghersche12@aol.com follow-ups) ──
   let emails = [
-    { from: "Fidelity Viewpoints", subject: "Social Security changes ahead", snippet: "RMDs in down markets, tips to lower taxes, boost benefits by up 24%, and more!", unread: true },
-    { from: "Bealls Rewards", subject: "Final Days to use your $5 Bonus Reward!", snippet: "Reminder: you received a $5 Bonus Reward, valid for one time use.", unread: true },
-    { from: "Google", subject: "Security alert", snippet: "You allowed Claude for Gmail access to some of your Google Account data.", unread: true },
-    { from: "Google", subject: "Security alert", snippet: "A new sign-in on Windows to iherschell12@gmail.com was detected.", unread: true },
+    { id: 'e1', from: "Fidelity Viewpoints", subject: "Social Security changes ahead", snippet: "RMDs in down markets, tips to lower taxes, boost benefits by up 24%, and more!", unread: true, resolved: false, note: '', resolvedDate: '' },
+    { id: 'e2', from: "Bealls Rewards", subject: "Final Days to use your $5 Bonus Reward!", snippet: "Reminder: you received a $5 Bonus Reward, valid for one time use.", unread: true, resolved: false, note: '', resolvedDate: '' },
+    { id: 'e3', from: "Google", subject: "Security alert", snippet: "You allowed Claude for Gmail access to some of your Google Account data.", unread: true, resolved: false, note: '', resolvedDate: '' },
+    { id: 'e4', from: "Google", subject: "Security alert", snippet: "A new sign-in on Windows to iherschell12@gmail.com was detected.", unread: true, resolved: false, note: '', resolvedDate: '' },
   ];
 
   // ── Date display ──
@@ -1062,23 +1244,50 @@
   }
 
   // ── Toggle task done (now writes to Sheets!) ──
+  let pendingToggleId = null; // track which task is being completed
+
   function toggleTask(taskId) {
-    // Optimistic UI: update locally first so checkbox responds instantly
     const t = tasks.find(t => t.id === taskId);
-    if (t) {
-      t.done = !t.done;
-      t.completed = t.done ? new Date().toISOString() : '';
+    if (!t) return;
+
+    if (t.done) {
+      // UNCHECKING — restore to active immediately
+      t.done = false;
+      t.completed = '';
+      t.note = '';
       renderTasks();
-      // Show done section automatically when a task is completed
-      if (t.done && !showDone) {
-        showDone = true;
-        document.getElementById('doneSection').style.display = 'block';
-      }
+      if (sheetsConnected) syncToggleToSheet(taskId);
+    } else {
+      // CHECKING OFF — show note modal first
+      pendingToggleId = taskId;
+      document.getElementById('noteTaskName').textContent = t.title;
+      document.getElementById('noteInput').value = '';
+      document.getElementById('noteModal').classList.add('active');
+      setTimeout(() => document.getElementById('noteInput').focus(), 100);
     }
-    // Then sync to sheet in background
-    if (sheetsConnected) {
-      syncToggleToSheet(taskId);
+  }
+
+  function skipNote() {
+    completeTaskWithNote('');
+  }
+
+  function saveNote() {
+    const note = document.getElementById('noteInput').value.trim();
+    completeTaskWithNote(note);
+  }
+
+  function completeTaskWithNote(note) {
+    document.getElementById('noteModal').classList.remove('active');
+    if (!pendingToggleId) return;
+    const t = tasks.find(t => t.id === pendingToggleId);
+    if (t) {
+      t.done = true;
+      t.completed = new Date().toISOString();
+      t.note = note || '';
+      renderTasks();
+      if (sheetsConnected) syncToggleToSheet(pendingToggleId);
     }
+    pendingToggleId = null;
   }
 
   // ── Toggle done section ──
@@ -1122,48 +1331,93 @@
     const priorityOrder = { high: 0, medium: 1, low: 2 };
     const sorted = [...active].sort((a, b) => (priorityOrder[a.priority] || 1) - (priorityOrder[b.priority] || 1));
 
-    // Active tasks — with Top 3 Priority banner
+    // Helper to render a single active task
+    const renderTask = (t) => {
+      const hotTag = t.priority === 'high' ? '<span class="hot-badge">&#128293; HOT</span>' : '';
+      const demoteBtn = t.priority === 'high'
+        ? `<button class="demote-btn" onclick="event.stopPropagation();demoteTask('${t.id}')" title="Move to medium priority">&#9660; Cool Down</button>`
+        : '';
+      return `<div class="task-item">
+        <div class="task-checkbox" onclick="toggleTask('${t.id}')"></div>
+        <div class="task-text">
+          <div class="title">${t.title}${hotTag}${demoteBtn}</div>
+          <div class="meta">${t.priority === 'high' ? '&#128308; High' : t.priority === 'low' ? '&#128309; Low' : '&#128993; Medium'} priority</div>
+        </div>
+      </div>`;
+    };
+
+    // Build active tasks HTML — Top 3 fixed, rest scrollable
+    let html = '';
     if (sorted.length === 0) {
-      document.getElementById('taskList').innerHTML = '<div class="empty">No active tasks. Tap "Add Task" to get started!</div>';
+      html = '<div class="empty">No active tasks. Tap "Add Task" to get started!</div>';
     } else {
       const top3 = sorted.slice(0, 3);
       const rest = sorted.slice(3);
 
-      const renderTask = (t) => {
-        const hotTag = t.priority === 'high' ? '<span class="hot-badge">🔥 HOT</span>' : '';
-        const demoteBtn = t.priority === 'high'
-          ? `<button class="demote-btn" onclick="event.stopPropagation();demoteTask('${t.id}')" title="Move to medium priority">▼ Cool Down</button>`
-          : '';
-        return `<div class="task-item">
-          <div class="task-checkbox" onclick="toggleTask('${t.id}')"></div>
-          <div class="task-text">
-            <div class="title">${t.title}${hotTag}${demoteBtn}</div>
-            <div class="meta">${t.priority === 'high' ? '🔴 High' : t.priority === 'low' ? '🔵 Low' : '🟡 Medium'} priority</div>
-          </div>
-        </div>`;
-      };
-
-      let html = `<div class="top3-banner">
-        <div class="top3-label">🎯 Top 3 Priority</div>
+      html += `<div class="top3-banner">
+        <div class="top3-label">&#127919; Top 3 Priority</div>
         ${top3.map(renderTask).join('')}
       </div>`;
 
       if (rest.length > 0) {
         html += `<hr class="top3-divider">`;
+        html += `<div class="task-scroll-area">`;
         html += rest.map(renderTask).join('');
+        html += `</div>`;
       }
-
-      document.getElementById('taskList').innerHTML = html;
     }
 
-    // Waiting On
+    // Recently completed: last 4, within 3 days — shown inline at bottom
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    const recentDone = done
+      .filter(t => t.completed && new Date(t.completed) >= threeDaysAgo)
+      .sort((a, b) => new Date(b.completed) - new Date(a.completed))
+      .slice(0, 4);
+
+    if (recentDone.length > 0) {
+      html += `<div class="done-inline-section">
+        <div class="done-inline-label">&#10003; Recently Completed</div>
+        ${recentDone.map(t => {
+          const doneDate = t.completed ? new Date(t.completed) : null;
+          const now = new Date();
+          let dateStr = '';
+          if (doneDate) {
+            const isToday = doneDate.toDateString() === now.toDateString();
+            const yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+            const isYesterday = doneDate.toDateString() === yesterday.toDateString();
+            dateStr = isToday ? 'Today' : isYesterday ? 'Yesterday' : doneDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+          }
+          const noteHtml = t.note ? `<div class="done-note">"${t.note}"</div>` : '';
+          return `<div class="done-inline-item">
+            <div class="task-checkbox checked" onclick="toggleTask('${t.id}')" title="Tap to restore to active"></div>
+            <div class="task-text done" style="flex:1">
+              <div class="title">${t.title}</div>
+              ${noteHtml}
+              <div class="done-date">Completed ${dateStr}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    }
+
+    document.getElementById('taskList').innerHTML = html;
+
+    // Waiting On — with actions
     if (waitingOn.length > 0) {
-      document.getElementById('waitingList').innerHTML = waitingOn.map(w =>
+      document.getElementById('waitingList').innerHTML = waitingOn.map((w, i) =>
         `<div class="waiting-item">
-          <div class="waiting-icon">⏳</div>
-          <div class="task-text">
+          <div class="waiting-icon">&#9203;</div>
+          <div class="waiting-text">
             <div class="title">${w.title}</div>
             <div class="meta">Since ${w.since || 'unknown'}</div>
+            ${w.note ? `<div class="waiting-note">"${w.note}"</div>` : ''}
+            <div class="waiting-actions">
+              <button class="wa-btn" onclick="addWaitingNote(${i})">&#9998; Note</button>
+              <button class="wa-btn" onclick="waitingToTask(${i})">&#9654; To Task</button>
+              <button class="wa-btn" onclick="waitingToCalendar(${i})">&#128197; To Calendar</button>
+              <button class="wa-btn" onclick="dismissWaiting(${i})">&#10005; Dismiss</button>
+            </div>
           </div>
         </div>`
       ).join('');
@@ -1189,13 +1443,15 @@
       }
     }
 
-    // Done list
+    // Old done section (hidden by default, kept for full history)
     if (done.length > 0) {
       document.getElementById('doneList').innerHTML = done.map((t) => {
+        const noteHtml = t.note ? `<div class="done-note">"${t.note}"</div>` : '';
         return `<div class="task-item">
           <div class="task-checkbox checked" onclick="toggleTask('${t.id}')"></div>
           <div class="task-text done" style="flex:1">
             <div class="title">${t.title}</div>
+            ${noteHtml}
             <div class="meta">Completed ${t.completed ? new Date(t.completed).toLocaleDateString() : ''}</div>
           </div>
         </div>`;
@@ -1207,16 +1463,28 @@
 
   // ── Render appointments ──
   function renderAppts() {
-    document.getElementById('apptCount').textContent = appointments.length;
-    if (appointments.length === 0) {
-      document.getElementById('apptList').innerHTML = '<div class="empty">No upcoming appointments.</div>';
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const cutoff = new Date(today);
+    cutoff.setDate(cutoff.getDate() + 5); // show today + 5 days out
+
+    // Filter: only today and future, up to 5 days out
+    const upcoming = appointments.filter(a => {
+      const d = new Date(a.date + 'T12:00:00');
+      d.setHours(0, 0, 0, 0);
+      return d >= today && d <= cutoff;
+    });
+
+    document.getElementById('apptCount').textContent = upcoming.length;
+    if (upcoming.length === 0) {
+      document.getElementById('apptList').innerHTML = '<div class="empty">No upcoming appointments in the next 5 days.</div>';
     } else {
-      const sorted = [...appointments].sort((a, b) => new Date(a.date) - new Date(b.date));
+      const sorted = [...upcoming].sort((a, b) => new Date(a.date) - new Date(b.date));
       document.getElementById('apptList').innerHTML = sorted.map(a => {
         const d = new Date(a.date + 'T12:00:00');
-        const today = new Date();
-        const isToday = d.toDateString() === today.toDateString();
-        const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+        const now = new Date();
+        const isToday = d.toDateString() === now.toDateString();
+        const tomorrow = new Date(now); tomorrow.setDate(now.getDate() + 1);
         const isTomorrow = d.toDateString() === tomorrow.toDateString();
         const dateLabel = isToday ? 'Today' : isTomorrow ? 'Tomorrow' : d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
         return `<div class="appt-item">
@@ -1230,15 +1498,55 @@
     }
   }
 
+  // ── Email follow-up functions ──
+  let emailNoteTarget = null;
+
+  function toggleEmail(emailId) {
+    const e = emails.find(x => x.id === emailId);
+    if (!e) return;
+    if (e.resolved) {
+      // Uncheck — restore
+      e.resolved = false;
+      e.note = '';
+      e.resolvedDate = '';
+      renderEmails();
+    } else {
+      // Check off — ask for note
+      emailNoteTarget = emailId;
+      document.getElementById('emailNoteTaskName').textContent = e.from + ': ' + e.subject;
+      document.getElementById('emailNoteInput').value = '';
+      document.getElementById('emailNoteModal').classList.add('active');
+      setTimeout(() => document.getElementById('emailNoteInput').focus(), 100);
+    }
+  }
+
+  function skipEmailNote() { completeEmailWithNote(''); }
+  function saveEmailNote() { completeEmailWithNote(document.getElementById('emailNoteInput').value.trim()); }
+
+  function completeEmailWithNote(note) {
+    document.getElementById('emailNoteModal').classList.remove('active');
+    if (!emailNoteTarget) return;
+    const e = emails.find(x => x.id === emailNoteTarget);
+    if (e) {
+      e.resolved = true;
+      e.note = note || '';
+      e.resolvedDate = new Date().toISOString();
+    }
+    emailNoteTarget = null;
+    renderEmails();
+  }
+
   // ── Render emails ──
   function renderEmails() {
-    document.getElementById('emailCount').textContent = emails.length;
+    const active = emails.filter(e => !e.resolved);
+    const resolved = emails.filter(e => e.resolved);
+    document.getElementById('emailCount').textContent = active.length;
     if (emails.length === 0) {
       document.getElementById('emailList').innerHTML = '<div class="empty">No email follow-ups tracked yet. Ask Claude to check your Gmail!</div>';
     } else {
-      document.getElementById('emailList').innerHTML = emails.map(e =>
+      let html = active.map(e =>
         `<div class="email-item">
-          <div class="email-dot ${e.unread ? 'unread' : ''}"></div>
+          <div class="task-checkbox" onclick="toggleEmail('${e.id}')"></div>
           <div class="email-text">
             <div class="from">${e.from || 'Unknown'}</div>
             <div class="subject">${e.subject || ''}</div>
@@ -1246,7 +1554,88 @@
           </div>
         </div>`
       ).join('');
+
+      if (resolved.length > 0) {
+        html += `<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border);">
+          <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;">Resolved</div>
+          ${resolved.map(e => {
+            const noteHtml = e.note ? `<div class="email-note">"${e.note}"</div>` : '';
+            const dateStr = e.resolvedDate ? new Date(e.resolvedDate).toLocaleDateString() : '';
+            return `<div class="email-item resolved">
+              <div class="task-checkbox checked" onclick="toggleEmail('${e.id}')" title="Tap to unresolve"></div>
+              <div class="email-text">
+                <div class="from">${e.from || 'Unknown'}</div>
+                <div class="subject">${e.subject || ''}</div>
+                ${noteHtml}
+                <div class="email-resolved-date">Resolved ${dateStr}</div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>`;
+      }
+
+      document.getElementById('emailList').innerHTML = html;
     }
+  }
+
+  // ── Waiting On action functions ──
+  let waitingNoteTarget = null;
+
+  function addWaitingNote(index) {
+    const w = waitingOn[index];
+    if (!w) return;
+    waitingNoteTarget = index;
+    document.getElementById('waitingNoteItemName').textContent = w.title;
+    document.getElementById('waitingNoteInput').value = w.note || '';
+    document.getElementById('waitingNoteModal').classList.add('active');
+    setTimeout(() => document.getElementById('waitingNoteInput').focus(), 100);
+  }
+
+  function cancelWaitingNote() {
+    document.getElementById('waitingNoteModal').classList.remove('active');
+    waitingNoteTarget = null;
+  }
+
+  function saveWaitingNote() {
+    document.getElementById('waitingNoteModal').classList.remove('active');
+    if (waitingNoteTarget === null) return;
+    const w = waitingOn[waitingNoteTarget];
+    if (w) {
+      w.note = document.getElementById('waitingNoteInput').value.trim();
+    }
+    waitingNoteTarget = null;
+    renderTasks();
+  }
+
+  function waitingToTask(index) {
+    const w = waitingOn[index];
+    if (!w) return;
+    const title = w.title + (w.note ? ' — ' + w.note : '');
+    tasks.push({ id: 'wt_' + Date.now(), title, priority: 'medium', done: false, section: 'active', added: new Date().toISOString() });
+    waitingOn.splice(index, 1);
+    renderTasks();
+    showSync('Moved to tasks!', 'success', 1500);
+    if (sheetsConnected) {
+      addTaskToSheet(title, 'medium', 'active');
+    }
+  }
+
+  function waitingToCalendar(index) {
+    const w = waitingOn[index];
+    if (!w) return;
+    const title = w.title + (w.note ? ' — ' + w.note : '');
+    appointments.push({ title, date: new Date().toISOString().split('T')[0], time: '', source: 'manual' });
+    waitingOn.splice(index, 1);
+    renderTasks();
+    renderAppts();
+    showSync('Added to calendar!', 'success', 1500);
+  }
+
+  function dismissWaiting(index) {
+    if (!confirm('Dismiss this waiting item?')) return;
+    waitingOn.splice(index, 1);
+    renderTasks();
+    showSync('Dismissed', 'success', 1000);
   }
 
   // ── Equipment Data ──
