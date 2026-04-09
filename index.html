@@ -777,12 +777,12 @@
   <!-- Email Follow-ups -->
   <div class="section" id="emailSection">
     <div class="section-header" onclick="toggleSection('emailSection')">
-      <h2>📧 Email Follow-ups <span class="badge" id="emailCount">0</span></h2>
+      <h2>&#128231; Nanna's Apothecary Emails <span class="badge" id="emailCount">0</span></h2>
       <span class="chevron">▼</span>
     </div>
     <div class="section-body">
       <div id="emailList">
-        <div class="empty">No email follow-ups tracked yet. Ask Claude to check your Gmail!</div>
+        <div class="empty">No Nanna's Apothecary emails to follow up on.</div>
       </div>
     </div>
   </div>
@@ -1176,12 +1176,15 @@
     { title: "Check water salt level", date: "2026-04-26", time: "All day", source: "gcal", recurring: true },
   ];
 
-  // ── Emails — synced from Gmail (ghersche12@aol.com follow-ups) ──
+  // ── Emails — Nanna's Apothecary business emails (via iherschell12@gmail.com) ──
   let emails = [
-    { id: 'e1', from: "Fidelity Viewpoints", subject: "Social Security changes ahead", snippet: "RMDs in down markets, tips to lower taxes, boost benefits by up 24%, and more!", unread: true, resolved: false, note: '', resolvedDate: '' },
-    { id: 'e2', from: "Bealls Rewards", subject: "Final Days to use your $5 Bonus Reward!", snippet: "Reminder: you received a $5 Bonus Reward, valid for one time use.", unread: true, resolved: false, note: '', resolvedDate: '' },
-    { id: 'e3', from: "Google", subject: "Security alert", snippet: "You allowed Claude for Gmail access to some of your Google Account data.", unread: true, resolved: false, note: '', resolvedDate: '' },
-    { id: 'e4', from: "Google", subject: "Security alert", snippet: "A new sign-in on Windows to iherschell12@gmail.com was detected.", unread: true, resolved: false, note: '', resolvedDate: '' },
+    { id: 'e1', from: "Iola Herschell", subject: "How Your Weekly Blog Review Will Work", snippet: "Starting weekly blog posts — up to 3 per week for Iola to review.", unread: false, resolved: false, note: '', resolvedDate: '', date: '2026-04-09' },
+    { id: 'e2', from: "Iola Herschell", subject: "ACTION NEEDED — Unanswered Facebook Comments from Shawna", snippet: "Shawna Rickey left comments on the Page and Group ~1 week ago, no reply yet.", unread: true, resolved: false, note: '', resolvedDate: '', date: '2026-04-07' },
+    { id: 'e3', from: "FL Dept of State (fwd from AOL)", subject: "Corporate Filing - 200470552622", snippet: "Florida LLC filing confirmation.", unread: false, resolved: false, note: '', resolvedDate: '', date: '2026-04-07' },
+    { id: 'e4', from: "FL Registrations (fwd from AOL)", subject: "LLC Creation", snippet: "LLC creation correspondence from FL Dept of State.", unread: false, resolved: false, note: '', resolvedDate: '', date: '2026-04-06' },
+    { id: 'e5', from: "Awin (fwd from AOL)", subject: "Congratulations — Awin application approved", snippet: "Affiliate program application approved. Ready to generate links.", unread: true, resolved: false, note: '', resolvedDate: '', date: '2026-04-04' },
+    { id: 'e6', from: "iHerb (fwd from AOL)", subject: "Welcome to iHerb!", snippet: "iHerb account created for sourcing/affiliate.", unread: true, resolved: false, note: '', resolvedDate: '', date: '2026-04-04' },
+    { id: 'e7', from: "Wix (fwd from AOL)", subject: "Enjoy Your New Wix Premium Plan", snippet: "Wix Premium plan activated for Nanna's site.", unread: false, resolved: false, note: '', resolvedDate: '', date: '2026-04-04' },
   ];
 
   // ── Date display ──
@@ -1542,18 +1545,19 @@
     const resolved = emails.filter(e => e.resolved);
     document.getElementById('emailCount').textContent = active.length;
     if (emails.length === 0) {
-      document.getElementById('emailList').innerHTML = '<div class="empty">No email follow-ups tracked yet. Ask Claude to check your Gmail!</div>';
+      document.getElementById('emailList').innerHTML = '<div class="empty">No Nanna\'s Apothecary emails to follow up on.</div>';
     } else {
-      let html = active.map(e =>
-        `<div class="email-item">
+      let html = active.map(e => {
+        const dateStr = e.date ? new Date(e.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+        return `<div class="email-item">
           <div class="task-checkbox" onclick="toggleEmail('${e.id}')"></div>
           <div class="email-text">
-            <div class="from">${e.from || 'Unknown'}</div>
+            <div class="from">${e.from || 'Unknown'} <span style="font-size:0.72rem;color:var(--text-muted);font-weight:400;">${dateStr}</span></div>
             <div class="subject">${e.subject || ''}</div>
             <div class="snippet">${e.snippet || ''}</div>
           </div>
-        </div>`
-      ).join('');
+        </div>`;
+      }).join('');
 
       if (resolved.length > 0) {
         html += `<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border);">
