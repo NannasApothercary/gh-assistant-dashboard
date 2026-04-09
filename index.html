@@ -325,8 +325,6 @@
     border-bottom: 1px solid rgba(255,255,255,0.05);
   }
   .email-item:last-child { border-bottom: none; }
-  .email-item.resolved { opacity: 0.55; }
-  .email-item.resolved .from { text-decoration: line-through; }
   .email-dot {
     width: 8px; height: 8px;
     background: var(--accent);
@@ -341,6 +339,24 @@
   .email-text .snippet { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; opacity: 0.7; }
   .email-text .email-note { font-size: 0.78rem; color: var(--accent-light); font-style: italic; margin-top: 3px; }
   .email-text .email-resolved-date { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+  /* Reviewed email log link */
+  .reviewed-link {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    margin-top: 10px;
+    padding-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .reviewed-link a {
+    color: var(--accent-light);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .reviewed-link a:hover { text-decoration: underline; }
 
   /* Quick actions */
   .quick-actions {
@@ -885,7 +901,7 @@
 <!-- Email Resolve Note Modal -->
 <div class="note-modal-overlay" id="emailNoteModal" onclick="if(event.target===this)skipEmailNote()">
   <div class="note-modal">
-    <h3>&#128233; Email Resolved</h3>
+    <h3>&#128233; Email Reviewed</h3>
     <div class="task-name" id="emailNoteTaskName"></div>
     <textarea id="emailNoteInput" placeholder="Which email / what happened? e.g. 'Replied 4/9 — confirmed appointment' or 'No action needed'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveEmailNote()}"></textarea>
     <div class="btn-row">
@@ -1178,14 +1194,17 @@
 
   // ── Emails — Nanna's Apothecary business emails (via iherschell12@gmail.com) ──
   let emails = [
-    { id: 'e1', from: "Iola Herschell", subject: "How Your Weekly Blog Review Will Work", snippet: "Starting weekly blog posts — up to 3 per week for Iola to review.", unread: false, resolved: false, note: '', resolvedDate: '', date: '2026-04-09' },
-    { id: 'e2', from: "Iola Herschell", subject: "ACTION NEEDED — Unanswered Facebook Comments from Shawna", snippet: "Shawna Rickey left comments on the Page and Group ~1 week ago, no reply yet.", unread: true, resolved: false, note: '', resolvedDate: '', date: '2026-04-07' },
-    { id: 'e3', from: "FL Dept of State (fwd from AOL)", subject: "Corporate Filing - 200470552622", snippet: "Florida LLC filing confirmation.", unread: false, resolved: false, note: '', resolvedDate: '', date: '2026-04-07' },
-    { id: 'e4', from: "FL Registrations (fwd from AOL)", subject: "LLC Creation", snippet: "LLC creation correspondence from FL Dept of State.", unread: false, resolved: false, note: '', resolvedDate: '', date: '2026-04-06' },
-    { id: 'e5', from: "Awin (fwd from AOL)", subject: "Congratulations — Awin application approved", snippet: "Affiliate program application approved. Ready to generate links.", unread: true, resolved: false, note: '', resolvedDate: '', date: '2026-04-04' },
-    { id: 'e6', from: "iHerb (fwd from AOL)", subject: "Welcome to iHerb!", snippet: "iHerb account created for sourcing/affiliate.", unread: true, resolved: false, note: '', resolvedDate: '', date: '2026-04-04' },
-    { id: 'e7', from: "Wix (fwd from AOL)", subject: "Enjoy Your New Wix Premium Plan", snippet: "Wix Premium plan activated for Nanna's site.", unread: false, resolved: false, note: '', resolvedDate: '', date: '2026-04-04' },
+    { id: 'e1', from: "Iola Herschell", subject: "How Your Weekly Blog Review Will Work", snippet: "Starting weekly blog posts — up to 3 per week for Iola to review.", unread: false, date: '2026-04-09' },
+    { id: 'e2', from: "Iola Herschell", subject: "ACTION NEEDED — Unanswered Facebook Comments from Shawna", snippet: "Shawna Rickey left comments on the Page and Group ~1 week ago, no reply yet.", unread: true, date: '2026-04-07' },
+    { id: 'e3', from: "FL Dept of State (fwd from AOL)", subject: "Corporate Filing - 200470552622", snippet: "Florida LLC filing confirmation.", unread: false, date: '2026-04-07' },
+    { id: 'e4', from: "FL Registrations (fwd from AOL)", subject: "LLC Creation", snippet: "LLC creation correspondence from FL Dept of State.", unread: false, date: '2026-04-06' },
+    { id: 'e5', from: "Awin (fwd from AOL)", subject: "Congratulations — Awin application approved", snippet: "Affiliate program application approved. Ready to generate links.", unread: true, date: '2026-04-04' },
+    { id: 'e6', from: "iHerb (fwd from AOL)", subject: "Welcome to iHerb!", snippet: "iHerb account created for sourcing/affiliate.", unread: true, date: '2026-04-04' },
+    { id: 'e7', from: "Wix (fwd from AOL)", subject: "Enjoy Your New Wix Premium Plan", snippet: "Wix Premium plan activated for Nanna's site.", unread: false, date: '2026-04-04' },
   ];
+
+  // ── Reviewed email log (persists in this array, rendered on separate page) ──
+  let reviewedEmails = [];
 
   // ── Date display ──
   function updateDate() {
@@ -1504,36 +1523,37 @@
   // ── Email follow-up functions ──
   let emailNoteTarget = null;
 
-  function toggleEmail(emailId) {
+  function reviewEmail(emailId) {
     const e = emails.find(x => x.id === emailId);
     if (!e) return;
-    if (e.resolved) {
-      // Uncheck — restore
-      e.resolved = false;
-      e.note = '';
-      e.resolvedDate = '';
-      renderEmails();
-    } else {
-      // Check off — ask for note
-      emailNoteTarget = emailId;
-      document.getElementById('emailNoteTaskName').textContent = e.from + ': ' + e.subject;
-      document.getElementById('emailNoteInput').value = '';
-      document.getElementById('emailNoteModal').classList.add('active');
-      setTimeout(() => document.getElementById('emailNoteInput').focus(), 100);
-    }
+    // Show note modal
+    emailNoteTarget = emailId;
+    document.getElementById('emailNoteTaskName').textContent = e.from + ': ' + e.subject;
+    document.getElementById('emailNoteInput').value = '';
+    document.getElementById('emailNoteModal').classList.add('active');
+    setTimeout(() => document.getElementById('emailNoteInput').focus(), 100);
   }
 
-  function skipEmailNote() { completeEmailWithNote(''); }
-  function saveEmailNote() { completeEmailWithNote(document.getElementById('emailNoteInput').value.trim()); }
+  function skipEmailNote() { completeEmailReview(''); }
+  function saveEmailNote() { completeEmailReview(document.getElementById('emailNoteInput').value.trim()); }
 
-  function completeEmailWithNote(note) {
+  function completeEmailReview(note) {
     document.getElementById('emailNoteModal').classList.remove('active');
     if (!emailNoteTarget) return;
-    const e = emails.find(x => x.id === emailNoteTarget);
-    if (e) {
-      e.resolved = true;
-      e.note = note || '';
-      e.resolvedDate = new Date().toISOString();
+    const idx = emails.findIndex(x => x.id === emailNoteTarget);
+    if (idx !== -1) {
+      const e = emails[idx];
+      // Move to reviewed log
+      reviewedEmails.unshift({
+        from: e.from,
+        subject: e.subject,
+        snippet: e.snippet,
+        emailDate: e.date,
+        note: note || '',
+        reviewedDate: new Date().toISOString()
+      });
+      // Remove from active list
+      emails.splice(idx, 1);
     }
     emailNoteTarget = null;
     renderEmails();
@@ -1541,40 +1561,33 @@
 
   // ── Render emails ──
   function renderEmails() {
-    const active = emails.filter(e => !e.resolved);
-    const resolved = emails.filter(e => e.resolved);
-    document.getElementById('emailCount').textContent = active.length;
-    if (emails.length === 0) {
+    document.getElementById('emailCount').textContent = emails.length;
+    if (emails.length === 0 && reviewedEmails.length === 0) {
       document.getElementById('emailList').innerHTML = '<div class="empty">No Nanna\'s Apothecary emails to follow up on.</div>';
     } else {
-      let html = active.map(e => {
-        const dateStr = e.date ? new Date(e.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
-        return `<div class="email-item">
-          <div class="task-checkbox" onclick="toggleEmail('${e.id}')"></div>
-          <div class="email-text">
-            <div class="from">${e.from || 'Unknown'} <span style="font-size:0.72rem;color:var(--text-muted);font-weight:400;">${dateStr}</span></div>
-            <div class="subject">${e.subject || ''}</div>
-            <div class="snippet">${e.snippet || ''}</div>
-          </div>
-        </div>`;
-      }).join('');
+      let html = '';
 
-      if (resolved.length > 0) {
-        html += `<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border);">
-          <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;">Resolved</div>
-          ${resolved.map(e => {
-            const noteHtml = e.note ? `<div class="email-note">"${e.note}"</div>` : '';
-            const dateStr = e.resolvedDate ? new Date(e.resolvedDate).toLocaleDateString() : '';
-            return `<div class="email-item resolved">
-              <div class="task-checkbox checked" onclick="toggleEmail('${e.id}')" title="Tap to unresolve"></div>
-              <div class="email-text">
-                <div class="from">${e.from || 'Unknown'}</div>
-                <div class="subject">${e.subject || ''}</div>
-                ${noteHtml}
-                <div class="email-resolved-date">Resolved ${dateStr}</div>
-              </div>
-            </div>`;
-          }).join('')}
+      if (emails.length === 0) {
+        html += '<div class="empty" style="margin-bottom:8px;">All caught up!</div>';
+      } else {
+        html += emails.map(e => {
+          const dateStr = e.date ? new Date(e.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+          return `<div class="email-item">
+            <div class="task-checkbox" onclick="reviewEmail('${e.id}')" title="Mark as reviewed"></div>
+            <div class="email-text">
+              <div class="from">${e.from || 'Unknown'} <span style="font-size:0.72rem;color:var(--text-muted);font-weight:400;">${dateStr}</span></div>
+              <div class="subject">${e.subject || ''}</div>
+              <div class="snippet">${e.snippet || ''}</div>
+            </div>
+          </div>`;
+        }).join('');
+      }
+
+      // Log link (only if there are reviewed emails)
+      if (reviewedEmails.length > 0) {
+        html += `<div class="reviewed-link">
+          <span>${reviewedEmails.length} reviewed</span>
+          <a href="reviewed-emails.html" target="_blank">View log &#8594;</a>
         </div>`;
       }
 
