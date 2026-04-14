@@ -602,20 +602,34 @@
   }
   .archive-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* Demote button for HOT tasks */
-  .demote-btn {
+  /* Priority control buttons on each task */
+  .prio-controls {
+    display: inline-flex;
+    gap: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .prio-btn {
     background: none;
     border: 1px solid var(--border);
     color: var(--text-muted);
     border-radius: 4px;
-    padding: 2px 8px;
-    font-size: 0.7rem;
+    padding: 2px 7px;
+    font-size: 0.8rem;
     cursor: pointer;
-    margin-left: 6px;
-    white-space: nowrap;
-    transition: all 0.2s;
+    line-height: 1;
+    min-width: 26px;
+    transition: all 0.15s;
   }
-  .demote-btn:hover { border-color: var(--warning); color: var(--warning); }
+  .prio-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(96,165,250,0.08); }
+  .prio-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .prio-btn:disabled:hover { border-color: var(--border); color: var(--text-muted); background: none; }
+
+  /* Visual marker for top 3 tasks */
+  .task-item.top-marker {
+    border-left: 3px solid var(--warning);
+    padding-left: 9px;
+  }
 
   /* Project Status */
   .project-card {
@@ -1103,21 +1117,19 @@
     }
   }
 
-  // &#9472;&#9472; Demote a HOT task to medium priority &#9472;&#9472;
-  async function demoteTask(taskId) {
+  // &#9472;&#9472; Change a task's priority (used by all 4 priority buttons) &#9472;&#9472;
+  async function setPriority(taskId, newPriority) {
     const t = tasks.find(t => t.id === taskId);
-    if (!t) return;
+    if (!t || t.priority === newPriority) return;
 
-    // Determine new priority: high &#8594; medium, medium &#8594; low
-    const newPriority = t.priority === 'high' ? 'medium' : 'low';
+    const oldPriority = t.priority;
+    // Optimistic update so UI feels instant
+    t.priority = newPriority;
+    renderTasks();
 
-    if (!sheetsConnected) {
-      t.priority = newPriority;
-      renderTasks();
-      return;
-    }
+    if (!sheetsConnected) return;
 
-    showSync('Demoting task...');
+    showSync('Updating priority...');
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -1126,16 +1138,29 @@
       });
       const data = await response.json();
       if (data.success) {
-        showSync('Priority lowered!', 'success', 1500);
-        await loadTasksFromSheet();
+        showSync('Priority updated!', 'success', 1200);
+      } else {
+        throw new Error('update failed');
       }
     } catch (err) {
-      console.error('Failed to demote task:', err);
-      showSync('Demote failed &#8212; updated locally', 'error', 2000);
-      t.priority = newPriority;
-      renderTasks();
+      console.error('Failed to update priority:', err);
+      showSync('Priority saved locally &#8212; will sync later', 'error', 2000);
     }
   }
+
+  // Bump priority up (+1) or down (-1) one tier
+  function bumpPriority(taskId, direction) {
+    const t = tasks.find(t => t.id === taskId);
+    if (!t) return;
+    const order = ['low', 'medium', 'high'];
+    const idx = order.indexOf(t.priority || 'medium');
+    const nextIdx = Math.max(0, Math.min(order.length - 1, idx + direction));
+    if (nextIdx === idx) return;
+    setPriority(taskId, order[nextIdx]);
+  }
+
+  // Back-compat: keep demoteTask in case any old handler still references it
+  function demoteTask(taskId) { bumpPriority(taskId, -1); }
 
   // &#9472;&#9472; SYNC UI &#9472;&#9472;
   function showSync(message, type, autoDismiss) {
@@ -1358,40 +1383,35 @@
     const priorityOrder = { high: 0, medium: 1, low: 2 };
     const sorted = [...active].sort((a, b) => (priorityOrder[a.priority] || 1) - (priorityOrder[b.priority] || 1));
 
-    // Helper to render a single active task
-    const renderTask = (t) => {
+    // Helper to render a single active task with priority controls
+    const renderTask = (t, idx) => {
       const hotTag = t.priority === 'high' ? '<span class="hot-badge">&#128293; HOT</span>' : '';
-      const demoteBtn = t.priority === 'high'
-        ? `<button class="demote-btn" onclick="event.stopPropagation();demoteTask('${t.id}')" title="Move to medium priority">&#9660; Cool Down</button>`
-        : '';
-      return `<div class="task-item">
+      const isTop = idx < 3 ? ' top-marker' : '';
+      const atTop = t.priority === 'high';
+      const atBottom = t.priority === 'low';
+      const controls = `<span class="prio-controls">
+        <button class="prio-btn" onclick="event.stopPropagation();setPriority('${t.id}','high')" ${atTop?'disabled':''} title="Send to top (High priority)">&#8648;</button>
+        <button class="prio-btn" onclick="event.stopPropagation();bumpPriority('${t.id}',1)" ${atTop?'disabled':''} title="Move up one tier">&#9650;</button>
+        <button class="prio-btn" onclick="event.stopPropagation();bumpPriority('${t.id}',-1)" ${atBottom?'disabled':''} title="Move down one tier">&#9660;</button>
+        <button class="prio-btn" onclick="event.stopPropagation();setPriority('${t.id}','low')" ${atBottom?'disabled':''} title="Send to bottom (Low priority)">&#8650;</button>
+      </span>`;
+      return `<div class="task-item${isTop}">
         <div class="task-checkbox" onclick="toggleTask('${t.id}')"></div>
         <div class="task-text">
-          <div class="title">${t.title}${hotTag}${demoteBtn}</div>
+          <div class="title">${t.title}${hotTag}${controls}</div>
           <div class="meta">${t.priority === 'high' ? '&#128308; High' : t.priority === 'low' ? '&#128309; Low' : '&#128993; Medium'} priority</div>
         </div>
       </div>`;
     };
 
-    // Build active tasks HTML &#8212; Top 3 fixed, rest scrollable
+    // Build active tasks HTML &#8212; single scrollable list, first 3 get visual marker
     let html = '';
     if (sorted.length === 0) {
       html = '<div class="empty">No active tasks. Tap "Add Task" to get started!</div>';
     } else {
-      const top3 = sorted.slice(0, 3);
-      const rest = sorted.slice(3);
-
-      html += `<div class="top3-banner">
-        <div class="top3-label">&#127919; Top 3 Priority</div>
-        ${top3.map(renderTask).join('')}
-      </div>`;
-
-      if (rest.length > 0) {
-        html += `<hr class="top3-divider">`;
-        html += `<div class="task-scroll-area">`;
-        html += rest.map(renderTask).join('');
-        html += `</div>`;
-      }
+      html += `<div class="task-scroll-area">`;
+      html += sorted.map((t, i) => renderTask(t, i)).join('');
+      html += `</div>`;
     }
 
     // Recently completed: last 4, within 3 days &#8212; shown inline at bottom
