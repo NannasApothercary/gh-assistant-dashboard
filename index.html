@@ -271,12 +271,14 @@
     opacity: 0.75;
   }
   .done-inline-item:last-child { border-bottom: none; }
-  .done-note {
+  .done-note, .active-note {
     font-size: 0.78rem;
     color: var(--accent-light);
     font-style: italic;
     margin-top: 3px;
   }
+  .task-text .title { cursor: pointer; }
+  .task-text .title:hover { color: var(--accent); }
   .done-date {
     font-size: 0.72rem;
     color: var(--text-muted);
@@ -908,6 +910,19 @@
   </div>
 </div>
 
+<!-- Active Task Note Modal -->
+<div class="note-modal-overlay" id="activeNoteModal" onclick="if(event.target===this)cancelActiveNote()">
+  <div class="note-modal">
+    <h3>📝 Task Note</h3>
+    <div class="task-name" id="activeNoteTaskName"></div>
+    <textarea id="activeNoteInput" placeholder="Add a note... e.g. 'Part #7443, buy at AutoZone' or 'Need 2x4s from Lowe's'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveActiveNote()}"></textarea>
+    <div class="btn-row">
+      <button class="btn btn-skip" onclick="cancelActiveNote()">Cancel</button>
+      <button class="btn btn-done" onclick="saveActiveNote()">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- Email Resolve Note Modal -->
 <div class="note-modal-overlay" id="emailNoteModal" onclick="if(event.target===this)skipEmailNote()">
   <div class="note-modal">
@@ -951,7 +966,7 @@
   // &#9472;&#9472; FALLBACK DATA (used if Sheets isn't connected yet) &#9472;&#9472;
   const FALLBACK_TASKS = [
     { id: 'f35', title: "&#128293; Cage for bananas &#8212; build/install", priority: "high", done: false, section: "active" },
-    { id: 'f2', title: "Taillight bulb &#8212; replace", priority: "high", done: false, section: "active" },
+    { id: 'f2', title: "Taillight bulb &#8212; replace", priority: "high", done: false, section: "active", note: "Buy 7443 bulb" },
     { id: 'f4', title: "Propagate plants &#8212; lingstrum x30, Pigeon Peas, Ground Cherries, rosemary & oregano for chickens, food forest in chicken yard", priority: "high", done: false, section: "active" },
     { id: 'f5', title: "Well pump status &#8212; installed 10/2017, lifespan 8-15 yrs (due window: 2025-2032)", priority: "high", done: false, section: "active" },
     { id: 'f6', title: "Covers for 4\" posts &#8212; purchase", priority: "medium", done: false, section: "active" },
@@ -996,6 +1011,7 @@
       // Not connected yet &#8212; use fallback data
       tasks = [...FALLBACK_TASKS];
       waitingOn = [...FALLBACK_WAITING];
+      restoreTaskData();
       document.getElementById('sheetStatus').classList.add('yellow');
       document.getElementById('sheetStatusText').textContent = 'Sheets: not connected yet';
       renderTasks();
@@ -1037,6 +1053,7 @@
       saveTaskOrder([...currentOrder.filter(id => activeIds.includes(id)), ...newIds]);
     }
 
+    restoreTaskData();
     renderTasks();
     document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
   }
@@ -1132,6 +1149,30 @@
     try {
       localStorage.setItem('gh_task_order', JSON.stringify(orderArray));
     } catch (e) { console.error('Could not save task order:', e); }
+  }
+
+  // Save task notes (and done state) to localStorage
+  function saveTasks() {
+    try {
+      const data = tasks.map(t => ({ id: t.id, note: t.note || '', done: t.done, completed: t.completed || '' }));
+      localStorage.setItem('gh_task_data', JSON.stringify(data));
+    } catch (e) { console.error('Could not save task data:', e); }
+  }
+
+  // Restore notes/done state from localStorage onto current tasks array
+  function restoreTaskData() {
+    try {
+      const saved = localStorage.getItem('gh_task_data');
+      if (!saved) return;
+      const data = JSON.parse(saved);
+      data.forEach(d => {
+        const t = tasks.find(t => t.id === d.id);
+        if (t) {
+          if (d.note) t.note = d.note;
+          if (d.done) { t.done = d.done; t.completed = d.completed; }
+        }
+      });
+    } catch (e) { console.error('Could not restore task data:', e); }
   }
 
   // Build the current visible order and save it
@@ -1328,17 +1369,17 @@
     if (!t) return;
 
     if (t.done) {
-      // UNCHECKING &#8212; restore to active immediately
+      // UNCHECKING &#8212; restore to active immediately (keep note)
       t.done = false;
       t.completed = '';
-      t.note = '';
       renderTasks();
+      saveTasks();
       if (sheetsConnected) syncToggleToSheet(taskId);
     } else {
       // CHECKING OFF &#8212; show note modal first
       pendingToggleId = taskId;
       document.getElementById('noteTaskName').textContent = t.title;
-      document.getElementById('noteInput').value = '';
+      document.getElementById('noteInput').value = t.note || '';
       document.getElementById('noteModal').classList.add('active');
       setTimeout(() => document.getElementById('noteInput').focus(), 100);
     }
@@ -1360,11 +1401,42 @@
     if (t) {
       t.done = true;
       t.completed = new Date().toISOString();
-      t.note = note || '';
+      t.note = note || t.note || '';
       renderTasks();
+      saveTasks();
       if (sheetsConnected) syncToggleToSheet(pendingToggleId);
     }
     pendingToggleId = null;
+  }
+
+  // ── Active task note (without completing) ──
+  let activeNoteTaskId = null;
+
+  function openActiveNote(taskId) {
+    const t = tasks.find(t => t.id === taskId);
+    if (!t) return;
+    activeNoteTaskId = taskId;
+    document.getElementById('activeNoteTaskName').textContent = t.title;
+    document.getElementById('activeNoteInput').value = t.note || '';
+    document.getElementById('activeNoteModal').classList.add('active');
+    setTimeout(() => document.getElementById('activeNoteInput').focus(), 100);
+  }
+
+  function cancelActiveNote() {
+    document.getElementById('activeNoteModal').classList.remove('active');
+    activeNoteTaskId = null;
+  }
+
+  function saveActiveNote() {
+    document.getElementById('activeNoteModal').classList.remove('active');
+    if (!activeNoteTaskId) return;
+    const t = tasks.find(t => t.id === activeNoteTaskId);
+    if (t) {
+      t.note = document.getElementById('activeNoteInput').value.trim();
+      renderTasks();
+      saveTasks();
+    }
+    activeNoteTaskId = null;
   }
 
   // &#9472;&#9472; Toggle done section &#9472;&#9472;
@@ -1424,10 +1496,12 @@
         <button class="prio-btn" onclick="event.stopPropagation();moveTask('${t.id}',-1)" ${isFirst?'disabled':''} title="Move up">&#9650;</button>
         <button class="prio-btn" onclick="event.stopPropagation();moveTask('${t.id}',1)" ${isLast?'disabled':''} title="Move down">&#9660;</button>
       </span>`;
+      const noteHtml = t.note ? `<div class="active-note">📝 ${t.note}</div>` : '';
       return `<div class="task-item">
         <div class="task-checkbox" onclick="toggleTask('${t.id}')"></div>
-        <div class="task-text">
+        <div class="task-text" onclick="openActiveNote('${t.id}')">
           <div class="title">${t.title}${controls}</div>
+          ${noteHtml}
         </div>
       </div>`;
     };
@@ -1508,10 +1582,12 @@
         document.getElementById('somedayList').innerHTML = '<div class="empty">No someday tasks.</div>';
       } else {
         document.getElementById('somedayList').innerHTML = someday.map((t) => {
+          const noteHtml = t.note ? `<div class="active-note">📝 ${t.note}</div>` : '';
           return `<div class="task-item">
             <div class="task-checkbox" onclick="toggleTask('${t.id}')"></div>
-            <div class="task-text">
+            <div class="task-text" onclick="openActiveNote('${t.id}')">
               <div class="title">${t.title}</div>
+              ${noteHtml}
             </div>
           </div>`;
         }).join('');
