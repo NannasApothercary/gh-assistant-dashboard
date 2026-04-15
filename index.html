@@ -1147,6 +1147,18 @@
     return sorted;
   }
 
+  // Move a task to the very top of the list
+  function moveToTop(taskId) {
+    const ordered = snapshotOrder();
+    const ids = ordered.map(t => t.id);
+    const idx = ids.indexOf(taskId);
+    if (idx <= 0) return;
+    ids.splice(idx, 1);
+    ids.unshift(taskId);
+    saveTaskOrder(ids);
+    renderTasks();
+  }
+
   // Move a task up (-1) or down (+1) in the list
   function moveTask(taskId, direction) {
     const ordered = snapshotOrder();
@@ -1408,6 +1420,7 @@
       const isFirst = idx === 0;
       const isLast = idx === sorted.length - 1;
       const controls = `<span class="prio-controls">
+        <button class="prio-btn" onclick="event.stopPropagation();moveToTop('${t.id}')" ${isFirst?'disabled':''} title="Move to top">&#8648;</button>
         <button class="prio-btn" onclick="event.stopPropagation();moveTask('${t.id}',-1)" ${isFirst?'disabled':''} title="Move up">&#9650;</button>
         <button class="prio-btn" onclick="event.stopPropagation();moveTask('${t.id}',1)" ${isLast?'disabled':''} title="Move down">&#9660;</button>
       </span>`;
