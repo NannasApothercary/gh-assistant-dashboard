@@ -167,7 +167,7 @@
     border-color: var(--success);
   }
   .task-checkbox.checked::after {
-    content: '&#10003;';
+    content: '\2713';
     color: white;
     font-size: 12px;
     font-weight: bold;
@@ -1516,37 +1516,41 @@
       html += `</div>`;
     }
 
-    // Recently completed: last 4, within 3 days &#8212; shown inline at bottom
-    const threeDaysAgo = new Date();
-    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-    const recentDone = done
-      .filter(t => t.completed && new Date(t.completed) >= threeDaysAgo)
-      .sort((a, b) => new Date(b.completed) - new Date(a.completed))
-      .slice(0, 4);
+    // Recently completed: last 3, within 7 days — shown inline at bottom
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const allRecentDone = done
+      .filter(t => t.completed && new Date(t.completed) >= sevenDaysAgo)
+      .sort((a, b) => new Date(b.completed) - new Date(a.completed));
+    const recentDone = allRecentDone.slice(0, 3);
+
+    const renderDoneItem = (t) => {
+      const doneDate = t.completed ? new Date(t.completed) : null;
+      const now = new Date();
+      let dateStr = '';
+      if (doneDate) {
+        const isToday = doneDate.toDateString() === now.toDateString();
+        const yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+        const isYesterday = doneDate.toDateString() === yesterday.toDateString();
+        dateStr = isToday ? 'Today' : isYesterday ? 'Yesterday' : doneDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      }
+      const noteHtml = t.note ? `<div class="done-note">"${t.note}"</div>` : '';
+      return `<div class="done-inline-item">
+        <div class="task-checkbox checked" onclick="toggleTask('${t.id}')" title="Tap to restore to active"></div>
+        <div class="task-text done" style="flex:1">
+          <div class="title">${t.title}</div>
+          ${noteHtml}
+          <div class="done-date">Completed ${dateStr}</div>
+        </div>
+      </div>`;
+    };
 
     if (recentDone.length > 0) {
       html += `<div class="done-inline-section">
-        <div class="done-inline-label">&#10003; Recently Completed</div>
-        ${recentDone.map(t => {
-          const doneDate = t.completed ? new Date(t.completed) : null;
-          const now = new Date();
-          let dateStr = '';
-          if (doneDate) {
-            const isToday = doneDate.toDateString() === now.toDateString();
-            const yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
-            const isYesterday = doneDate.toDateString() === yesterday.toDateString();
-            dateStr = isToday ? 'Today' : isYesterday ? 'Yesterday' : doneDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-          }
-          const noteHtml = t.note ? `<div class="done-note">"${t.note}"</div>` : '';
-          return `<div class="done-inline-item">
-            <div class="task-checkbox checked" onclick="toggleTask('${t.id}')" title="Tap to restore to active"></div>
-            <div class="task-text done" style="flex:1">
-              <div class="title">${t.title}</div>
-              ${noteHtml}
-              <div class="done-date">Completed ${dateStr}</div>
-            </div>
-          </div>`;
-        }).join('')}
+        <div class="done-inline-label">✓ Recently Completed</div>
+        ${recentDone.map(renderDoneItem).join('')}
+        ${done.length > 3 ? `<div id="allDoneItems" style="display:none">${done.filter(t => !recentDone.includes(t)).sort((a, b) => new Date(b.completed || 0) - new Date(a.completed || 0)).map(renderDoneItem).join('')}</div>
+        <button onclick="const el=document.getElementById('allDoneItems');const showing=el.style.display!=='none';el.style.display=showing?'none':'block';this.textContent=showing?'View All (${done.length} total)':'Hide'" style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--accent-light);padding:8px 16px;border-radius:8px;cursor:pointer;width:100%;margin-top:8px;font-size:0.85rem;">View All (${done.length} total)</button>` : ''}
       </div>`;
     }
 
