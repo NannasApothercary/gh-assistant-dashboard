@@ -954,9 +954,8 @@
 
   // &#9472;&#9472; FALLBACK DATA (used if Sheets isn't connected yet) &#9472;&#9472;
   const FALLBACK_TASKS = [
-    { id: 'f1', title: "Put PVC governor back on gator &#8212; due April (before baby shower)", priority: "high", done: false, section: "active" },
+    { id: 'f35', title: "&#128293; Cage for bananas &#8212; build/install", priority: "high", done: false, section: "active" },
     { id: 'f2', title: "Taillight bulb &#8212; replace", priority: "high", done: false, section: "active" },
-    { id: 'f3', title: "Lowes run &#8212; C-Channel track + 4x4 Posts", priority: "high", done: false, section: "active" },
     { id: 'f4', title: "Propagate plants &#8212; lingstrum x30, Pigeon Peas, Ground Cherries, rosemary & oregano for chickens, food forest in chicken yard", priority: "high", done: false, section: "active" },
     { id: 'f5', title: "Well pump status &#8212; installed 10/2017, lifespan 8-15 yrs (due window: 2025-2032)", priority: "high", done: false, section: "active" },
     { id: 'f6', title: "Covers for 4\" posts &#8212; purchase", priority: "medium", done: false, section: "active" },
@@ -972,7 +971,7 @@
     { id: 'f16', title: "Pool cage &#8212; replace screws", priority: "medium", done: false, section: "active" },
     { id: 'f17', title: "Install programmable thermostat at Jared's", priority: "medium", done: false, section: "active" },
     { id: 'f18', title: "Jared 2022 Teco &#8212; follow up", priority: "medium", done: false, section: "active" },
-    { id: 'f19', title: "Well filter system &#8212; check inside unit (installed 3/2020)", priority: "medium", done: false, section: "active" },
+    { id: 'f3', title: "Lowes run &#8212; C-Channel track + 4x4 Posts (on hold for now)", priority: "low", done: false, section: "someday" },
     { id: 'f20', title: "Learn to make own chicken feed", priority: "low", done: false, section: "someday" },
     { id: 'f21', title: "Black soldier fly larva &#8212; build the box", priority: "low", done: false, section: "someday" },
     { id: 'f22', title: "Build Bronco & Buggy &#8212; display on shelf in sand", priority: "low", done: false, section: "someday" },
@@ -1185,52 +1184,61 @@
       icon: "&#127981;",
       status: "active",
       bullets: [
-        "DNS pointed to Wix &#8212; site is live at gtprecisionmfg.com. Google Reviews widget integrated with 11 real reviews.",
-        "Next up: Call HIBU to cancel old service, then begin Phase 2 (quote tool, service pages, SEO)."
+        "Build phase essentially complete (10/12 tasks). Site live, indexed, redirects clean, SEO in place. Focus shifting to FABBRIDGE. GSC 404 validation check due ~Apr 18-21. HIBU closes end of May.",
+        "Next up: Check GSC 404 validation (~Apr 18-21); fix EOD review task path; verify HIBU closes Jun 1; resume GBP city additions when cap lifts."
       ],
-      updated: "2026-04-10"
+      updated: "2026-04-15"
     },
     {
       name: "Nanna's Herbal Apothecary",
       icon: "&#127807;",
       status: "active",
       bullets: [
-        "Pinterest autopilot running. Facebook auto-posting MWF. Amazon Associates approved. Awin approved &#38; Starwest Botanicals affiliate now ACTIVE. iHerb partnership declined. Weekly blog review process launched.",
-        "Next up: Generate first Amazon &#38; Starwest affiliate links for top herbs. Iola to reply to Shawna's Facebook comments. Review first blog drafts."
+        "LLC officially filed with Florida (effective Apr 1). Impact.com/iHerb declined again (Apr 13) &#8212; need to check reasons. Iola approved blog posts. Facebook domain updating to .com. Shawna Rickey comments unanswered (~12 days).",
+        "Next up: Log into Impact.com for iHerb decline reasons; finish .com domain update in meta tags; respond to Shawna on Facebook; Batch 5 pins by Apr 20."
       ],
-      updated: "2026-04-10"
+      updated: "2026-04-15"
     },
     {
       name: "Personal Assistant",
       icon: "&#129302;",
       status: "active",
       bullets: [
-        "Dashboard live on Netlify with GitHub auto-deploy. Google Sheets backend for two-way task sync. Daily briefing at 8 AM. Gmail &#38; Google Calendar connected. Scheduled dashboard-sync task running.",
-        "Next up: Voice workflow from phone (review options). Improve Sheet reconciliation reliability."
+        "HOT task system working &#8212; &#128293; items now sort to top. Dashboard sync running. Calendar: Apr 16 has Deliver Cale I2713 + Teco call at 4 PM. All scheduled tasks on schedule.",
+        "Next up: Review voice-to-Claude options for phone task updates; fix GT EOD review task path; deploy dashboard updates."
       ],
-      updated: "2026-04-10"
+      updated: "2026-04-15"
+    },
+    {
+      name: "FABBRIDGE (AI Quote Tool)",
+      icon: "&#128295;",
+      status: "active",
+      bullets: [
+        "Planning phase complete &#8212; Project Brief, Layout Plan, and Intake Form Spec drafted. Four Phase 1 pillars: intake form, completeness engine, Fusion 360 automation, quote generator. No code yet.",
+        "Next up: Choose between intake form prototype or completeness engine logic; begin Phase 1 coding."
+      ],
+      updated: "2026-04-15"
     }
   ];
 
   // &#9472;&#9472; Appointments &#8212; synced from Google Calendar &#9472;&#9472;
-  // Last synced: 2026-04-13 auto-sync (gtprecisionmfg@gmail.com + ghersche12@gmail.com)
+  // Last synced: 2026-04-15 10:56 AM ET auto-sync (gtprecisionmfg@gmail.com + ghersche12@gmail.com)
   let appointments = [
-    { title: "Sarah plate alu", date: "2026-04-13", time: "All day", recurring: false },
-    { title: "Happy birthday!", date: "2026-04-17", time: "All day", recurring: true },
+    { title: "Deliver Cale I2713", date: "2026-04-16", time: "All day", recurring: false },
+    { title: "Teco call 813-275-3909 solar", date: "2026-04-16", time: "4:00 PM", recurring: false },
   ];
 
   // &#9472;&#9472; Emails &#8212; Nanna's Apothecary business emails (via iherschell12@gmail.com) &#9472;&#9472;
-  // Last synced: 2026-04-13 (auto-sync)
+  // Last synced: 2026-04-15 (auto-sync)
   let emails = [
+    { id: 'e_llc_approved', from: "FL Dept of State (fwd from AOL)", subject: "&#9989; Corporate Filing APPROVED &#8212; Nanna's Apothecary LLC", snippet: "Articles of Organization FILED Apr 7, effective Apr 1. Doc# L26000197240. Next: file annual report by May 1, 2027. Get EIN from IRS.", unread: true, date: '2026-04-15' },
+    { id: 'e_blog_appr', from: "Iola Herschell", subject: "Approved &#8212; Nanna's Blog Review (Week of April 13)", snippet: "Iola replied 'Approved' to this week's blog review thread &#8212; drafts cleared to publish.", unread: false, date: '2026-04-13' },
+    { id: 'e_blog', from: "Nanna's Blog Review (DRAFT)", subject: "Nanna's Blog Review &#8212; Week of April 13, 2026", snippet: "2 draft blog posts ready for Iola's review &#8212; should take about 10 minutes.", unread: false, date: '2026-04-13' },
     { id: 'e_kit', from: "Kit / ConvertKit (fwd from AOL)", subject: "Your week with Kit", snippet: "Weekly Kit (ConvertKit) email marketing stats and activity summary.", unread: true, date: '2026-04-13' },
-    { id: 'e_plant', from: "Maggie O'Halloran (Holistic Living School)", subject: "April's Plant of the Month!", snippet: "Learn about Horsemint and upcoming opportunities.", unread: true, date: '2026-04-13' },
-    { id: 'e_blog', from: "Nanna's Blog Review (DRAFT)", subject: "Nanna's Blog Review &#8212; Week of April 13, 2026", snippet: "2 draft blog posts ready for Iola's review &#8212; should take about 10 minutes.", unread: true, date: '2026-04-13' },
-    { id: 'e1', from: "Iola Herschell", subject: "How Your Weekly Blog Review Will Work", snippet: "Starting weekly blog posts &#8212; up to 3 per week for Iola to review.", unread: false, date: '2026-04-09' },
     { id: 'e_sw', from: "Awin (fwd from AOL)", subject: "Membership active with Starwest Botanicals Inc.", snippet: "Starwest Botanicals affiliate membership now active on Awin! Ready to generate links.", unread: true, date: '2026-04-09' },
+    { id: 'e1', from: "Iola Herschell", subject: "How Your Weekly Blog Review Will Work", snippet: "Starting weekly blog posts &#8212; up to 3 per week for Iola to review.", unread: false, date: '2026-04-09' },
     { id: 'e2', from: "Iola Herschell", subject: "ACTION NEEDED &#8212; Unanswered Facebook Comments from Shawna", snippet: "Shawna Rickey left comments on the Page and Group ~1 week ago, no reply yet.", unread: true, date: '2026-04-07' },
-    { id: 'e3', from: "FL Dept of State (fwd from AOL)", subject: "&#9888;&#65039; Corporate Filing REJECTED &#8212; 200470552622", snippet: "ACTION REQUIRED: Filing rejected &#8212; name must include 'LLC'. Correct at sunbiz.org using tracking# 200470552622, pin 2622. Will be abandoned in 60 days if not fixed.", unread: true, date: '2026-04-07' },
     { id: 'e_pmt', from: "Tyler Tech / Finit (fwd from AOL)", subject: "Payment Receipt Confirmation", snippet: "Payment receipt confirmation from FL state filing system.", unread: false, date: '2026-04-07' },
-    { id: 'e4', from: "FL Registrations (fwd from AOL)", subject: "LLC Creation", snippet: "FL Dept of State: currently processing online filings received 3/25&#8211;27/26. Filing submitted 3/27.", unread: false, date: '2026-04-06' },
   ];
 
   // &#9472;&#9472; Reviewed email log (persists in this array, rendered on separate page) &#9472;&#9472;
@@ -1379,13 +1387,22 @@
     document.getElementById('doneCount').textContent = done.length;
     document.getElementById('waitingCount').textContent = waitingOn.length;
 
-    // Sort active tasks: high priority (hot) first, then medium, then low
+    // Sort active tasks: &#128293; HOT items first within high, then high, medium, low
     const priorityOrder = { high: 0, medium: 1, low: 2 };
-    const sorted = [...active].sort((a, b) => (priorityOrder[a.priority] || 1) - (priorityOrder[b.priority] || 1));
+    const isHotTask = (t) => t.title && (t.title.includes('&#128293;') || t.title.includes('\uD83D\uDD25') || t.title.includes('🔥'));
+    const sorted = [...active].sort((a, b) => {
+      const pa = priorityOrder[a.priority] || 1;
+      const pb = priorityOrder[b.priority] || 1;
+      if (pa !== pb) return pa - pb;
+      // Within same priority, &#128293; tasks float to top
+      const aHot = isHotTask(a) ? 0 : 1;
+      const bHot = isHotTask(b) ? 0 : 1;
+      return aHot - bHot;
+    });
 
     // Helper to render a single active task with priority controls
     const renderTask = (t, idx) => {
-      const hotTag = t.priority === 'high' ? '<span class="hot-badge">&#128293; HOT</span>' : '';
+      const hotTag = (t.priority === 'high' && isHotTask(t)) ? '<span class="hot-badge">&#128293; HOT</span>' : (t.priority === 'high' ? '<span class="hot-badge" style="background:var(--warning);color:#000;">High</span>' : '');
       const isTop = idx < 3 ? ' top-marker' : '';
       const atTop = t.priority === 'high';
       const atBottom = t.priority === 'low';
