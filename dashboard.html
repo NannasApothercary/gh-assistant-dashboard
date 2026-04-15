@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GH's Personal Assistant</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-hover: #334155;
+    --border: #334155;
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
+    --accent: #3b82f6;
+    --accent-light: #60a5fa;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --purple: #a78bfa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #1e3a5f, #2d1b69);
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+  .header .date { font-size: 0.85rem; color: var(--text-muted); }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+
+  .section {
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .section.alert-border { border-color: var(--danger); }
+  .section.warn-border  { border-color: var(--warning); }
+  .section.success-border { border-color: var(--success); }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .section-header:hover { background: var(--surface-hover); }
+  .section-header h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-header .badge {
+    background: var(--accent);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .badge.red    { background: var(--danger); }
+  .badge.yellow { background: var(--warning); color: #000; }
+  .badge.green  { background: var(--success); }
+  .badge.purple { background: var(--purple); }
+  .section-header .chevron { transition: transform 0.2s; color: var(--text-muted); }
+  .section.collapsed .chevron { transform: rotate(-90deg); }
+  .section.collapsed .section-body { display: none; }
+  .section-body { padding: 0 18px 16px; }
+
+  .hot-badge {
+    display: inline-block;
+    background: var(--danger);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 6px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .new-badge {
+    display: inline-block;
+    background: var(--purple);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 6px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .ok-badge {
+    display: inline-block;
+    background: var(--success);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 6px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .today-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 6px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* Alert / info boxes */
+  .alert-box {
+    background: rgba(239,68,68,0.12);
+    border: 1px solid rgba(239,68,68,0.4);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+  }
+  .alert-box .alert-title { font-weight: 700; color: var(--danger); margin-bottom: 3px; }
+  .warn-box {
+    background: rgba(245,158,11,0.12);
+    border: 1px solid rgba(245,158,11,0.4);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+  }
+  .warn-box .warn-title { font-weight: 700; color: var(--warning); margin-bottom: 3px; }
+  .info-box {
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+  }
+  .info-box .info-title { font-weight: 700; color: var(--accent-light); margin-bottom: 3px; }
+  .success-box {
+    background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+  }
+  .success-box .success-title { font-weight: 700; color: var(--success); margin-bottom: 3px; }
+
+  /* Task items */
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-checkbox {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .task-checkbox:hover { border-color: var(--accent); background: rgba(59,130,246,0.1); }
+  .task-text { flex: 1; }
+  .task-text .title { font-weight: 500; }
+  .task-text .meta  { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+  .priority-flag { color: var(--danger); margin-right: 4px; }
+  .time-flag     { color: var(--warning); margin-right: 4px; }
+
+  /* Appointment items */
+  .appt-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    align-items: flex-start;
+  }
+  .appt-item:last-child { border-bottom: none; }
+  .appt-date-col { min-width: 80px; flex-shrink: 0; }
+  .appt-day  { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .appt-date-num { font-size: 1.6rem; font-weight: 700; line-height: 1; color: var(--accent-light); }
+  .appt-month { font-size: 0.75rem; color: var(--text-muted); }
+  .appt-info { flex: 1; }
+  .appt-title { font-weight: 600; font-size: 0.95rem; }
+  .appt-time  { font-size: 0.82rem; color: var(--text-muted); margin-top: 3px; }
+
+  /* Email items */
+  .email-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    align-items: flex-start;
+  }
+  .email-item:last-child { border-bottom: none; }
+  .email-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+  .email-dot.read    { background: transparent; border: 1px solid var(--border); }
+  .email-dot.alert   { background: var(--danger); }
+  .email-dot.success { background: var(--success); }
+  .email-dot.warn    { background: var(--warning); }
+
+  .email-info { flex: 1; }
+  .email-subject { font-weight: 500; font-size: 0.9rem; }
+  .email-meta    { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+  /* Affiliate status grid */
+  .affiliate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .affiliate-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .affiliate-card.approved { border-color: rgba(34,197,94,0.5); }
+  .affiliate-card.declined { border-color: rgba(239,68,68,0.5); }
+  .affiliate-card.pending  { border-color: rgba(245,158,11,0.4); }
+  .affiliate-name   { font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; }
+  .affiliate-status { font-size: 0.78rem; }
+  .affiliate-status.ok   { color: var(--success); }
+  .affiliate-status.no   { color: var(--danger); }
+  .affiliate-status.wait { color: var(--warning); }
+
+  /* Divider */
+  .divider { height: 1px; background: var(--border); margin: 10px 0; }
+
+  /* Refresh time */
+  .refresh-note {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    padding: 8px 0 4px;
+  }
+
+  /* Next up highlight */
+  .next-up {
+    background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(167,139,250,0.1));
+    border: 1px solid rgba(59,130,246,0.35);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+  .next-up-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-light);
+    margin-bottom: 6px;
+  }
+  .next-up-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 2px; }
+  .next-up-meta  { font-size: 0.82rem; color: var(--text-muted); }
+
+  /* Section sub-label */
+  .sub-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin: 8px 0 4px;
+  }
+  .sub-label.warn { color: var(--warning); }
+  .sub-label.muted { color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>&#9728;&#65039; GH's Personal Assistant</h1>
+  <div class="date">Wednesday, April 15, 2026 &nbsp;&middot;&nbsp; Updated 7:30 AM EDT</div>
+</div>
+
+<div class="container">
+
+  <!-- NEXT UP -->
+  <div class="next-up">
+    <div class="next-up-label">&#9889; Next Up</div>
+    <div class="next-up-title">PVC Governor &mdash; Put back on Gator</div>
+    <div class="next-up-meta">Due this month (April) &middot; Before baby shower</div>
+  </div>
+
+  <!-- PRIORITY ACTIONS -->
+  <div class="section alert-border">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#128680; Priority Actions</h2>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge red">3 ITEMS</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="alert-box">
+        <div class="alert-title">&#128308; PVC Governor &mdash; Gator</div>
+        Due this month (April) before Sara's baby shower. Put the PVC governor back on the Gator so it's ready for use.
+      </div>
+      <div class="alert-box">
+        <div class="alert-title">&#128308; iHerb Affiliate &mdash; Partnership Declined</div>
+        Your iHerb application via impact.com was declined (Mar 30). Action needed: review decline reason and re-apply or explore alternative path.
+      </div>
+      <div class="warn-box">
+        <div class="warn-title">&#9888;&#65039; Facebook Comments &mdash; Shawna Rickey</div>
+        Unanswered comments (now ~10 days old) on both the Nanna's Herbal Apothecary Page and Group. She's asking about herbal products. Reminder email was sent Apr 7 &mdash; please follow up ASAP to avoid losing engagement.
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#128197; Today's Calendar</h2>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge">1 event</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="appt-item">
+        <div class="appt-date-col">
+          <div class="appt-day">THU</div>
+          <div class="appt-date-num">9</div>
+          <div class="appt-month">APR</div>
+        </div>
+        <div class="appt-info">
+          <div class="appt-title">Picture and frame Caley and Sophia <span class="today-badge">TODAY</span></div>
+          <div class="appt-time">All day</div>
+        </div>
+      </div>
+      <div class="info-box" style="margin-top:10px;">
+        <div class="info-title">No other events through the weekend</div>
+        Open schedule Fri&ndash;Sun &mdash; great time to knock out active tasks!
+      </div>
+    </div>
+  </div>
+
+  <!-- RECENT EMAILS -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#128236; Recent Emails</h2>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge">4 recent</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="email-item">
+        <div class="email-dot success"></div>
+        <div class="email-info">
+          <div class="email-subject">Fw: Membership active &mdash; Starwest Botanicals (Awin) <span class="ok-badge">AFFILIATE</span></div>
+          <div class="email-meta">From: ghersche12@aol.com &middot; Apr 9, 10:10 AM &middot; Forwarded from AOL</div>
+        </div>
+      </div>
+      <div class="email-item">
+        <div class="email-dot"></div>
+        <div class="email-info">
+          <div class="email-subject">Your Bealls Reward Has Arrived! &mdash; $5.00 reward for Iola</div>
+          <div class="email-meta">From: Bealls Rewards &middot; Apr 8, 7:52 AM &middot; Expires 04/08/2027</div>
+        </div>
+      </div>
+      <div class="email-item">
+        <div class="email-dot warn"></div>
+        <div class="email-info">
+          <div class="email-subject">&#128172; ACTION NEEDED &mdash; Unanswered Facebook Comments from Shawna (~10 days old)</div>
+          <div class="email-meta">From: iherschell12@gmail.com &middot; Apr 7, 6:22 PM &middot; Nanna's Herbal Apothecary</div>
+        </div>
+      </div>
+      <div class="email-item">
+        <div class="email-dot success"></div>
+        <div class="email-info">
+          <div class="email-subject">Fw: Membership active &mdash; Starwest Botanicals (Awin) <span class="ok-badge">AFFILIATE</span></div>
+          <div class="email-meta">From: ghersche12@aol.com &middot; Apr 8, 10:30 AM &middot; Forwarded from AOL</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFFILIATE PROGRAMS -->
+  <div class="section warn-border">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#128176; Affiliate Programs</h2>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge yellow">1 declined</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="affiliate-grid">
+        <div class="affiliate-card approved">
+          <div class="affiliate-name">Starwest Botanicals</div>
+          <div class="affiliate-status ok">&#10003; Active (Awin) &mdash; confirmed Apr 9</div>
+        </div>
+        <div class="affiliate-card declined">
+          <div class="affiliate-name">iHerb</div>
+          <div class="affiliate-status no">&#10007; Declined (impact.com) &mdash; Mar 30</div>
+        </div>
+        <div class="affiliate-card pending">
+          <div class="affiliate-name">Mountain Rose Herbs</div>
+          <div class="affiliate-status wait">&#9679; No recent email &mdash; check Aspire</div>
+        </div>
+        <div class="affiliate-card pending">
+          <div class="affiliate-name">Amazon Associates</div>
+          <div class="affiliate-status wait">&#9679; No recent email &mdash; check status</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="success-box" style="margin-top:10px;">
+        <div class="success-title">&#10003; AOL Forwarding Active</div>
+        Starwest/Awin affiliate emails are forwarding from ghersche12@aol.com to iherschell12@gmail.com. Three forwards received Apr 7&ndash;9 &mdash; forwarding rules working.
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVE TASKS -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#9989; Active Tasks</h2>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge">18 items</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="sub-label warn">Time-Sensitive</div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title"><span class="time-flag">&#9200;</span> Put PVC governor back on gator <span class="hot-badge">DUE APRIL</span></div>
+          <div class="meta">Before baby shower</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub-label muted">Home &amp; Property</div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Taillight bulb &mdash; replace</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Covers for 4" posts &mdash; purchase</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Fix sidewalk edges</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Pool cage &mdash; replace screws</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Well filter system &mdash; check inside unit (installed 3/2020)</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Well pump status &mdash; installed 10/2017 (due 2025&ndash;2032)</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub-label muted">Construction &amp; Shop</div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Track line build for TreeHouse</div>
+          <div class="meta">Construction project</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Lowes run &mdash; C-Channel track + 4x4 Posts</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Fix the Lincoln welder amp switch &mdash; move to C</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Modify the 5x8 trailer &mdash; removeable side + reinforce tongue</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Add back tailgate drop section &mdash; hinge and pin setup</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Build the last raised bed</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub-label muted">Vehicles &amp; Equipment</div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Measure hitch height &amp; modify gator to match</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Oil change: Tiller &amp; check Generator</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub-label muted">Garden &amp; Chickens</div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Propagate plants</div>
+          <div class="meta">Lingstrum x30, Pigeon Peas, Ground Cherries, Rosemary &amp; Oregano for chickens, food forest</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub-label muted">Family</div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Install programmable thermostat at Jared's</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Jared 2022 Teco &mdash; follow up</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sub-label muted">Admin</div>
+      <div class="task-item">
+        <div class="task-checkbox"></div>
+        <div class="task-text">
+          <div class="title">Go thru AC paperwork &mdash; look at JB warranty</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WAITING ON -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#9203; Waiting On</h2>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge purple">1 item</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="task-item">
+        <div class="task-checkbox" style="border-color: var(--purple);"></div>
+        <div class="task-text">
+          <div class="title">Borrow the plasma cutter &mdash; confirm plug fits</div>
+          <div class="meta">Waiting on someone to confirm</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOMEDAY -->
+  <div class="section collapsed">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#128161; Someday / Maybe</h2>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge" style="background:var(--text-muted);">15 ideas</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="task-item">
+        <div class="task-text"><div class="title">Learn to make own chicken feed</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Black soldier fly larva &mdash; build the box</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Build the Bronco and Buggy &mdash; display on shelf in sand</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Make a bed extender for hauling lumber &mdash; 2" tubing</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Design storm shutters for chicken run</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Figure out where to put all the signs</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Wiring diagram for blower 220v</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Hobby Lobby acrylic sheet &mdash; pick up</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Build shelving in carport</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">3/8 bar sculpt the nest &mdash; build a bench</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Build permanent chicken patio / picnic table</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Build a photo booth for dioramas</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Make own paint retarder</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">GuitarCreative.com &mdash; go thru tutorial</div></div>
+      </div>
+      <div class="task-item">
+        <div class="task-text"><div class="title">Guitar practice &mdash; unlocking the fretboard video</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COWORK PROJECTS -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#128640; CoWork Projects</h2>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge green">4 Projects</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="success-box">
+        <div class="success-title">&#128481;&#65039; GT Precision Website &mdash; Active</div>
+        Website build phase essentially complete (10/12 plan tasks done). Site live, indexed, redirects clean, SEO fundamentals in place. Greg shifting focus to FABBRIDGE (AI Quote Tool). GSC 404 validation check due ~Apr 18&ndash;21. GBP has 20 cities added; ~12 more queued when Google cap lifts. HIBU account closes end of May. EOD review task still failing &mdash; can&rsquo;t find PROJECT-STATUS.md in workspace.
+        <div style="margin-top:6px;font-size:0.82rem;color:var(--text-muted);">Next up: Check GSC 404 validation results (~Apr 18&ndash;21); fix EOD review task folder path; verify HIBU closes Jun 1; resume GBP city additions when cap lifts. &middot; Updated 2026-04-15</div>
+      </div>
+
+      <div class="success-box">
+        <div class="success-title">&#127807; Nanna&rsquo;s Herbal Apothecary &mdash; Active</div>
+        LLC officially filed with Florida (Nanna&rsquo;s Apothecary LLC, effective Apr 1 &mdash; first annual report due May 1, 2027). Impact.com/iHerb declined again (Apr 13) &mdash; need to log in and check specific decline reasons. Starwest (Awin) &amp; Mountain Rose (Aspire) &mdash; no new emails. Iola approved this week&rsquo;s blog posts (Apr 13). Facebook page domain being updated from .netlify.app to .com; website HTML meta tags still need updating. Shawna Rickey Facebook comments still unanswered (~12 days).
+        <div style="margin-top:6px;font-size:0.82rem;color:var(--text-muted);">Next up: Log into Impact.com to check iHerb decline reasons; finish .com domain update in website HTML meta tags; respond to Shawna Rickey on Facebook; Batch 5 pin creation needed by Apr 20; check AOL for Awin/Aspire emails. &middot; Updated 2026-04-15</div>
+      </div>
+
+      <div class="success-box">
+        <div class="success-title">&#129302; Personal Assistant &mdash; Active</div>
+        HOT task system working &mdash; &#128293; items now auto-sort to top of list. Dashboard sync running: PVC governor removed (done), cage for bananas added as HOT. Calendar shows Apr 16: &ldquo;Deliver Cale I2713&rdquo; (all day) + &ldquo;Teco call&rdquo; at 4 PM. All daily scheduled tasks running on schedule.
+        <div style="margin-top:6px;font-size:0.82rem;color:var(--text-muted);">Next up: Review voice-to-Claude options for phone task updates; fix GT EOD review task folder path; deploy latest dashboard update via Netlify. &middot; Updated 2026-04-15</div>
+      </div>
+
+      <div class="info-box">
+        <div class="info-title">&#128295; FABBRIDGE (AI Quote Tool) &mdash; New Project</div>
+        Planning phase complete &mdash; Project Brief, Flat Layout Plan, and Intake Form Spec documents all drafted. Four Phase 1 pillars identified: intake form, completeness engine, Fusion 360 automation, and quote generator. No code built yet. Greg chose to start here after GT website build phase wrapped up.
+        <div style="margin-top:6px;font-size:0.82rem;color:var(--text-muted);">Next up: Decide between building the intake form prototype or the completeness engine logic first; begin Phase 1 coding. &middot; Updated 2026-04-15</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="refresh-note">CoWork project status auto-refreshed Wed Apr 15, 2026 at 7:30 AM EDT &middot; Next refresh: Thu Apr 16 at 7:30 AM EDT &middot; FABBRIDGE added as new project</div>
+
+</div>
+
+<script>
+function toggleSection(headerEl) {
+  headerEl.closest('.section').classList.toggle('collapsed');
+}
+</script>
+</body>
+</html>
