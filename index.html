@@ -566,6 +566,53 @@
     border-bottom: 1px solid rgba(255,255,255,0.05);
   }
   .modal .specs { margin-top: 12px; font-size: 0.82rem; color: var(--text-muted); }
+  /* Maintenance schedule in modal */
+  .maint-section { margin-top: 14px; }
+  .maint-section h4 { font-size: 0.88rem; margin-bottom: 8px; color: var(--accent-light); }
+  .maint-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: var(--bg);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 0.82rem;
+  }
+  .maint-item .maint-info { flex: 1; }
+  .maint-item .maint-name { font-weight: 500; }
+  .maint-item .maint-detail { color: var(--text-muted); font-size: 0.75rem; margin-top: 2px; }
+  .maint-dot {
+    width: 10px; height: 10px; border-radius: 50%; margin-right: 10px; flex-shrink: 0;
+  }
+  .maint-dot.green { background: var(--success); }
+  .maint-dot.yellow { background: var(--warning); }
+  .maint-dot.red { background: var(--danger); }
+  .maint-dot.gray { background: #666; }
+  .maint-actions { display: flex; gap: 4px; margin-left: 8px; }
+  .maint-actions button {
+    background: none; border: 1px solid var(--border); color: var(--text-muted);
+    border-radius: 4px; padding: 3px 8px; font-size: 0.72rem; cursor: pointer;
+  }
+  .maint-actions button:hover { border-color: var(--accent); color: var(--accent); }
+  .parts-section { margin-top: 14px; }
+  .parts-section h4 { font-size: 0.88rem; margin-bottom: 8px; color: var(--accent-light); }
+  .part-item {
+    display: flex; justify-content: space-between;
+    padding: 4px 10px; font-size: 0.82rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .part-item:last-child { border-bottom: none; }
+  .part-name { color: var(--text); }
+  .part-number { color: var(--accent-light); font-family: monospace; font-size: 0.8rem; }
+  .snooze-options {
+    display: none; margin-top: 4px; padding: 4px 0;
+  }
+  .snooze-options.active { display: flex; gap: 4px; }
+  .snooze-options button {
+    background: rgba(245,158,11,0.15); border: none; color: var(--warning);
+    border-radius: 4px; padding: 3px 8px; font-size: 0.7rem; cursor: pointer;
+  }
   .add-log-form {
     display: flex;
     gap: 6px;
@@ -881,9 +928,18 @@
 <!-- Equipment Detail Modal -->
 <div class="modal-overlay" id="equipModal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
-    <button class="close-btn" onclick="closeModal()">&#10005;</button>
+    <button class="close-btn" onclick="closeModal()">✕</button>
     <h3 id="modalTitle"></h3>
     <div id="modalType" style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px"></div>
+    <div class="maint-section" id="modalMaintSection">
+      <h4>🔧 Maintenance Schedule</h4>
+      <div id="modalMaintList"></div>
+    </div>
+    <div class="parts-section" id="modalPartsSection">
+      <h4>📦 Parts & Specs</h4>
+      <div id="modalPartsList"></div>
+    </div>
+    <h4 style="font-size:0.88rem;margin-top:14px;margin-bottom:8px;color:var(--accent-light)">📋 Service Log</h4>
     <table>
       <thead><tr><th>Date</th><th>Service</th><th>Notes</th></tr></thead>
       <tbody id="modalLogBody"></tbody>
@@ -893,7 +949,6 @@
       <input type="text" id="logDesc" placeholder="Add maintenance entry..." onkeydown="if(event.key==='Enter')addLogEntry()">
       <button onclick="addLogEntry()">Add</button>
     </div>
-    <div class="specs" id="modalSpecs"></div>
   </div>
 </div>
 
@@ -1791,20 +1846,42 @@
   // &#9472;&#9472; Equipment Data &#9472;&#9472;
   let equipment = [
     {
-      id: 'hustler', name: 'Hustler Raptor XDX', type: 'Riding Mower', icon: '&#128668;',
-      specs: ['Hydraulic fluid: Mobile 1 15w-50 or Castrol 5w-50 Syntec'],
+      id: 'hustler', name: 'Hustler Raptor XDX', type: 'Riding Mower | Model #939827', icon: '🚜',
+      maintenance: [
+        { name: 'Oil & filter change', intervalDays: 90, lastDone: '2024-08-08', parts: ['Oil filter 602581', '10W-40 or 20W-50 oil'] },
+        { name: 'Air filter & pre-filter', intervalDays: 180, lastDone: null, parts: ['Air filter 110130752', 'Pre-filter 110137046'] },
+        { name: 'Fuel filter', intervalDays: 180, lastDone: null, parts: ['Fuel filter 490190031'] },
+        { name: 'Sharpen/replace blades', intervalDays: 365, lastDone: '2025-02-01', parts: ['Blade set (spare on hand)'] },
+        { name: 'Trans fluid & filters', intervalDays: 730, lastDone: '2025-07-20', parts: ['Mobil 1 15w-50 or Castrol 5w-50 Syntec'] },
+      ],
+      parts: [
+        { name: 'Oil filter', number: '602581 (OEM) / 490650721' },
+        { name: 'Air filter', number: '110130752' },
+        { name: 'Pre-filter', number: '110137046' },
+        { name: 'Fuel filter', number: '490190031' },
+        { name: 'Hydraulic fluid', number: 'Mobil 1 15w-50' },
+      ],
       log: [
         { date: '2023-03-24', service: 'Fixed mower', notes: '$550' },
         { date: '2024-08-08', service: 'Oil change & filter', notes: '14 hrs' },
         { date: '2024-08-25', service: 'Sharpened blades', notes: '20 hrs, ordered 2nd set' },
         { date: '2025-02-01', service: 'Blades replaced', notes: '' },
-        { date: '2025-07-20', service: 'Trans fluid & filters changed', notes: '60.7 hrs. Next due at 200 hrs or 2 yrs' },
+        { date: '2025-07-20', service: 'Trans fluid & filters changed', notes: '60.7 hrs. Next due ~July 2027' },
       ]
     },
     {
-      id: 'generator', name: 'XP13000 Generator', type: 'Whole House Generator', icon: '&#9889;',
-      purchased: 'July 2023',
-      specs: ['100 gal propane = ~27 hrs', 'Chargeverter 60amp', 'Total run time: ~200 hrs'],
+      id: 'generator', name: 'DuroMax XP13000HX', type: 'Dual Fuel Generator | 500cc', icon: '⚡',
+      maintenance: [
+        { name: 'Oil change', intervalDays: 180, lastDone: null, parts: ['10W-30 oil (~1.1 qt)'] },
+        { name: 'Air filter', intervalDays: 180, lastDone: null, parts: ['DuroMax air filter element'] },
+        { name: 'Spark plug', intervalDays: 180, lastDone: null, parts: ['NGK BPR6ES (gap 0.7-0.8mm)'] },
+        { name: 'Valve clearance check', intervalDays: 365, lastDone: null, parts: [] },
+      ],
+      parts: [
+        { name: 'Oil', number: '10W-30 (~1.1 qt)' },
+        { name: 'Spark plug', number: 'NGK BPR6ES' },
+        { name: 'Propane usage', number: '100 gal ≈ 27 hrs' },
+      ],
       log: [
         { date: '2023-07-01', service: 'Purchased', notes: '' },
         { date: '2023-08-20', service: 'Built gen shed', notes: '' },
@@ -1813,48 +1890,64 @@
       ]
     },
     {
-      id: 'tiller', name: 'TroyBilt Tiller', type: 'Garden Tiller', icon: '&#127793;',
-      purchased: 'March 2023',
-      specs: [],
-      log: [
-        { date: '2023-03-01', service: 'Purchased', notes: '' },
-        { date: '2024-02-01', service: 'Tilled garden', notes: '' },
-      ]
-    },
-    {
-      id: 'gator', name: 'John Deere Gator', type: 'Utility Vehicle', icon: '&#128665;',
-      specs: [],
+      id: 'gator', name: 'John Deere TX Gator', type: 'Utility Vehicle | PIN ...181951', icon: '🚙',
+      maintenance: [
+        { name: 'Oil & filter change', intervalDays: 90, lastDone: '2024-07-19', parts: ['Oil filter AM107423', 'TY22029 oil (2 qt)'] },
+        { name: 'Fuel filter', intervalDays: 180, lastDone: null, parts: ['Fuel filter AM116304'] },
+        { name: 'Air filter', intervalDays: 365, lastDone: null, parts: ['Air element M113621'] },
+        { name: 'Spark plug', intervalDays: 365, lastDone: null, parts: ['M138938 (BPR2ES)'] },
+      ],
+      parts: [
+        { name: 'Oil filter', number: 'AM107423' },
+        { name: 'Fuel filter', number: 'AM116304' },
+        { name: 'Air element', number: 'M113621' },
+        { name: 'Spark plug', number: 'M138938 (BPR2ES)' },
+        { name: 'Complete kit', number: 'LG258 (Amazon)' },
+      ],
       log: [
         { date: '2024-07-19', service: 'Oil change', notes: 'Then picked up for head gasket recall' },
         { date: '2025-02-01', service: 'New tires', notes: '' },
       ]
     },
     {
-      id: 'chipper', name: 'Chipper Shredder', type: 'Wood Chipper', icon: '&#129717;',
-      purchased: 'July 2023',
-      specs: [],
+      id: 'jewel', name: "Jewel (2020 Colorado)", type: 'Truck | VIN ...L1245691', icon: '🛻',
+      maintenance: [
+        { name: 'Oil & filter change', intervalDays: 180, lastDone: '2026-01-04', parts: ['AC Delco PF64 filter', 'Dexos1 synthetic 5W-30 (6 qt)'] },
+        { name: 'Tire rotation', intervalDays: 180, lastDone: null, parts: [] },
+        { name: 'Cabin air filter', intervalDays: 365, lastDone: null, parts: [] },
+        { name: 'Engine air filter', intervalDays: 545, lastDone: null, parts: [] },
+        { name: 'Spark plugs', intervalDays: 730, lastDone: null, parts: ['AC Delco 41-162 Iridium'] },
+        { name: 'Trans fluid change', intervalDays: 1095, lastDone: '2024-11-26', parts: ['MOBIL 1 LV ATF HP (6 qt)'] },
+      ],
+      parts: [
+        { name: 'Oil filter', number: 'AC Delco PF64' },
+        { name: 'Spark plugs', number: 'AC Delco 41-162 Iridium' },
+        { name: 'Trans fluid', number: 'MOBIL 1 LV ATF HP (6 qt)' },
+        { name: 'Taillight bulb', number: '7443' },
+        { name: 'Tires', number: '265/70R16' },
+      ],
       log: [
-        { date: '2023-07-01', service: 'Purchased', notes: '' },
-        { date: '2023-10-01', service: 'Emptied gas for storage', notes: '' },
+        { date: '2024-11-26', service: 'Transmission change', notes: '30k miles' },
+        { date: '2026-01-04', service: 'Oil change', notes: '' },
       ]
     },
     {
-      id: 'weedeater', name: 'Weed Eater', type: 'String Trimmer', icon: '&#127807;',
-      specs: ['Spark plug: BPMR8Y NGK (1 spare on hand)'],
-      log: []
-    },
-    {
-      id: 'pressure', name: 'Pressure Washer', type: 'Pressure Washer', icon: '&#128166;',
-      purchased: 'Early 2024',
-      specs: [],
-      log: [
-        { date: '2024-03-14', service: 'Power washed house', notes: 'Not patio (chicks)' },
-        { date: '2024-04-01', service: 'Finished patio wash', notes: 'After chickens moved to coop' },
-      ]
-    },
-    {
-      id: 'grace', name: "Grace (Iola's 2024 Colorado)", type: 'Truck', icon: '&#128763;',
-      specs: ['Trans: MOBIL 1 6 QTS LV ATFHP Blue Label', 'TF922 Trans Filter', 'Pan: 89 in/lbs, Cat Flange: 37 ft/lbs, Hanger: 43 ft/lbs'],
+      id: 'grace', name: "Grace (2024 Colorado)", type: "Iola's Truck | VIN ...N1104885", icon: '🛻',
+      maintenance: [
+        { name: 'Oil & filter change', intervalDays: 180, lastDone: '2025-01-19', parts: ['AC Delco PF64 filter', 'Dexos1 synthetic (6 qt)'] },
+        { name: 'Tire rotation', intervalDays: 180, lastDone: null, parts: [] },
+        { name: 'Cabin air filter', intervalDays: 365, lastDone: null, parts: [] },
+        { name: 'Engine air filter', intervalDays: 545, lastDone: null, parts: [] },
+        { name: 'Spark plugs', intervalDays: 730, lastDone: null, parts: ['AC Delco Iridium'] },
+        { name: 'Trans fluid change', intervalDays: 1095, lastDone: '2024-07-01', parts: ['MOBIL 1 LV ATF HP Blue Label (6 qt)', 'Filter TF922'] },
+      ],
+      parts: [
+        { name: 'Oil filter', number: 'AC Delco PF64' },
+        { name: 'Trans fluid', number: 'MOBIL 1 LV ATF HP Blue Label (6 qt)' },
+        { name: 'Trans filter', number: 'TF922' },
+        { name: 'Pan bolts', number: '89 in/lbs' },
+        { name: 'Tires', number: '255/65R17' },
+      ],
       log: [
         { date: '2024-07-01', service: 'Trans fluid changed', notes: '48k miles' },
         { date: '2024-12-01', service: 'Dent on tailgate', notes: '' },
@@ -1862,39 +1955,257 @@
       ]
     },
     {
-      id: 'jewel', name: "Jewel (Greg's 2020 Colorado)", type: 'Truck', icon: '&#128763;',
-      specs: [],
+      id: 'corolla', name: '2024 Corolla SE', type: 'Car | VIN ...RP123037', icon: '🚗',
+      maintenance: [
+        { name: 'Oil & filter change', intervalDays: 180, lastDone: null, parts: ['Toyota 90915-YZZN1 filter', '0W-20 synthetic (4.4 qt)'] },
+        { name: 'Tire rotation', intervalDays: 180, lastDone: null, parts: [] },
+        { name: 'Cabin air filter', intervalDays: 365, lastDone: null, parts: [] },
+        { name: 'Engine air filter', intervalDays: 545, lastDone: null, parts: [] },
+        { name: 'Spark plugs', intervalDays: 1095, lastDone: null, parts: [] },
+      ],
+      parts: [
+        { name: 'Oil filter', number: 'Toyota 90915-YZZN1' },
+        { name: 'Oil', number: '0W-20 Full Synthetic (4.4 qt)' },
+        { name: 'Spare key', number: 'In lock box' },
+      ],
       log: [
-        { date: '2024-11-26', service: 'Transmission change', notes: '30k miles' },
-        { date: '2026-01-04', service: 'Oil change', notes: '' },
+        { date: '2024-01-01', service: 'Purchased', notes: 'Paid off 2/21/2024' },
       ]
     },
     {
-      id: 'corolla', name: '2024 Corolla', type: 'Car', icon: '&#128663;',
-      purchased: 'January 2024',
-      specs: ['Spare key in lock box', 'Paid off 2/21/2024'],
+      id: 'weedeater', name: 'Husqvarna 522L', type: 'String Trimmer | SN 586-765304', icon: '🌿',
+      maintenance: [
+        { name: 'Spark plug', intervalDays: 365, lastDone: null, parts: ['BPMR8Y NGK (1 spare on hand)'] },
+        { name: 'Air filter & pre-filter', intervalDays: 180, lastDone: null, parts: ['Air filter 576401601', 'Pre-filter 577851501'] },
+        { name: 'Inspect fuel lines', intervalDays: 365, lastDone: null, parts: [] },
+      ],
+      parts: [
+        { name: 'Spark plug', number: 'BPMR8Y NGK' },
+        { name: 'Air filter', number: '576401601' },
+        { name: 'Pre-filter', number: '577851501' },
+      ],
+      log: []
+    },
+    {
+      id: 'pressure', name: 'Westinghouse WPX3400', type: 'Pressure Washer | 3400 PSI 2.6 GPM', icon: '💦',
+      maintenance: [
+        { name: 'Engine oil change', intervalDays: 365, lastDone: null, parts: ['SAE 10W-30 (~20 oz)'] },
+        { name: 'Air filter', intervalDays: 365, lastDone: null, parts: [] },
+        { name: 'Spark plug', intervalDays: 365, lastDone: null, parts: [] },
+        { name: 'Pump winterization', intervalDays: 365, lastDone: null, parts: ['Pump saver solution'] },
+      ],
+      parts: [
+        { name: 'Oil', number: 'SAE 10W-30 (~20 oz)' },
+        { name: 'Replacement pump', number: '050320180001-WPX3400' },
+        { name: 'Pump type', number: 'Maintenance-free axial cam' },
+      ],
       log: [
-        { date: '2024-01-01', service: 'Purchased', notes: '' },
+        { date: '2024-03-14', service: 'Power washed house', notes: 'Not patio (chicks)' },
+        { date: '2024-04-01', service: 'Finished patio wash', notes: 'After chickens moved to coop' },
       ]
+    },
+    {
+      id: 'tiller', name: 'TroyBilt Tiller', type: 'Garden Tiller | Needs model #', icon: '🌱',
+      maintenance: [
+        { name: 'Oil change', intervalDays: 365, lastDone: null, parts: [] },
+        { name: 'Spark plug', intervalDays: 365, lastDone: null, parts: [] },
+        { name: 'Air filter', intervalDays: 365, lastDone: null, parts: [] },
+      ],
+      parts: [],
+      log: [
+        { date: '2023-03-01', service: 'Purchased', notes: '' },
+        { date: '2024-02-01', service: 'Tilled garden', notes: '' },
+      ]
+    },
+    {
+      id: 'chipper', name: 'Chipper Shredder', type: 'Wood Chipper | Needs model #', icon: '🪵',
+      maintenance: [
+        { name: 'Oil change', intervalDays: 365, lastDone: null, parts: [] },
+        { name: 'Spark plug', intervalDays: 365, lastDone: null, parts: [] },
+        { name: 'Sharpen blades', intervalDays: 365, lastDone: null, parts: [] },
+      ],
+      parts: [],
+      log: [
+        { date: '2023-07-01', service: 'Purchased', notes: '' },
+        { date: '2023-10-01', service: 'Emptied gas for storage', notes: '' },
+      ]
+    },
+    {
+      id: 'waterheater', name: 'Rheem Water Heater', type: '50 gal Electric | PROE50 M2 RH95', icon: '🔥',
+      maintenance: [
+        { name: 'Flush sediment from tank', intervalDays: 180, lastDone: null, parts: [] },
+        { name: 'Test T&P relief valve', intervalDays: 365, lastDone: null, parts: [] },
+        { name: 'Inspect anode rod', intervalDays: 730, lastDone: null, parts: ['Anode rod SP11309C'] },
+        { name: 'Replace anode rod', intervalDays: 1460, lastDone: '2022-03-03', parts: ['SP11309C (~$30 Home Depot)'] },
+      ],
+      parts: [
+        { name: 'Anode rod', number: 'SP11309C (Mg 0.75" x 44-3/8")' },
+        { name: 'Elements', number: '4500W upper & lower (240V)' },
+        { name: 'Installed', number: '3/3/2022' },
+        { name: 'Warranty', number: '6 yr tank — expires ~3/2028' },
+      ],
+      log: [
+        { date: '2022-03-03', service: 'Installed', notes: 'Mfg 1/11/2022' },
+      ]
+    },
+    {
+      id: 'eg4solar', name: 'EG4 Solar System', type: '2x 18KPV Inverters + 3x 280Ah Batteries', icon: '☀️',
+      maintenance: [
+        { name: 'Check inverter for error codes', intervalDays: 30, lastDone: null, parts: [] },
+        { name: 'Inspect cable connections', intervalDays: 90, lastDone: null, parts: [] },
+        { name: 'Clean inverter vents', intervalDays: 180, lastDone: null, parts: [] },
+        { name: 'Inspect wiring for wear/corrosion', intervalDays: 365, lastDone: null, parts: [] },
+        { name: 'Check battery balance (all 3)', intervalDays: 365, lastDone: null, parts: [] },
+        { name: 'Firmware update check', intervalDays: 180, lastDone: null, parts: [] },
+      ],
+      parts: [
+        { name: 'Inverter model', number: '18KPV-12LV (x2)' },
+        { name: 'Battery model', number: 'WM-48-280-IN-LL-00 (x3)' },
+        { name: 'Total capacity', number: '43 kWh (3 x 14.3 kWh)' },
+        { name: 'EG4 Support', number: '1-903-609-1988' },
+      ],
+      log: []
     },
   ];
 
   let archivedTasks = [];
 
-  // &#9472;&#9472; Render Equipment &#9472;&#9472;
+  // ── Maintenance status helpers ──
+  function getMaintSnoozed() {
+    try { return JSON.parse(localStorage.getItem('gh_maint_snoozed') || '{}'); } catch(e) { return {}; }
+  }
+  function saveMaintSnoozed(data) {
+    try { localStorage.setItem('gh_maint_snoozed', JSON.stringify(data)); } catch(e) {}
+  }
+
+  function getMaintStatus(m, eqId) {
+    const snoozed = getMaintSnoozed();
+    const snoozeKey = eqId + '_' + m.name;
+    const snoozeUntil = snoozed[snoozeKey] ? new Date(snoozed[snoozeKey]) : null;
+    const now = new Date();
+
+    if (!m.lastDone) return { status: 'yellow', text: 'Not tracked yet' };
+    const last = new Date(m.lastDone);
+    const nextDue = new Date(last.getTime() + m.intervalDays * 86400000);
+    const daysLeft = Math.floor((nextDue - now) / 86400000);
+    const warningDays = Math.min(30, Math.floor(m.intervalDays * 0.15));
+
+    // If snoozed and snooze is still active, show as green with snooze indicator
+    if (snoozeUntil && now < snoozeUntil) {
+      const snzDays = Math.floor((snoozeUntil - now) / 86400000);
+      return { status: 'green', text: `Snoozed ${snzDays}d`, snoozed: true };
+    }
+
+    if (daysLeft < 0) return { status: 'red', text: `${Math.abs(daysLeft)}d overdue` };
+    if (daysLeft <= warningDays) return { status: 'yellow', text: `Due in ${daysLeft}d` };
+    return { status: 'green', text: `OK — ${daysLeft}d left` };
+  }
+
+  function getEquipOverallStatus(eq) {
+    if (!eq.maintenance || eq.maintenance.length === 0) return 'gray';
+    let worst = 'green';
+    for (const m of eq.maintenance) {
+      const s = getMaintStatus(m, eq.id);
+      if (s.status === 'red') return 'red';
+      if (s.status === 'yellow') worst = 'yellow';
+    }
+    return worst;
+  }
+
+  function getEquipStatusText(eq) {
+    const status = getEquipOverallStatus(eq);
+    if (status === 'red') {
+      const overdue = eq.maintenance.filter(m => getMaintStatus(m, eq.id).status === 'red');
+      return overdue.length + ' overdue';
+    }
+    if (status === 'yellow') {
+      const due = eq.maintenance.filter(m => getMaintStatus(m, eq.id).status === 'yellow');
+      return due.length + ' due soon';
+    }
+    return 'All good';
+  }
+
+  // ── Snooze a maintenance item ──
+  function snoozeMaint(eqId, maintName, days) {
+    const snoozed = getMaintSnoozed();
+    const key = eqId + '_' + maintName;
+    const until = new Date();
+    until.setDate(until.getDate() + days);
+    snoozed[key] = until.toISOString();
+    saveMaintSnoozed(snoozed);
+    showEquipDetail(eqId);
+    renderEquipment();
+  }
+
+  function toggleSnoozeOptions(idx) {
+    const el = document.getElementById('snooze-' + idx);
+    if (el) el.classList.toggle('active');
+  }
+
+  // ── Mark maintenance done (adds log + updates lastDone) ──
+  function markMaintDone(eqId, maintIdx) {
+    const eq = equipment.find(e => e.id === eqId);
+    if (!eq || !eq.maintenance[maintIdx]) return;
+    const m = eq.maintenance[maintIdx];
+    const today = new Date().toISOString().split('T')[0];
+    m.lastDone = today;
+    eq.log.push({ date: today, service: m.name, notes: 'Logged from dashboard' });
+    // Clear any snooze
+    const snoozed = getMaintSnoozed();
+    delete snoozed[eqId + '_' + m.name];
+    saveMaintSnoozed(snoozed);
+    // Save to localStorage
+    saveEquipMaint();
+    showEquipDetail(eqId);
+    renderEquipment();
+  }
+
+  // ── Persist maintenance dates to localStorage ──
+  function saveEquipMaint() {
+    try {
+      const data = equipment.map(eq => ({
+        id: eq.id,
+        maint: (eq.maintenance||[]).map(m => ({ name: m.name, lastDone: m.lastDone })),
+        log: eq.log
+      }));
+      localStorage.setItem('gh_equip_maint', JSON.stringify(data));
+    } catch(e) {}
+  }
+  function restoreEquipMaint() {
+    try {
+      const saved = localStorage.getItem('gh_equip_maint');
+      if (!saved) return;
+      const data = JSON.parse(saved);
+      data.forEach(d => {
+        const eq = equipment.find(e => e.id === d.id);
+        if (!eq) return;
+        if (d.log && d.log.length > eq.log.length) eq.log = d.log;
+        (d.maint||[]).forEach(sm => {
+          const m = (eq.maintenance||[]).find(x => x.name === sm.name);
+          if (m && sm.lastDone) m.lastDone = sm.lastDone;
+        });
+      });
+    } catch(e) {}
+  }
+
+  // ── Render Equipment Cards ──
   function renderEquipment() {
     const grid = document.getElementById('equipGrid');
-    grid.innerHTML = equipment.map(eq => {
-      const lastLog = eq.log.length > 0 ? eq.log[eq.log.length - 1] : null;
-      const lastDate = lastLog ? new Date(lastLog.date) : null;
-      const daysSince = lastDate ? Math.floor((new Date() - lastDate) / (1000*60*60*24)) : null;
-      let statusClass = 'good';
-      let statusText = 'OK';
-      if (daysSince !== null && daysSince > 365) { statusClass = 'due'; statusText = '12+ mo ago'; }
-      if (daysSince !== null && daysSince > 545) { statusClass = 'overdue'; statusText = '18+ mo ago'; }
-      if (!lastLog) { statusClass = 'due'; statusText = 'No log'; }
+    document.getElementById('equipCount').textContent = equipment.length;
 
-      return `<div class="equip-card" onclick="showEquipDetail('${eq.id}')">
+    // Sort: red first, then yellow, then green
+    const order = { red: 0, yellow: 1, green: 2, gray: 3 };
+    const sorted = [...equipment].sort((a, b) =>
+      (order[getEquipOverallStatus(a)] || 3) - (order[getEquipOverallStatus(b)] || 3)
+    );
+
+    grid.innerHTML = sorted.map(eq => {
+      const status = getEquipOverallStatus(eq);
+      const statusText = getEquipStatusText(eq);
+      const statusClass = status === 'red' ? 'overdue' : status === 'yellow' ? 'due' : 'good';
+      const lastLog = eq.log.length > 0 ? eq.log[eq.log.length - 1] : null;
+
+      return `<div class="equip-card" onclick="showEquipDetail('${eq.id}')" style="border-left:3px solid var(--${status === 'red' ? 'danger' : status === 'yellow' ? 'warning' : 'success'})">
         <div class="equip-name">${eq.icon} ${eq.name}</div>
         <div class="equip-last">${lastLog ? 'Last: ' + lastLog.service + ' (' + new Date(lastLog.date).toLocaleDateString('en-US',{month:'short',year:'numeric'}) + ')' : 'No maintenance logged'}</div>
         <span class="equip-status ${statusClass}">${statusText}</span>
@@ -1902,24 +2213,62 @@
     }).join('');
   }
 
-  // &#9472;&#9472; Equipment Detail Modal &#9472;&#9472;
+  // ── Equipment Detail Modal ──
   function showEquipDetail(id) {
     const eq = equipment.find(e => e.id === id);
     if (!eq) return;
 
     const modal = document.getElementById('equipModal');
     document.getElementById('modalTitle').textContent = eq.icon + ' ' + eq.name;
-    document.getElementById('modalType').textContent = eq.type + (eq.purchased ? ' | Purchased: ' + eq.purchased : '');
+    document.getElementById('modalType').textContent = eq.type;
 
+    // Maintenance schedule
+    const maintList = document.getElementById('modalMaintList');
+    if (eq.maintenance && eq.maintenance.length > 0) {
+      document.getElementById('modalMaintSection').style.display = 'block';
+      maintList.innerHTML = eq.maintenance.map((m, idx) => {
+        const s = getMaintStatus(m, eq.id);
+        const partsStr = m.parts.length > 0 ? 'Parts: ' + m.parts.join(', ') : '';
+        const lastStr = m.lastDone ? 'Last: ' + new Date(m.lastDone).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'Never logged';
+        const showSnooze = s.status === 'yellow' || s.status === 'red';
+        return `<div class="maint-item">
+          <div class="maint-dot ${s.status}"></div>
+          <div class="maint-info">
+            <div class="maint-name">${m.name}</div>
+            <div class="maint-detail">${lastStr} · Every ${m.intervalDays < 365 ? Math.round(m.intervalDays/30) + ' mo' : Math.round(m.intervalDays/365) + ' yr'} · ${s.text}</div>
+            ${partsStr ? '<div class="maint-detail">' + partsStr + '</div>' : ''}
+            <div class="snooze-options" id="snooze-${idx}">
+              <button onclick="event.stopPropagation();snoozeMaint('${eq.id}','${m.name.replace(/'/g,"\\'")}',14)">2 weeks</button>
+              <button onclick="event.stopPropagation();snoozeMaint('${eq.id}','${m.name.replace(/'/g,"\\'")}',30)">1 month</button>
+              <button onclick="event.stopPropagation();snoozeMaint('${eq.id}','${m.name.replace(/'/g,"\\'")}',90)">3 months</button>
+            </div>
+          </div>
+          <div class="maint-actions">
+            <button onclick="event.stopPropagation();markMaintDone('${eq.id}',${idx})" title="Mark as done">✓ Done</button>
+            ${showSnooze ? '<button onclick="event.stopPropagation();toggleSnoozeOptions('+idx+')" title="Delay">⏰ Delay</button>' : ''}
+          </div>
+        </div>`;
+      }).join('');
+    } else {
+      document.getElementById('modalMaintSection').style.display = 'none';
+    }
+
+    // Parts
+    const partsList = document.getElementById('modalPartsList');
+    if (eq.parts && eq.parts.length > 0) {
+      document.getElementById('modalPartsSection').style.display = 'block';
+      partsList.innerHTML = eq.parts.map(p =>
+        `<div class="part-item"><span class="part-name">${p.name}</span><span class="part-number">${p.number}</span></div>`
+      ).join('');
+    } else {
+      document.getElementById('modalPartsSection').style.display = 'none';
+    }
+
+    // Log table
     const tbody = document.getElementById('modalLogBody');
     tbody.innerHTML = [...eq.log].reverse().map(l =>
       `<tr><td>${new Date(l.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td><td>${l.service}</td><td>${l.notes}</td></tr>`
     ).join('') || '<tr><td colspan="3" style="text-align:center;color:var(--text-muted)">No maintenance logged yet</td></tr>';
-
-    const specsList = document.getElementById('modalSpecs');
-    specsList.innerHTML = eq.specs.length > 0
-      ? eq.specs.map(s => `<div>&#8226; ${s}</div>`).join('')
-      : '<div style="color:var(--text-muted)">No specs recorded</div>';
 
     document.getElementById('logEquipId').value = id;
     modal.classList.add('active');
@@ -1937,6 +2286,7 @@
     if (!eq) return;
     eq.log.push({ date: new Date().toISOString().split('T')[0], service: desc, notes: '' });
     document.getElementById('logDesc').value = '';
+    saveEquipMaint();
     showEquipDetail(id);
     renderEquipment();
   }
@@ -1950,6 +2300,7 @@
   loadTasksFromSheet(); // Load tasks from Sheets (or fallback)
   renderAppts();
   renderEmails();
+  restoreEquipMaint();
   renderEquipment();
 
   // &#9472;&#9472; Auto-refresh every 60 seconds &#9472;&#9472;
