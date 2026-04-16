@@ -1353,8 +1353,14 @@
   // &#9472;&#9472; Reviewed email log (persists in this array, rendered on separate page) &#9472;&#9472;
   let reviewedEmails = [];
 
-  // &#9472;&#9472; Reviewed email IDs (localStorage-persisted so sync doesn't resurface them) &#9472;&#9472;
-  const REVIEWED_EMAIL_KEY = 'reviewedEmailIds';
+  // &#9472;&#9472; Reviewed email fingerprints (localStorage-persisted so sync doesn&#8217;t resurface them) &#9472;&#9472;
+  // Track BOTH the email id AND a content fingerprint (subject+from+date) so reviews survive even
+  // when the sync task regenerates different IDs for the same email tomorrow.
+  const REVIEWED_EMAIL_KEY = 'reviewedEmailIds';           // legacy: set of ids
+  const REVIEWED_EMAIL_FP_KEY = 'reviewedEmailFingerprints'; // preferred: set of subject+from+date hashes
+  function emailFingerprint(e) {
+    return ((e.subject || '') + '|' + (e.from || '') + '|' + (e.date || '')).toLowerCase().replace(/\s+/g, ' ').trim();
+  }
   function loadReviewedEmailIds() {
     try { return new Set(JSON.parse(localStorage.getItem(REVIEWED_EMAIL_KEY) || '[]')); }
     catch (e) { return new Set(); }
@@ -1362,11 +1368,19 @@
   function saveReviewedEmailIds(set) {
     try { localStorage.setItem(REVIEWED_EMAIL_KEY, JSON.stringify([...set])); } catch (e) {}
   }
-  // Filter emails[] against the persisted reviewed-ID set BEFORE rendering
+  function loadReviewedEmailFingerprints() {
+    try { return new Set(JSON.parse(localStorage.getItem(REVIEWED_EMAIL_FP_KEY) || '[]')); }
+    catch (e) { return new Set(); }
+  }
+  function saveReviewedEmailFingerprints(set) {
+    try { localStorage.setItem(REVIEWED_EMAIL_FP_KEY, JSON.stringify([...set])); } catch (e) {}
+  }
+  // Filter emails[] against BOTH reviewed sets BEFORE rendering so sync-regenerated IDs still get caught
   (function pruneEmailsOnLoad() {
     const reviewedIds = loadReviewedEmailIds();
-    if (reviewedIds.size > 0) {
-      emails = emails.filter(e => !reviewedIds.has(e.id));
+    const reviewedFps = loadReviewedEmailFingerprints();
+    if (reviewedIds.size > 0 || reviewedFps.size > 0) {
+      emails = emails.filter(e => !reviewedIds.has(e.id) && !reviewedFps.has(emailFingerprint(e)));
     }
   })();
 
@@ -1385,6 +1399,18 @@
     set.add(key);
     saveDismissedAppts(set);
     renderAppts();
+  }
+
+  // &#9472;&#9472; Carryover appointments (past items not dismissed stick on the dashboard) &#9472;&#9472;
+  // Stores full appt objects that have a past date and haven&#8217;t been dismissed. They survive
+  // daily dashboard-sync rewrites, which would otherwise drop past dates from the appointments[] array.
+  const CARRYOVER_APPT_KEY = 'carryoverAppts';
+  function loadCarryoverAppts() {
+    try { return JSON.parse(localStorage.getItem(CARRYOVER_APPT_KEY) || '[]'); }
+    catch (e) { return []; }
+  }
+  function saveCarryoverAppts(arr) {
+    try { localStorage.setItem(CARRYOVER_APPT_KEY, JSON.stringify(arr)); } catch (e) {}
   }
 
   // &#9472;&#9472; Date display &#9472;&#9472;
@@ -1707,34 +1733,69 @@
     today.setHours(0, 0, 0, 0);
     const cutoff = new Date(today);
     cutoff.setDate(cutoff.getDate() + 5); // show today + 5 days out
+    const horizonPast = new Date(today);
+    horizonPast.setDate(horizonPast.getDate() - 14); // carryover horizon: 14 days back
 
     const dismissed = loadDismissedAppts();
 
-    // Filter: only today and future, up to 5 days out, skip dismissed
+    // Step 1: snapshot any past-dated non-recurring items from today&#8217;s appointments[] into carryover storage,
+    // so they survive when dashboard-sync rewrites the file tomorrow (sync only pulls today+future).
+    let carryover = loadCarryoverAppts();
+    const carryoverKeys = new Set(carryover.map(apptKey));
+    appointments.forEach(a => {
+      if (a.recurring) return; // recurring events regenerate, no need to preserve
+      const d = new Date(a.date + 'T12:00:00');
+      d.setHours(0, 0, 0, 0);
+      if (d < today && !dismissed.has(apptKey(a)) && !carryoverKeys.has(apptKey(a))) {
+        carryover.push({ ...a });
+      }
+    });
+    // Prune carryover: drop dismissed + anything older than 14 days
+    carryover = carryover.filter(a => {
+      if (dismissed.has(apptKey(a))) return false;
+      const d = new Date(a.date + 'T12:00:00');
+      d.setHours(0, 0, 0, 0);
+      return d >= horizonPast && d < today;
+    });
+    saveCarryoverAppts(carryover);
+
+    // Step 2: build the display list
     const upcoming = appointments.filter(a => {
       if (dismissed.has(apptKey(a))) return false;
       const d = new Date(a.date + 'T12:00:00');
       d.setHours(0, 0, 0, 0);
       return d >= today && d <= cutoff;
     });
+    // Merge carryover (dedupe against upcoming keys)
+    const upcomingKeys = new Set(upcoming.map(apptKey));
+    const carryoverToShow = carryover.filter(a => !upcomingKeys.has(apptKey(a)));
+    const all = [...carryoverToShow, ...upcoming].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    document.getElementById('apptCount').textContent = upcoming.length;
-    if (upcoming.length === 0) {
+    document.getElementById('apptCount').textContent = all.length;
+    if (all.length === 0) {
       document.getElementById('apptList').innerHTML = '<div class="empty">No upcoming appointments in the next 5 days.</div>';
     } else {
-      const sorted = [...upcoming].sort((a, b) => new Date(a.date) - new Date(b.date));
-      document.getElementById('apptList').innerHTML = sorted.map(a => {
+      document.getElementById('apptList').innerHTML = all.map(a => {
         const d = new Date(a.date + 'T12:00:00');
-        const now = new Date();
-        const isToday = d.toDateString() === now.toDateString();
-        const tomorrow = new Date(now); tomorrow.setDate(now.getDate() + 1);
+        d.setHours(0, 0, 0, 0);
+        const isPast = d < today;
+        const isToday = d.toDateString() === today.toDateString();
+        const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
         const isTomorrow = d.toDateString() === tomorrow.toDateString();
-        const dateLabel = isToday ? 'Today' : isTomorrow ? 'Tomorrow' : d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        let dateLabel;
+        if (isPast) {
+          const daysAgo = Math.round((today - d) / (1000*60*60*24));
+          dateLabel = daysAgo === 1 ? 'Yesterday' : daysAgo + ' days ago';
+        } else if (isToday) dateLabel = 'Today';
+        else if (isTomorrow) dateLabel = 'Tomorrow';
+        else dateLabel = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
         const key = apptKey(a).replace(/'/g, "\\'");
-        return `<div class="appt-item" style="display:flex;align-items:center;gap:8px">
+        const carryBadge = isPast ? ' <span style="display:inline-block;font-size:0.68rem;background:#d97706;color:white;padding:1px 6px;border-radius:3px;margin-left:6px;vertical-align:middle">carried over</span>' : '';
+        const borderStyle = isPast ? ';border-left:3px solid #d97706;padding-left:8px' : '';
+        return `<div class="appt-item" style="display:flex;align-items:center;gap:8px${borderStyle}">
           <div class="appt-time">${dateLabel}<br><span style="font-size:0.75rem;color:var(--text-muted)">${a.time || ''}</span></div>
           <div class="appt-details" style="flex:1">
-            <div class="title">${a.title}${a.recurring ? ' &#128260;' : ''}</div>
+            <div class="title">${a.title}${a.recurring ? ' &#128260;' : ''}${carryBadge}</div>
             ${a.source === 'gcal' ? '<div class="location" style="font-size:0.75rem">&#128197; Google Calendar</div>' : ''}
           </div>
           <button onclick="dismissAppt('${key}')" title="Mark as done / dismiss" style="background:none;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;padding:4px 8px;border-radius:4px;font-size:0.8rem">&#10003; Done</button>
@@ -1775,10 +1836,14 @@
         note: note || '',
         reviewedDate: new Date().toISOString()
       });
-      // Persist this email ID so tomorrow's dashboard sync doesn't resurface it
+      // Persist BOTH the email ID and a content fingerprint so tomorrow&#8217;s dashboard sync can&#8217;t resurface
+      // the same email even if it assigns a different id string this morning vs yesterday.
       const reviewedIds = loadReviewedEmailIds();
       reviewedIds.add(e.id);
       saveReviewedEmailIds(reviewedIds);
+      const reviewedFps = loadReviewedEmailFingerprints();
+      reviewedFps.add(emailFingerprint(e));
+      saveReviewedEmailFingerprints(reviewedFps);
       // Remove from active list
       emails.splice(idx, 1);
     }
