@@ -1020,11 +1020,8 @@
 
   // &#9472;&#9472; FALLBACK DATA (used if Sheets isn't connected yet) &#9472;&#9472;
   const FALLBACK_TASKS = [
-    { id: 'f35', title: "&#128293; Cage for bananas &#8212; build/install", priority: "high", done: false, section: "active" },
-    { id: 'f2', title: "Taillight bulb &#8212; replace", priority: "high", done: false, section: "active", note: "Buy 7443 bulb" },
     { id: 'f4', title: "Propagate plants &#8212; lingstrum x30, Pigeon Peas, Ground Cherries, rosemary & oregano for chickens, food forest in chicken yard", priority: "high", done: false, section: "active" },
     { id: 'f5', title: "Well pump status &#8212; installed 10/2017, lifespan 8-15 yrs (due window: 2025-2032)", priority: "high", done: false, section: "active" },
-    { id: 'f6', title: "Covers for 4\" posts &#8212; purchase", priority: "medium", done: false, section: "active" },
     { id: 'f7', title: "Track line build for TreeHouse", priority: "medium", done: false, section: "active" },
     { id: 'f8', title: "Fix Lincoln welder amp switch &#8212; move to C", priority: "medium", done: false, section: "active" },
     { id: 'f9', title: "Modify 5x8 trailer &#8212; removeable side & reinforce tongue", priority: "medium", done: false, section: "active" },
@@ -1297,60 +1294,59 @@
       icon: "&#127981;",
       status: "active",
       bullets: [
-        "Site live, indexed, SEO clean. Two new homepage photos added yesterday (Session 17). GSC 404 validation still 20 pending / 0 failed &#8212; window opens Apr 18&#8211;21. Closest page-1 wins: &#8220;metal fabrication tampa&#8221; (pos 11.6) and &#8220;sheet metal tampa&#8221; (pos 17.2).",
-        "Next up: Request re-indexing of homepage in GSC so new photos get crawled; draft a local-SEO push plan for the two Tampa keywords; shoot shop tour video clip; verify HIBU Jun 1 close."
+        "Build phase essentially complete (10/12 tasks). Site live, indexed, redirects clean, SEO in place. Focus shifting to FABBRIDGE. GSC 404 validation check due ~Apr 18-21. HIBU closes end of May.",
+        "Next up: Check GSC 404 validation (~Apr 18-21); fix EOD review task path; verify HIBU closes Jun 1; resume GBP city additions when cap lifts."
       ],
-      updated: "2026-04-16"
+      updated: "2026-04-15"
     },
     {
       name: "Nanna's Herbal Apothecary",
       icon: "&#127807;",
       status: "active",
       bullets: [
-        "LLC confirmed (effective Apr 1, Doc# L26000197240). Starwest Botanicals (Awin) active. Impact.com/iHerb DECLINED Apr 13 (account 7127759) &#8212; reasons only visible after login. Pinterest Batch 4 wraps TODAY with A10 (thyroid) + B8 (hawthorn), bringing total to 25 live pins. Batch 5 auto-generates Mon Apr 20.",
-        "Next up: Post pins A10 &amp; B8 today (~1.5 hr apart); log into Impact.com to pull iHerb decline reasons and plan reapply with LLC + EIN; respond to Shawna&#8217;s Facebook comments; update Amazon Associates with EIN for direct deposit."
+        "LLC officially filed with Florida (effective Apr 1). Impact.com/iHerb declined again (Apr 13) &#8212; need to check reasons. Iola approved blog posts. Facebook domain updating to .com. Shawna Rickey comments unanswered (~12 days).",
+        "Next up: Log into Impact.com for iHerb decline reasons; finish .com domain update in meta tags; respond to Shawna on Facebook; Batch 5 pins by Apr 20."
       ],
-      updated: "2026-04-16"
+      updated: "2026-04-15"
     },
     {
       name: "Personal Assistant",
       icon: "&#129302;",
       status: "active",
       bullets: [
-        "All scheduled tasks running on time. Both HVAC systems (Trane + Mitsubishi mini-split) now fully documented with model/serial/warranty/service contacts. Dashboard live at Netlify &#8212; HOT badge, project status, daily briefing all operational. Today: Deliver Cale I2713 + Teco solar call 4 PM.",
-        "Next up: Review voice-to-Claude options for phone task entry; capture model/serial plates for TroyBilt tiller and chipper shredder to finish equipment inventory; deploy today&#8217;s dashboard update to Netlify."
+        "HOT task system working &#8212; &#128293; items now sort to top. Dashboard sync running. Calendar: Apr 16 has Deliver Cale I2713 + Teco call at 4 PM. All scheduled tasks on schedule.",
+        "Next up: Review voice-to-Claude options for phone task updates; fix GT EOD review task path; deploy dashboard updates."
       ],
-      updated: "2026-04-16"
+      updated: "2026-04-15"
     },
     {
       name: "FABBRIDGE (AI Quote Tool)",
       icon: "&#128295;",
       status: "active",
       bullets: [
-        "Decision made: prototyping Option A of the quote form. Entry flow will be two buttons &#8212; &#8220;I have a drawing&#8221; / &#8220;I have an idea&#8221; &#8212; with single-field Name, quantity-to-quote (default 1, accepts series like 1,10,50), and business name auto-defaulting to &#8220;Personal project&#8221; on the idea path. Lead times confirmed: 2&#8211;3 wks no powder coat / 3&#8211;5 wks with.",
-        "Next up: Build Option A prototype in a new Cowork session; wire up the two-path intake form so it can be reviewed end-to-end before connecting the completeness engine."
+        "Planning phase complete &#8212; Project Brief, Layout Plan, and Intake Form Spec drafted. Four Phase 1 pillars: intake form, completeness engine, Fusion 360 automation, quote generator. No code yet.",
+        "Next up: Choose between intake form prototype or completeness engine logic; begin Phase 1 coding."
       ],
-      updated: "2026-04-16"
+      updated: "2026-04-15"
     }
   ];
 
   // &#9472;&#9472; Appointments &#8212; synced from Google Calendar &#9472;&#9472;
-  // Last synced: 2026-04-15 10:56 AM ET auto-sync (gtprecisionmfg@gmail.com + ghersche12@gmail.com)
+  // Last synced: 2026-04-16 auto-sync (gtprecisionmfg@gmail.com + ghersche12@gmail.com)
   let appointments = [
     { title: "Deliver Cale I2713", date: "2026-04-16", time: "All day", recurring: false },
-    { title: "Teco call 813-275-3909 solar", date: "2026-04-16", time: "4:00 PM", recurring: false },
+    { title: "Teco call 813-275-3909 solar", date: "2026-04-17", time: "4:00 PM", recurring: false },
   ];
 
   // &#9472;&#9472; Emails &#8212; Nanna's Apothecary business emails (via iherschell12@gmail.com) &#9472;&#9472;
-  // Last synced: 2026-04-15 (auto-sync)
+  // Last synced: 2026-04-16 (auto-sync)
   let emails = [
-    { id: 'e_llc_approved', from: "FL Dept of State (fwd from AOL)", subject: "&#9989; Corporate Filing APPROVED &#8212; Nanna's Apothecary LLC", snippet: "Articles of Organization FILED Apr 7, effective Apr 1. Doc# L26000197240. Next: file annual report by May 1, 2027. Get EIN from IRS.", unread: true, date: '2026-04-15' },
+    { id: 'e_blog_10', from: "Nanna's Blog Review (DRAFT)", subject: "&#127807; Nanna's Blog Review &#8212; 10 New Draft Posts Ready (April 16, 2026)", snippet: "10 new blog posts drafted covering remaining drug categories &#8212; same evidence-based format as the Lisinopril post. Sitting in drafts, ready to send to Iola for review.", unread: true, date: '2026-04-16' },
     { id: 'e_blog_appr', from: "Iola Herschell", subject: "Approved &#8212; Nanna's Blog Review (Week of April 13)", snippet: "Iola replied 'Approved' to this week's blog review thread &#8212; drafts cleared to publish.", unread: false, date: '2026-04-13' },
     { id: 'e_blog', from: "Nanna's Blog Review (DRAFT)", subject: "Nanna's Blog Review &#8212; Week of April 13, 2026", snippet: "2 draft blog posts ready for Iola's review &#8212; should take about 10 minutes.", unread: false, date: '2026-04-13' },
     { id: 'e_kit', from: "Kit / ConvertKit (fwd from AOL)", subject: "Your week with Kit", snippet: "Weekly Kit (ConvertKit) email marketing stats and activity summary.", unread: true, date: '2026-04-13' },
     { id: 'e_sw', from: "Awin (fwd from AOL)", subject: "Membership active with Starwest Botanicals Inc.", snippet: "Starwest Botanicals affiliate membership now active on Awin! Ready to generate links.", unread: true, date: '2026-04-09' },
     { id: 'e1', from: "Iola Herschell", subject: "How Your Weekly Blog Review Will Work", snippet: "Starting weekly blog posts &#8212; up to 3 per week for Iola to review.", unread: false, date: '2026-04-09' },
-    { id: 'e2', from: "Iola Herschell", subject: "ACTION NEEDED &#8212; Unanswered Facebook Comments from Shawna", snippet: "Shawna Rickey left comments on the Page and Group ~1 week ago, no reply yet.", unread: true, date: '2026-04-07' },
     { id: 'e_pmt', from: "Tyler Tech / Finit (fwd from AOL)", subject: "Payment Receipt Confirmation", snippet: "Payment receipt confirmation from FL state filing system.", unread: false, date: '2026-04-07' },
   ];
 
