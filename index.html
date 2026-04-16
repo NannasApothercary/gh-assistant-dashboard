@@ -1353,6 +1353,40 @@
   // &#9472;&#9472; Reviewed email log (persists in this array, rendered on separate page) &#9472;&#9472;
   let reviewedEmails = [];
 
+  // &#9472;&#9472; Reviewed email IDs (localStorage-persisted so sync doesn't resurface them) &#9472;&#9472;
+  const REVIEWED_EMAIL_KEY = 'reviewedEmailIds';
+  function loadReviewedEmailIds() {
+    try { return new Set(JSON.parse(localStorage.getItem(REVIEWED_EMAIL_KEY) || '[]')); }
+    catch (e) { return new Set(); }
+  }
+  function saveReviewedEmailIds(set) {
+    try { localStorage.setItem(REVIEWED_EMAIL_KEY, JSON.stringify([...set])); } catch (e) {}
+  }
+  // Filter emails[] against the persisted reviewed-ID set BEFORE rendering
+  (function pruneEmailsOnLoad() {
+    const reviewedIds = loadReviewedEmailIds();
+    if (reviewedIds.size > 0) {
+      emails = emails.filter(e => !reviewedIds.has(e.id));
+    }
+  })();
+
+  // &#9472;&#9472; Dismissed appointments (localStorage-persisted) &#9472;&#9472;
+  const DISMISSED_APPT_KEY = 'dismissedApptKeys';
+  function apptKey(a) { return (a.title || '') + '|' + (a.date || ''); }
+  function loadDismissedAppts() {
+    try { return new Set(JSON.parse(localStorage.getItem(DISMISSED_APPT_KEY) || '[]')); }
+    catch (e) { return new Set(); }
+  }
+  function saveDismissedAppts(set) {
+    try { localStorage.setItem(DISMISSED_APPT_KEY, JSON.stringify([...set])); } catch (e) {}
+  }
+  function dismissAppt(key) {
+    const set = loadDismissedAppts();
+    set.add(key);
+    saveDismissedAppts(set);
+    renderAppts();
+  }
+
   // &#9472;&#9472; Date display &#9472;&#9472;
   function updateDate() {
     const now = new Date();
@@ -1674,8 +1708,11 @@
     const cutoff = new Date(today);
     cutoff.setDate(cutoff.getDate() + 5); // show today + 5 days out
 
-    // Filter: only today and future, up to 5 days out
+    const dismissed = loadDismissedAppts();
+
+    // Filter: only today and future, up to 5 days out, skip dismissed
     const upcoming = appointments.filter(a => {
+      if (dismissed.has(apptKey(a))) return false;
       const d = new Date(a.date + 'T12:00:00');
       d.setHours(0, 0, 0, 0);
       return d >= today && d <= cutoff;
@@ -1693,12 +1730,14 @@
         const tomorrow = new Date(now); tomorrow.setDate(now.getDate() + 1);
         const isTomorrow = d.toDateString() === tomorrow.toDateString();
         const dateLabel = isToday ? 'Today' : isTomorrow ? 'Tomorrow' : d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-        return `<div class="appt-item">
+        const key = apptKey(a).replace(/'/g, "\\'");
+        return `<div class="appt-item" style="display:flex;align-items:center;gap:8px">
           <div class="appt-time">${dateLabel}<br><span style="font-size:0.75rem;color:var(--text-muted)">${a.time || ''}</span></div>
-          <div class="appt-details">
+          <div class="appt-details" style="flex:1">
             <div class="title">${a.title}${a.recurring ? ' &#128260;' : ''}</div>
             ${a.source === 'gcal' ? '<div class="location" style="font-size:0.75rem">&#128197; Google Calendar</div>' : ''}
           </div>
+          <button onclick="dismissAppt('${key}')" title="Mark as done / dismiss" style="background:none;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;padding:4px 8px;border-radius:4px;font-size:0.8rem">&#10003; Done</button>
         </div>`;
       }).join('');
     }
@@ -1736,6 +1775,10 @@
         note: note || '',
         reviewedDate: new Date().toISOString()
       });
+      // Persist this email ID so tomorrow's dashboard sync doesn't resurface it
+      const reviewedIds = loadReviewedEmailIds();
+      reviewedIds.add(e.id);
+      saveReviewedEmailIds(reviewedIds);
       // Remove from active list
       emails.splice(idx, 1);
     }
@@ -1906,7 +1949,7 @@
       ]
     },
     {
-      id: 'jewel', name: "Jewel (2020 Colorado)", type: 'Truck | VIN ...L1245691', icon: '🛻',
+      id: 'jewel', name: "Jewel (2020 Colorado)", type: 'Truck | VIN ...L1245691 | DIY oil changes', icon: '🛻',
       maintenance: [
         { name: 'Oil & filter change', intervalDays: 180, lastDone: '2026-01-04', parts: ['AC Delco PF64 filter', 'Dexos1 synthetic 5W-30 (6 qt)'] },
         { name: 'Tire rotation', intervalDays: 180, lastDone: null, parts: [] },
@@ -1917,10 +1960,26 @@
       ],
       parts: [
         { name: 'Oil filter', number: 'AC Delco PF64' },
+        { name: 'Engine oil', number: 'Dexos1 5W-30 Full Synthetic, 6 qt' },
+        { name: 'Engine air filter', number: 'AC Delco A3256C (or FRAM CA10755)' },
+        { name: 'Cabin air filter', number: 'AC Delco CF3289C' },
         { name: 'Spark plugs', number: 'AC Delco 41-162 Iridium' },
         { name: 'Trans fluid', number: 'MOBIL 1 LV ATF HP (6 qt)' },
         { name: 'Taillight bulb', number: '7443' },
         { name: 'Tires', number: '265/70R16' },
+      ],
+      tools: [
+        'Oil filter wrench (cap-type, 76mm / 14-flute)',
+        '15mm socket + 3/8" drive ratchet (oil drain plug)',
+        'Torque wrench — 18 ft·lb drain plug, snug oil filter by hand',
+        'Oil drain pan (8 qt capacity)',
+        'Funnel',
+        'Floor jack + jack stands (or ramps)',
+      ],
+      videos: [
+        { title: 'Oil change — 2015-2022 Chevy Colorado 3.6L', url: 'https://www.youtube.com/results?search_query=2020+chevy+colorado+3.6+oil+change' },
+        { title: 'Engine air filter swap — Colorado', url: 'https://www.youtube.com/results?search_query=chevy+colorado+engine+air+filter+replacement' },
+        { title: 'Cabin air filter — Colorado', url: 'https://www.youtube.com/results?search_query=chevy+colorado+cabin+air+filter+replacement' },
       ],
       log: [
         { date: '2024-11-26', service: 'Transmission change', notes: '30k miles' },
@@ -1928,9 +1987,9 @@
       ]
     },
     {
-      id: 'grace', name: "Grace (2024 Colorado)", type: "Iola's Truck | VIN ...N1104885", icon: '🛻',
+      id: 'grace', name: "Grace (2024 Colorado)", type: "Iola's Truck | VIN ...N1104885 | DIY oil changes | shares reference with Jewel", icon: '🛻',
       maintenance: [
-        { name: 'Oil & filter change', intervalDays: 180, lastDone: '2025-01-19', parts: ['AC Delco PF64 filter', 'Dexos1 synthetic (6 qt)'] },
+        { name: 'Oil & filter change', intervalDays: 180, lastDone: '2025-01-19', parts: ['AC Delco PF64 filter', 'Dexos1 synthetic 5W-30 (6 qt)'] },
         { name: 'Tire rotation', intervalDays: 180, lastDone: null, parts: [] },
         { name: 'Cabin air filter', intervalDays: 365, lastDone: null, parts: [] },
         { name: 'Engine air filter', intervalDays: 545, lastDone: null, parts: [] },
@@ -1939,10 +1998,27 @@
       ],
       parts: [
         { name: 'Oil filter', number: 'AC Delco PF64' },
+        { name: 'Engine oil', number: 'Dexos1 5W-30 Full Synthetic, 6 qt' },
+        { name: 'Engine air filter', number: 'AC Delco A3256C (or FRAM CA10755)' },
+        { name: 'Cabin air filter', number: 'AC Delco CF3289C' },
+        { name: 'Spark plugs', number: 'AC Delco Iridium' },
         { name: 'Trans fluid', number: 'MOBIL 1 LV ATF HP Blue Label (6 qt)' },
         { name: 'Trans filter', number: 'TF922' },
         { name: 'Pan bolts', number: '89 in/lbs' },
         { name: 'Tires', number: '255/65R17' },
+      ],
+      tools: [
+        'Oil filter wrench (cap-type, 76mm / 14-flute)',
+        '15mm socket + 3/8" drive ratchet (oil drain plug)',
+        'Torque wrench — 18 ft·lb drain plug, snug oil filter by hand',
+        'Oil drain pan (8 qt capacity)',
+        'Funnel',
+        'Floor jack + jack stands (or ramps)',
+      ],
+      videos: [
+        { title: 'Oil change — 2023+ Chevy Colorado 2.7L Turbo', url: 'https://www.youtube.com/results?search_query=2024+chevy+colorado+2.7+turbo+oil+change' },
+        { title: 'Engine air filter swap — Colorado', url: 'https://www.youtube.com/results?search_query=2024+chevy+colorado+engine+air+filter' },
+        { title: 'Cabin air filter — Colorado', url: 'https://www.youtube.com/results?search_query=2024+chevy+colorado+cabin+air+filter' },
       ],
       log: [
         { date: '2024-07-01', service: 'Trans fluid changed', notes: '48k miles' },
@@ -1951,9 +2027,9 @@
       ]
     },
     {
-      id: 'corolla', name: '2024 Corolla SE', type: 'Car | VIN ...RP123037', icon: '🚗',
+      id: 'corolla', name: '2024 Corolla SE', type: 'Car | VIN ...RP123037 | Professionally serviced — no DIY', icon: '🚗',
       maintenance: [
-        { name: 'Oil & filter change', intervalDays: 180, lastDone: null, parts: ['Toyota 90915-YZZN1 filter', '0W-20 synthetic (4.4 qt)'] },
+        { name: 'Oil & filter change', intervalDays: 180, lastDone: '2025-10-16', parts: ['Toyota 90915-YZZN1 filter', '0W-20 synthetic (4.4 qt)'] },
         { name: 'Tire rotation', intervalDays: 180, lastDone: null, parts: [] },
         { name: 'Cabin air filter', intervalDays: 365, lastDone: null, parts: [] },
         { name: 'Engine air filter', intervalDays: 545, lastDone: null, parts: [] },
@@ -1966,6 +2042,7 @@
       ],
       log: [
         { date: '2024-01-01', service: 'Purchased', notes: 'Paid off 2/21/2024' },
+        { date: '2025-10-16', service: 'Oil change (estimated)', notes: 'Baseline — confirm actual date at next service' },
       ]
     },
     {
@@ -2258,6 +2335,26 @@
       ).join('');
     } else {
       document.getElementById('modalPartsSection').style.display = 'none';
+    }
+
+    // Tools (DIY equipment)
+    let toolsHtml = '';
+    if (eq.tools && eq.tools.length > 0) {
+      toolsHtml = '<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border)"><div style="font-weight:600;font-size:0.9rem;margin-bottom:6px;color:var(--text-muted)">&#128295; Tools</div>' +
+        eq.tools.map(t => `<div style="font-size:0.85rem;padding:3px 0">&#8226; ${t}</div>`).join('') +
+        '</div>';
+    }
+    // Videos (DIY how-to links)
+    let videosHtml = '';
+    if (eq.videos && eq.videos.length > 0) {
+      videosHtml = '<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border)"><div style="font-weight:600;font-size:0.9rem;margin-bottom:6px;color:var(--text-muted)">&#127909; How-to videos</div>' +
+        eq.videos.map(v => `<div style="font-size:0.85rem;padding:3px 0"><a href="${v.url}" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:none">&#9654; ${v.title}</a></div>`).join('') +
+        '</div>';
+    }
+    // Inject tools + videos into parts section (same container) so they appear together
+    if (toolsHtml || videosHtml) {
+      document.getElementById('modalPartsSection').style.display = 'block';
+      partsList.innerHTML = partsList.innerHTML + toolsHtml + videosHtml;
     }
 
     // Log table
