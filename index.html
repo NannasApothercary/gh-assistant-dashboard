@@ -878,7 +878,7 @@
   <!-- Equipment Maintenance -->
   <div class="section" id="equipSection">
     <div class="section-header" onclick="toggleSection('equipSection')">
-      <h2>&#128295; Equipment Maintenance <span class="badge" id="equipCount">10</span></h2>
+      <h2>&#128295; Equipment Maintenance <span class="badge" id="equipCount">14</span></h2>
       <span class="chevron">&#9660;</span>
     </div>
     <div class="section-body">
@@ -2195,6 +2195,52 @@
         { name: 'EG4 Support', number: '1-903-609-1988' },
       ],
       log: []
+    },
+    {
+      id: 'ac35ton', name: 'Trane/RunTru 3.5 Ton AC', type: 'Heat Pump + Air Handler | Installed 2/18/2026', icon: '❄️',
+      maintenance: [
+        { name: 'Replace 3" pleated filter', intervalDays: 90, lastDone: '2026-02-18', parts: ['3" pleated filter (confirm size from unit)'] },
+        { name: 'Professional tune-up / coil cleaning', intervalDays: 365, lastDone: '2026-02-18', parts: [] },
+        { name: 'Check refrigerant levels', intervalDays: 365, lastDone: '2026-02-18', parts: [] },
+        { name: 'Clean condensate drain line', intervalDays: 365, lastDone: '2026-02-18', parts: ['Vinegar flush'] },
+        { name: 'Inspect electrical connections', intervalDays: 365, lastDone: '2026-02-18', parts: [] },
+        { name: 'Deep clean evaporator & condenser coils', intervalDays: 900, lastDone: '2026-02-18', parts: [] },
+      ],
+      parts: [
+        { name: 'Heat Pump Model', number: '5TWX5048A1000AA (SN 243846F2JF)' },
+        { name: 'Air Handler Model', number: '5TEM6D06AV41SAA (SN 26063YYG3V)' },
+        { name: 'Filter', number: '3" pleated (every 3 mo)' },
+        { name: 'Warranty #', number: '37423422' },
+        { name: 'Compressor warranty', number: '12 yr — expires 02/18/2038' },
+        { name: 'Parts warranty', number: '10 yr — expires 02/18/2036' },
+        { name: 'Installer', number: "Gould's AC — (813) 752-1970" },
+        { name: 'Trane warranty svc', number: '1-855-260-2975' },
+      ],
+      log: [
+        { date: '2026-02-18', service: 'Installed by Gould\u2019s AC', notes: 'New 3.5 ton Trane/RunTru; replaced 2014 unit. Mini-split coil cleaned same day.' },
+        { date: '2026-02-18', service: 'First 3" pleated filter installed', notes: 'Next change due ~May 2026' },
+      ]
+    },
+    {
+      id: 'minisplit', name: 'Mitsubishi Mini-Split', type: 'Ductless | MSZ/MUZ-HM12NA-U2 | Installed 3/24/2023', icon: '🌬️',
+      maintenance: [
+        { name: 'Clean plastic mesh filter', intervalDays: 60, lastDone: '2026-02-18', parts: ['Rinse with water, let dry fully'] },
+        { name: 'Professional coil cleaning', intervalDays: 365, lastDone: '2026-02-18', parts: [] },
+        { name: 'Clean/flush condensate drain', intervalDays: 365, lastDone: '2024-03-11', parts: ['Drain has clog history — watch closely'] },
+        { name: 'Check refrigerant levels', intervalDays: 900, lastDone: '2023-03-24', parts: [] },
+      ],
+      parts: [
+        { name: 'Outdoor Unit', number: 'MUZ-HM12NA-U2 (SN 2YC15165)' },
+        { name: 'Indoor Unit', number: 'MSZ-HM12NA-U2 (SN 27E03186)' },
+        { name: 'Warranty #', number: 'WR75799606HERG' },
+        { name: 'Mitsubishi Customer Svc', number: '1-800-433-4822 (M-F 8a-7p EST)' },
+        { name: 'Installer', number: "Alan\u2019s AC — Plant City, FL" },
+      ],
+      log: [
+        { date: '2023-03-24', service: 'Installed by Alan\u2019s AC', notes: '' },
+        { date: '2024-03-11', service: 'Drain cleaned', notes: 'Took 90\u00b0 off drain; was clogged causing drain sounds' },
+        { date: '2026-02-18', service: 'Coil cleaning', notes: "Done during new 3.5 ton AC install by Gould\u2019s" },
+      ]
     },
   ];
 
