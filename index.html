@@ -415,42 +415,6 @@
   .status-dot.yellow { background: var(--warning); }
   .status-dot.red { background: var(--danger); }
 
-  /* Waiting section */
-  .waiting-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-  }
-  .waiting-item:last-child { border-bottom: none; }
-  .waiting-icon {
-    color: var(--warning);
-    font-size: 1rem;
-    margin-top: 2px;
-  }
-  .waiting-text { flex: 1; }
-  .waiting-text .title { font-weight: 500; }
-  .waiting-text .meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
-  .waiting-text .waiting-note { font-size: 0.78rem; color: var(--accent-light); font-style: italic; margin-top: 3px; }
-  .waiting-actions {
-    display: flex;
-    gap: 4px;
-    margin-top: 6px;
-    flex-wrap: wrap;
-  }
-  .waiting-actions .wa-btn {
-    font-size: 0.7rem;
-    padding: 3px 8px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--text-muted);
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .waiting-actions .wa-btn:hover { border-color: var(--accent); color: var(--text); }
-
   /* Scrollable task list */
   .task-scroll-area {
     max-height: 280px;
@@ -862,19 +826,6 @@
     </div>
   </div>
 
-  <!-- Waiting On -->
-  <div class="section" id="waitingSection">
-    <div class="section-header" onclick="toggleSection('waitingSection')">
-      <h2>&#9203; Waiting On <span class="badge" id="waitingCount">0</span></h2>
-      <span class="chevron">&#9660;</span>
-    </div>
-    <div class="section-body">
-      <div id="waitingList">
-        <div class="empty">Nothing in the waiting queue.</div>
-      </div>
-    </div>
-  </div>
-
   <!-- Equipment Maintenance -->
   <div class="section" id="equipSection">
     <div class="section-header" onclick="toggleSection('equipSection')">
@@ -991,19 +942,6 @@
   </div>
 </div>
 
-<!-- Waiting On Note Modal -->
-<div class="note-modal-overlay" id="waitingNoteModal" onclick="if(event.target===this)cancelWaitingNote()">
-  <div class="note-modal">
-    <h3>&#9998; Add Note</h3>
-    <div class="task-name" id="waitingNoteItemName"></div>
-    <textarea id="waitingNoteInput" placeholder="e.g. 'Called Todd, will check Saturday' or 'Emailed supplier for quote'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveWaitingNote()}"></textarea>
-    <div class="btn-row">
-      <button class="btn btn-skip" onclick="cancelWaitingNote()">Cancel</button>
-      <button class="btn btn-done" onclick="saveWaitingNote()">Save</button>
-    </div>
-  </div>
-</div>
-
 <script>
   // &#9556;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9559;
   // &#9553;  GOOGLE SHEETS API CONFIG                  &#9553;
@@ -1014,7 +952,6 @@
 
   // &#9472;&#9472; STATE &#9472;&#9472;
   let tasks = [];
-  let waitingOn = [];
   let showDone = false;
   let sheetsConnected = false;
 
@@ -1052,17 +989,12 @@
     { id: 'f34', title: "Guitar practice &#8212; unlocking the fretboard video", priority: "low", done: false, section: "someday" },
   ];
 
-  const FALLBACK_WAITING = [
-    { id: 'w1', title: "Borrow the plasma cutter &#8212; confirm plug fits", since: "2026-03-31", note: '' },
-  ];
-
   // &#9472;&#9472; SHEETS API FUNCTIONS &#9472;&#9472;
 
   async function loadTasksFromSheet() {
     if (API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
       // Not connected yet &#8212; use fallback data
       tasks = [...FALLBACK_TASKS];
-      waitingOn = [...FALLBACK_WAITING];
       restoreTaskData();
       document.getElementById('sheetStatus').classList.add('yellow');
       document.getElementById('sheetStatusText').textContent = 'Sheets: not connected yet';
@@ -1078,7 +1010,6 @@
       if (data.error) throw new Error(data.error);
 
       tasks = data.tasks || [];
-      waitingOn = data.waitingOn || [];
       sheetsConnected = true;
 
       document.getElementById('sheetStatus').className = 'status-dot green';
@@ -1093,7 +1024,6 @@
       // Fall back to cached data if we have no tasks
       if (tasks.length === 0) {
         tasks = [...FALLBACK_TASKS];
-        waitingOn = [...FALLBACK_WAITING];
       }
     }
 
@@ -1578,7 +1508,6 @@
 
     document.getElementById('taskCount').textContent = active.length;
     document.getElementById('doneCount').textContent = done.length;
-    document.getElementById('waitingCount').textContent = waitingOn.length;
 
     // Sort active tasks by saved manual order (localStorage), new tasks go to bottom
     const savedOrder = getTaskOrder();
@@ -1659,28 +1588,6 @@
     }
 
     document.getElementById('taskList').innerHTML = html;
-
-    // Waiting On &#8212; with actions
-    if (waitingOn.length > 0) {
-      document.getElementById('waitingList').innerHTML = waitingOn.map((w, i) =>
-        `<div class="waiting-item">
-          <div class="waiting-icon">&#9203;</div>
-          <div class="waiting-text">
-            <div class="title">${w.title}</div>
-            <div class="meta">Since ${w.since || 'unknown'}</div>
-            ${w.note ? `<div class="waiting-note">"${w.note}"</div>` : ''}
-            <div class="waiting-actions">
-              <button class="wa-btn" onclick="addWaitingNote(${i})">&#9998; Note</button>
-              <button class="wa-btn" onclick="waitingToTask(${i})">&#9654; To Task</button>
-              <button class="wa-btn" onclick="waitingToCalendar(${i})">&#128197; To Calendar</button>
-              <button class="wa-btn" onclick="dismissWaiting(${i})">&#10005; Dismiss</button>
-            </div>
-          </div>
-        </div>`
-      ).join('');
-    } else {
-      document.getElementById('waitingList').innerHTML = '<div class="empty">Nothing in the waiting queue.</div>';
-    }
 
     // Someday section
     const somedaySection = document.getElementById('somedaySection');
@@ -1878,66 +1785,6 @@
 
       document.getElementById('emailList').innerHTML = html;
     }
-  }
-
-  // &#9472;&#9472; Waiting On action functions &#9472;&#9472;
-  let waitingNoteTarget = null;
-
-  function addWaitingNote(index) {
-    const w = waitingOn[index];
-    if (!w) return;
-    waitingNoteTarget = index;
-    document.getElementById('waitingNoteItemName').textContent = w.title;
-    document.getElementById('waitingNoteInput').value = w.note || '';
-    document.getElementById('waitingNoteModal').classList.add('active');
-    setTimeout(() => document.getElementById('waitingNoteInput').focus(), 100);
-  }
-
-  function cancelWaitingNote() {
-    document.getElementById('waitingNoteModal').classList.remove('active');
-    waitingNoteTarget = null;
-  }
-
-  function saveWaitingNote() {
-    document.getElementById('waitingNoteModal').classList.remove('active');
-    if (waitingNoteTarget === null) return;
-    const w = waitingOn[waitingNoteTarget];
-    if (w) {
-      w.note = document.getElementById('waitingNoteInput').value.trim();
-    }
-    waitingNoteTarget = null;
-    renderTasks();
-  }
-
-  function waitingToTask(index) {
-    const w = waitingOn[index];
-    if (!w) return;
-    const title = w.title + (w.note ? ' &#8212; ' + w.note : '');
-    tasks.push({ id: 'wt_' + Date.now(), title, priority: 'medium', done: false, section: 'active', added: new Date().toISOString() });
-    waitingOn.splice(index, 1);
-    renderTasks();
-    showSync('Moved to tasks!', 'success', 1500);
-    if (sheetsConnected) {
-      addTaskToSheet(title, 'medium', 'active');
-    }
-  }
-
-  function waitingToCalendar(index) {
-    const w = waitingOn[index];
-    if (!w) return;
-    const title = w.title + (w.note ? ' &#8212; ' + w.note : '');
-    appointments.push({ title, date: new Date().toISOString().split('T')[0], time: '', source: 'manual' });
-    waitingOn.splice(index, 1);
-    renderTasks();
-    renderAppts();
-    showSync('Added to calendar!', 'success', 1500);
-  }
-
-  function dismissWaiting(index) {
-    if (!confirm('Dismiss this waiting item?')) return;
-    waitingOn.splice(index, 1);
-    renderTasks();
-    showSync('Dismissed', 'success', 1000);
   }
 
   // &#9472;&#9472; Equipment Data &#9472;&#9472;
