@@ -869,8 +869,11 @@
       <div class="status-dot" id="emailStatus"></div>
       <span id="emailStatusText">Gmail</span>
     </div>
+    <div class="status-item" id="dataTimestamp" title="When this dashboard was last deployed. If two devices show different values here, the older one needs a hard refresh (Ctrl+Shift+R).">
+      <span style="color:var(--text);font-weight:600">📅 Data: Apr 21, 2026 — 6:12 AM ET</span>
+    </div>
     <div class="status-item" id="lastUpdated">
-      Last updated: --
+      Page loaded: --
     </div>
   </div>
 
@@ -1038,7 +1041,7 @@
 
     restoreTaskData();
     renderTasks();
-    document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+    document.getElementById('lastUpdated').textContent = 'Page loaded: ' + new Date().toLocaleTimeString();
   }
 
   async function addTaskToSheet(title, priority, section) {
@@ -1624,7 +1627,7 @@
       }).join('');
     }
 
-    document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+    document.getElementById('lastUpdated').textContent = 'Page loaded: ' + new Date().toLocaleTimeString();
   }
 
   // &#9472;&#9472; Render appointments &#9472;&#9472;
