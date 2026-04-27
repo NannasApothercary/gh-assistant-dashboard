@@ -1229,56 +1229,52 @@
       icon: "&#127981;",
       status: "active",
       bullets: [
-        "Sat Apr 25 EOD review failed for a fourth day in a row &#8212; GT workspace folder still not mounted, so PROJECT-STATUS.md/CLAUDE.md remain invisible to scheduled tasks. The June 1 HIBU verification reminder mis-fired on Apr 25 (~5 weeks early) and needs to be re-pointed to fire on/after 2026-06-01; HIBU is still inside its paid period through end of May. GSC 404 re-validation results expected on/around Apr 28.",
-        "Next up: Mount the GT workspace folder &#8212; still THE blocking item for daily/EOD scheduled tasks. Re-schedule the HIBU verification reminder to fire on/after 2026-06-01 (Scheduled tab in Cowork). Publish Tampa landing page + /customers-we-serve in Wix from already-drafted content. Post Week 1 GBP and click &#8220;Request Indexing&#8221; in GSC on both new pages. Still on hold: CallRail (waiting on 10+ calls/mo), Quick Quote / Fast Turnaround copy refresh (waiting on FABBRIDGE Phase 1 watch period to close)."
+        "Sun Apr 26 EOD failures investigation patched both gt-eod-review and gt-daily-top-3 &#8212; tasks now reference absolute Windows paths (C:\\Users\\GHERS\\OneDrive\\...) instead of relying on a workspace mount that scheduled sandboxes don&#8217;t auto-attach. Mon Apr 27 5pm gt-eod-review run should produce a real report (not the 4-day stub streak). HIBU still inside paid period through end of May; the early-fire June 1 reminder still needs re-pointing in the Scheduled tab. GSC 404 re-validation results expected on/around Apr 28.",
+        "Next up: Hit &#8220;Run now&#8221; on gt-eod-review to confirm the absolute-path fix works before the 5pm scheduled run. Re-schedule the HIBU verification reminder to fire on/after 2026-06-01. Mounting the GT workspace folder is no longer blocking scheduled tasks (path fix unblocks them) but still worth doing for interactive sessions. Publish Tampa landing page + /customers-we-serve in Wix from already-drafted content; post Week 1 GBP and click &#8220;Request Indexing&#8221; in GSC on both. Still on hold: CallRail (waiting on 10+ calls/mo), Quick Quote / Fast Turnaround copy refresh (waiting on FABBRIDGE Phase 1 watch period to close)."
       ],
-      updated: "2026-04-26"
+      updated: "2026-04-27"
     },
     {
       name: "Nanna's Herbal Apothecary",
       icon: "&#127807;",
       status: "active",
       bullets: [
-        "Apr 25 Pinterest verification ran &#8212; Pinterest scan still blocked (known limitation, same as Apr 21/23), but Batch 5 confirmed closed Thu Apr 23 when Greg doubled up C9 Hawthorn Heart Tonic + C10 St. John&#8217;s Wort. Apr 24/25/26 are rest days; Batch 6 queued in Pinterest-Pins-Week-Apr27.docx and kicks off Mon Apr 27 with A11 Turmeric NSAID + B12 Bladderwrack. Apr 25 affiliate digest ran clean (Gmail connector is back) &#8212; zero new affiliate emails in last 24h and only one non-affiliate forward from Greg&#8217;s AOL in last 7 days, so the affiliate pipeline is genuinely quiet.",
-        "Next up: Spot-check the _created/ Pinterest page for C9 + C10 so Batch 5 is locked as fully verified. Check AOL directly (inbox + spam) for forwarded affiliate mail &#8212; if Awin/Aspire approval emails are sitting there, codes need to drop into netlify-deploy/index.html AFFILIATE fields. Decide whether to appeal the Impact.com iHerb decline (12+ days since rejection on Apr 13). Add B9, B10, B11, C8, C9, C10 to Pinterest-Pin-Archive.docx (carryover). Mon Apr 27 launches Batch 6 (A11 + B12); rest day Wed Apr 29; week closes with C13 Hawthorn Cordial Thu and C14 Hibiscus Cold-Brew Fri."
+        "Today (Mon Apr 27) is Batch 6 launch day &#8212; A11 Turmeric NSAID Alt + B12 Bladderwrack are queued and ready to post. Apr 26 Pinterest verification was the 4th consecutive run blocked by Pinterest&#8217;s anti-automation (bodyLen=0, pinLinks=0); rest days Apr 24/25/26 mean nothing was missed, but the verification skill itself needs converting from &#8220;verify pins are live&#8221; to &#8220;remind GH which pin is due today.&#8221; Apr 26 affiliate digest pulled zero affiliate emails over 24h and zero AOL forwards over 7 days &#8212; suggests AOL forwarding rule may have stopped or affiliates are genuinely quiet.",
+        "Next up: Post A11 Turmeric NSAID Alt + B12 Bladderwrack to Pinterest today (Mon Apr 27). Log into AOL directly (inbox + spam) and search &#8220;Impact / Awin / Aspire / iHerb / Starwest / Mountain Rose&#8221; &#8212; if mail is sitting unforwarded, the AOL&#8594;Gmail rule needs a fix; if affiliate codes are there, drop into netlify-deploy/index.html AFFILIATE fields. Spot-check the _created/ Pinterest page for C9 + C10 to lock Batch 5 fully verified. Decide on Impact.com iHerb appeal (14 days since Apr 13 rejection). Add B9&#8211;B11, C8&#8211;C10 to Pinterest-Pin-Archive.docx. Rest day Wed Apr 29; week closes with C13 Hawthorn Cordial Thu and C14 Hibiscus Cold-Brew Fri."
       ],
-      updated: "2026-04-26"
+      updated: "2026-04-27"
     },
     {
       name: "Personal Assistant",
       icon: "&#129302;",
       status: "active",
       bullets: [
-        "Sat Apr 25 8 AM briefing ran clean &#8212; no 🔥 HOT items, 14 active tasks, quiet inbox (1 unread: United Plant Savers promo), today&#8217;s only calendar item was the Sun Apr 26 water salt check. Apr 25 dashboard sync also clean: 1 upcoming appointment, TASKS.md and FALLBACK_TASKS in sync, emails array preserved with stable Gmail IDs. Apr 25 affiliate digest ran successfully so Gmail connector is back online (no longer the briefing blocker it was Apr 24). Sun Apr 26 7:30 AM project-status refresh (this run) is the last piece before today&#8217;s 8 AM briefing.",
-        "Next up: Drag-and-drop the refreshed index.html to https://github.com/NannasApothercary/gh-assistant-dashboard/upload/main so today&#8217;s project status lands on mobile before the 8 AM briefing. Promote 1&#8211;2 items with 🔥 in TASKS.md so future briefings lead with real priorities (well pump status + Jared&#8217;s thermostat install are the obvious candidates). Kick off the voice-to-Claude options review still queued for the next interactive session."
+        "Sun Apr 26 8 AM briefing ran clean &#8212; no 🔥 HOT items, 15 active tasks (water heater anode rod added after part SP11309C arrived 4/25), 1 unread email (United Plant Savers), Sun&#8217;s only event was the recurring water salt check. Apr 26 dashboard sync clean: 2 upcoming appointments (water salt today + 4/30 7-8 AM event from email), 2 unread Nanna&#8217;s emails preserved with stable Gmail IDs, 1 task added. Mon Apr 27 7:30 AM project-status refresh (this run) sets up today&#8217;s 8 AM briefing.",
+        "Next up: Drag-and-drop the refreshed index.html to https://github.com/NannasApothercary/gh-assistant-dashboard/upload/main so today&#8217;s project status lands on mobile before the 8 AM briefing. Knock out the water heater anode rod inspection &#8212; part is sitting in the shop. Promote 1&#8211;2 items with 🔥 in TASKS.md so future briefings lead with real priorities (well pump status + Jared&#8217;s thermostat install are the obvious candidates). Kick off the voice-to-Claude options review still queued for the next interactive session."
       ],
-      updated: "2026-04-26"
+      updated: "2026-04-27"
     },
     {
       name: "FABBRIDGE (AI Quote Tool)",
       icon: "&#128295;",
       status: "active",
       bullets: [
-        "Phase 1 intake form remains LIVE since the Apr 23 launch &#8212; no new build sessions Apr 24&#8211;25, watch-the-form week is on day 3 and no submission issues have surfaced yet. Form is shipped end-to-end: JSX-built, deployed to Netlify, email notifications to service@gtprecisionmfg.com, embedded in Wix, URL slug swapped, header GET A QUOTE button updated, live end-to-end test passed. Two Wix slug-swap gotchas (button link + hidden 301 redirect) saved to memory.",
+        "Phase 1 intake form remains LIVE since the Apr 23 launch &#8212; no new build sessions Apr 24&#8211;26, watch-the-form week is on day 4 and no submission issues have surfaced yet. Form is shipped end-to-end: JSX-built, deployed to Netlify, email notifications to service@gtprecisionmfg.com, embedded in Wix, URL slug swapped, header GET A QUOTE button updated, live end-to-end test passed. Two Wix slug-swap gotchas (button link + hidden 301 redirect) saved to memory.",
         "Next up: Continue monitoring real submissions through ~Apr 30 &#8212; flag any field-routing, file-upload, or notification-email issues. Consolidate the two OneDrive FabBridge folders into one (~15 min cleanup). Then begin Phase 1 Week 2+: the Completeness Engine &#8212; the Python backend that reads each Drawing submission, checks for missing info, and sends ONE consolidated follow-up email."
       ],
-      updated: "2026-04-26"
+      updated: "2026-04-27"
     }
   ];
 
   // &#9472;&#9472; Appointments &#8212; synced from Google Calendar &#9472;&#9472;
-  // Last synced: 2026-04-26 8:00 AM auto-sync (gtprecisionmfg@gmail.com + ghersche12@gmail.com)
+  // Last synced: 2026-04-27 8:00 AM auto-sync (gtprecisionmfg@gmail.com + ghersche12@gmail.com)
   let appointments = [
-    { title: "Check water salt level", date: "2026-04-26", time: "All day", recurring: true },
     { title: "Calendar event (from email)", date: "2026-04-30", time: "7:00 AM &#8211; 8:00 AM", recurring: false },
   ];
 
   // &#9472;&#9472; Emails &#8212; Nanna's Apothecary business emails (via iherschell12@gmail.com) &#9472;&#9472;
-  // Last synced: 2026-04-26 8:00 AM (auto-sync)
-  let emails = [
-    { id: 'gm_19dc53b0379f5720', from: "United Plant Savers &lt;office@unitedplantsavers.org&gt;", subject: "&#127794; Forest is My Medicine", snippet: "Preorder ends soon &amp; a free VIDEO for you!", unread: true, date: "2026-04-25" },
-    { id: 'gm_19dba79b82acb50a', from: "Netlify &lt;noreply@netlify.com&gt;", subject: "Take your project live in minutes", snippet: "Three ways to go from idea to live URL, including starting with just a prompt.", unread: true, date: "2026-04-23" },
-  ];
+  // Last synced: 2026-04-27 8:00 AM (auto-sync) &#8212; inbox clear, no unread items
+  let emails = [];
 
   // &#9472;&#9472; Reviewed email log (persists in this array, rendered on separate page) &#9472;&#9472;
   let reviewedEmails = [];
