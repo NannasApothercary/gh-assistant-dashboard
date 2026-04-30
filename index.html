@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GH's Personal Assistant</title>
+
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1e3a5f">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- iOS home screen support -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GH Assistant">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <style>
   :root {
     --bg: #0f172a;
@@ -2442,6 +2453,11 @@
     loadTasksFromSheet(); // refreshes tasks + calendar
     loadEmailsFromAPI();  // refreshes email
   }, 300000);
+
+  // &#9472;&#9472; Register service worker (PWA) &#9472;&#9472;
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
 </script>
 </body>
 </html>
