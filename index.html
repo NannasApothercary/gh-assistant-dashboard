@@ -816,7 +816,7 @@
   <!-- Email Follow-ups -->
   <div class="section" id="emailSection">
     <div class="section-header" onclick="toggleSection('emailSection')">
-      <h2>&#128231; Nanna's Apothecary Emails <span class="badge" id="emailCount">0</span></h2>
+      <h2>&#128231; Email Follow-ups <span class="badge" id="emailCount">0</span></h2>
       <span class="chevron">&#9660;</span>
     </div>
     <div class="section-body">
@@ -953,6 +953,10 @@
   // &#9562;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9565;
   const API_URL = 'https://script.google.com/macros/s/AKfycbw2-K2BQXFfmnzfV5hf7Mi4Q8gI3SZkOoLBtMLo4qdSIaS5P24JujVXPd5kED40Su1n/exec';
 
+  // ── Email API (iherschell12@gmail.com Apps Script) ──
+  // Paste your deployed email script URL here after setup
+  const EMAIL_API_URL = 'https://script.google.com/macros/s/AKfycby_V1MAF7LvMR1tQBcAdekr7MspzHIn6gehC8VXEk2CvfJ-TDk448GTR8ra_g53kdIWFA/exec';
+
   // &#9472;&#9472; STATE &#9472;&#9472;
   let tasks = [];
   let showDone = false;
@@ -1020,6 +1024,11 @@
       document.getElementById('sheetStatus').className = 'status-dot green';
       document.getElementById('sheetStatusText').textContent = 'Sheets: connected';
       showSync('Tasks synced!', 'success', 2000);
+
+      // Also load calendar events if the updated script returns them
+      if (data.calendar && Array.isArray(data.calendar)) {
+        loadCalendarFromResponse(data.calendar);
+      }
     } catch (err) {
       console.error('Failed to load from Sheets:', err);
       showSync('Sync failed &#8212; using cached data', 'error', 3000);
@@ -1121,6 +1130,77 @@
     } catch (err) {
       console.error('Background sync failed:', err);
       showSync('Saved locally &#8212; will sync later', 'error', 2000);
+    }
+  }
+
+  // ── Live calendar: merge Google Calendar events into appointments[] ──
+  function loadCalendarFromResponse(calEvents) {
+    function fmtTime(iso) {
+      try {
+        return new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+      } catch(e) { return ''; }
+    }
+
+    var gcalAppts = calEvents.map(function(ev) {
+      var timeStr = ev.allDay ? 'All day' : fmtTime(ev.start) + ' – ' + fmtTime(ev.end);
+      var titleStr = ev.title + (ev.location ? ' — ' + ev.location : '');
+      return {
+        id: ev.id,
+        title: titleStr,
+        date: (ev.start || '').split('T')[0],
+        time: timeStr,
+        recurring: false,
+        source: 'gcal',
+        calendarName: ev.calendarName || ''
+      };
+    });
+
+    // Keep manually-added appointments; replace all previous gcal ones
+    appointments = appointments.filter(function(a) { return a.source !== 'gcal'; });
+    appointments = appointments.concat(gcalAppts);
+    renderAppts();
+  }
+
+  // ── Live email: fetch unread Gmail from iherschell12 Apps Script ──
+  async function loadEmailsFromAPI() {
+    if (!EMAIL_API_URL || EMAIL_API_URL === 'PASTE_YOUR_EMAIL_SCRIPT_URL_HERE') {
+      document.getElementById('emailStatus').className = 'status-dot yellow';
+      document.getElementById('emailStatusText').textContent = 'Gmail: not connected yet';
+      return;
+    }
+
+    try {
+      const resp = await fetch(EMAIL_API_URL);
+      const data = await resp.json();
+      if (data.error) throw new Error(data.error);
+
+      const reviewedIds = loadReviewedEmailIds();
+      const reviewedFps = loadReviewedEmailFingerprints();
+
+      emails = (data.emails || [])
+        .filter(function(e) {
+          return !reviewedIds.has(e.id) && !reviewedFps.has(emailFingerprint(e));
+        })
+        .map(function(e) {
+          // Extract display name from "Name <addr>" format
+          var fromMatch = (e.from || '').match(/^"?(.+?)"?\s*</);
+          var fromName = fromMatch ? fromMatch[1].trim() : (e.from || 'Unknown');
+          return {
+            id: e.id,
+            from: fromName,
+            subject: e.subject || '(no subject)',
+            snippet: e.snippet || '',
+            date: e.date ? e.date.split('T')[0] : ''
+          };
+        });
+
+      document.getElementById('emailStatus').className = 'status-dot green';
+      document.getElementById('emailStatusText').textContent = 'Gmail: ' + emails.length + ' unread';
+      renderEmails();
+    } catch (err) {
+      console.error('Email load failed:', err);
+      document.getElementById('emailStatus').className = 'status-dot yellow';
+      document.getElementById('emailStatusText').textContent = 'Gmail: offline';
     }
   }
 
@@ -1758,7 +1838,7 @@
   function renderEmails() {
     document.getElementById('emailCount').textContent = emails.length;
     if (emails.length === 0 && reviewedEmails.length === 0) {
-      document.getElementById('emailList').innerHTML = '<div class="empty">No Nanna\'s Apothecary emails to follow up on.</div>';
+      document.getElementById('emailList').innerHTML = '<div class="empty">Inbox clear — no unread emails.</div>';
     } else {
       let html = '';
 
@@ -2350,22 +2430,18 @@
     renderEquipment();
   }
 
-  // &#9472;&#9472; Gmail status &#9472;&#9472;
-  document.getElementById('emailStatus').classList.add('green');
-  document.getElementById('emailStatusText').textContent = 'Gmail: connected';
-
   // &#9472;&#9472; Initial render &#9472;&#9472;
   renderProjects();
-  loadTasksFromSheet(); // Load tasks from Sheets (or fallback)
-  renderAppts();
-  renderEmails();
+  loadTasksFromSheet(); // Loads tasks + calendar events (once Apps Script is updated)
+  loadEmailsFromAPI();  // Loads live unread Gmail from iherschell12
   restoreEquipMaint();
   renderEquipment();
 
-  // &#9472;&#9472; Auto-refresh every 60 seconds &#9472;&#9472;
+  // &#9472;&#9472; Auto-refresh every 5 minutes &#9472;&#9472;
   setInterval(() => {
-    if (sheetsConnected) loadTasksFromSheet();
-  }, 60000);
+    loadTasksFromSheet(); // refreshes tasks + calendar
+    loadEmailsFromAPI();  // refreshes email
+  }, 300000);
 </script>
 </body>
 </html>
