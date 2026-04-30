@@ -1072,27 +1072,42 @@
     renderTasks();
 
     if (!sheetsConnected) {
-      showSync('Saved locally!', 'success', 1500);
+      showSync('Sheets not connected &#8212; task saved locally only', 'error', 3000);
       return;
     }
 
-    // Sync to Sheet in background
-    showSync('Saved &#8212; syncing...');
+    // Use no-cors mode to fix mobile redirect issue:
+    // Google Apps Script redirects on POST; mobile browsers drop the body on redirect.
+    // no-cors bypasses that — data reaches Apps Script, but response is opaque (unreadable).
+    // We verify success by re-fetching tasks after a short delay.
+    showSync('Saving to Sheets...');
     try {
-      const response = await fetch(API_URL, {
+      await fetch(API_URL, {
         method: 'POST',
+        mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({ action: 'add', title, priority, section })
       });
-      const data = await response.json();
-      if (data.success) {
-        showSync('Synced!', 'success', 1500);
-        // Refresh in background to get the real Sheet ID
-        loadTasksFromSheet();
+
+      // Wait for Apps Script to write, then re-fetch to confirm
+      showSync('Verifying...');
+      await new Promise(r => setTimeout(r, 3000));
+      await loadTasksFromSheet();
+
+      // If task has a real Sheet ID (not local_), it landed successfully
+      const confirmed = tasks.find(t => t.title === title && !String(t.id).startsWith('local_'));
+      if (confirmed) {
+        showSync('&#10003; Saved to Sheets!', 'success', 2500);
+      } else {
+        // Re-add local copy so it stays visible with a warning marker
+        tasks.push({ id: localId, title: title + ' &#9888; (not synced)', priority, done: false, section, added: new Date().toISOString() });
+        renderTasks();
+        showSync('&#9888; Not confirmed in Sheets &#8212; tap Reload to retry', 'error', 7000);
       }
     } catch (err) {
       console.error('Failed to sync task:', err);
-      showSync('Saved locally &#8212; will sync next refresh', 'error', 2500);
+      // Keep local copy visible
+      showSync('&#9888; Sync failed &#8212; task is local only. Tap Reload to retry.', 'error', 7000);
     }
   }
 
@@ -1104,43 +1119,42 @@
       return;
     }
 
+    // Toggle locally first for instant feedback
+    const t = tasks.find(t => t.id === taskId);
+    if (t) { t.done = !t.done; t.completed = t.done ? new Date().toISOString() : ''; }
+    renderTasks();
+
     showSync('Updating...');
     try {
-      const response = await fetch(API_URL, {
+      await fetch(API_URL, {
         method: 'POST',
+        mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({ action: 'toggle', id: taskId })
       });
-      const data = await response.json();
-      if (data.success) {
-        showSync('Updated!', 'success', 1000);
-        await loadTasksFromSheet();
-      }
+      // Re-fetch after short delay to confirm
+      await new Promise(r => setTimeout(r, 2000));
+      await loadTasksFromSheet();
+      showSync('Updated!', 'success', 1000);
     } catch (err) {
       console.error('Failed to toggle:', err);
-      showSync('Update failed', 'error', 2000);
-      // toggle locally as fallback
-      const t = tasks.find(t => t.id === taskId);
-      if (t) { t.done = !t.done; }
-      renderTasks();
+      showSync('&#9888; Update may not have saved &#8212; tap Reload to check', 'error', 4000);
     }
   }
 
   // &#9472;&#9472; Background sync for toggle (non-blocking) &#9472;&#9472;
   async function syncToggleToSheet(taskId) {
     try {
-      const response = await fetch(API_URL, {
+      await fetch(API_URL, {
         method: 'POST',
+        mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({ action: 'toggle', id: taskId })
       });
-      const data = await response.json();
-      if (data.success) {
-        showSync('Synced!', 'success', 1000);
-      }
+      showSync('Synced!', 'success', 1000);
     } catch (err) {
       console.error('Background sync failed:', err);
-      showSync('Saved locally &#8212; will sync later', 'error', 2000);
+      showSync('&#9888; Sync failed &#8212; tap Reload to retry', 'error', 2500);
     }
   }
 
