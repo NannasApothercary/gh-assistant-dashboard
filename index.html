@@ -962,7 +962,7 @@
   // &#9553;  Replace this URL after deploying the      &#9553;
   // &#9553;  Apps Script as a web app                  &#9553;
   // &#9562;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9565;
-  const API_URL = 'https://script.google.com/macros/s/AKfycbw2-K2BQXFfmnzfV5hf7Mi4Q8gI3SZkOoLBtMLo4qdSIaS5P24JujVXPd5kED40Su1n/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyHstuRlmzaTgB_ecOi208GxFhrdWIVkPCdC5JlV2a45YiiW708_pUdbc6RZ8t7cFRV/exec';
 
   // ── Email API (iherschell12@gmail.com Apps Script) ──
   // Paste your deployed email script URL here after setup
@@ -1039,6 +1039,10 @@
       // Also load calendar events if the updated script returns them
       if (data.calendar && Array.isArray(data.calendar)) {
         loadCalendarFromResponse(data.calendar);
+      }
+      // Apply cross-device settings (task order, dismissed emails/appts)
+      if (data.settings && typeof data.settings === 'object') {
+        applySheetSettings(data.settings);
       }
     } catch (err) {
       console.error('Failed to load from Sheets:', err);
@@ -1158,6 +1162,56 @@
     }
   }
 
+  // ── Cross-device settings sync ──
+
+  // Apply settings loaded from Google Sheets to this device's localStorage
+  function applySheetSettings(s) {
+    if (s.taskOrder && Array.isArray(s.taskOrder)) {
+      try { localStorage.setItem('gh_task_order', JSON.stringify(s.taskOrder)); } catch(e) {}
+    }
+    if (s.reviewedEmailIds && Array.isArray(s.reviewedEmailIds)) {
+      try { localStorage.setItem(REVIEWED_EMAIL_KEY, JSON.stringify(s.reviewedEmailIds)); } catch(e) {}
+    }
+    if (s.reviewedEmailFingerprints && Array.isArray(s.reviewedEmailFingerprints)) {
+      try { localStorage.setItem(REVIEWED_EMAIL_FP_KEY, JSON.stringify(s.reviewedEmailFingerprints)); } catch(e) {}
+    }
+    if (s.dismissedAppts && Array.isArray(s.dismissedAppts)) {
+      try { localStorage.setItem(DISMISSED_APPT_KEY, JSON.stringify(s.dismissedAppts)); } catch(e) {}
+    }
+    if (s.carryoverAppts && Array.isArray(s.carryoverAppts)) {
+      try { localStorage.setItem(CARRYOVER_APPT_KEY, JSON.stringify(s.carryoverAppts)); } catch(e) {}
+    }
+  }
+
+  // Debounced save — waits 1.5s after last change before writing to Sheet
+  let _settingsSaveTimer = null;
+  function queueSettingsSave() {
+    if (!sheetsConnected) return;
+    clearTimeout(_settingsSaveTimer);
+    _settingsSaveTimer = setTimeout(saveSettingsToSheet, 1500);
+  }
+
+  async function saveSettingsToSheet() {
+    if (!sheetsConnected) return;
+    const settings = {
+      taskOrder: getTaskOrder(),
+      reviewedEmailIds: [...loadReviewedEmailIds()],
+      reviewedEmailFingerprints: [...loadReviewedEmailFingerprints()],
+      dismissedAppts: [...loadDismissedAppts()],
+      carryoverAppts: loadCarryoverAppts()
+    };
+    try {
+      await fetch(API_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'saveSettings', settings })
+      });
+    } catch(err) {
+      console.error('Settings sync failed:', err);
+    }
+  }
+
   // ── Live calendar: merge Google Calendar events into appointments[] ──
   function loadCalendarFromResponse(calEvents) {
     function fmtTime(iso) {
@@ -1240,6 +1294,7 @@
   function saveTaskOrder(orderArray) {
     try {
       localStorage.setItem('gh_task_order', JSON.stringify(orderArray));
+      queueSettingsSave();
     } catch (e) { console.error('Could not save task order:', e); }
   }
 
@@ -1397,14 +1452,14 @@
     catch (e) { return new Set(); }
   }
   function saveReviewedEmailIds(set) {
-    try { localStorage.setItem(REVIEWED_EMAIL_KEY, JSON.stringify([...set])); } catch (e) {}
+    try { localStorage.setItem(REVIEWED_EMAIL_KEY, JSON.stringify([...set])); queueSettingsSave(); } catch (e) {}
   }
   function loadReviewedEmailFingerprints() {
     try { return new Set(JSON.parse(localStorage.getItem(REVIEWED_EMAIL_FP_KEY) || '[]')); }
     catch (e) { return new Set(); }
   }
   function saveReviewedEmailFingerprints(set) {
-    try { localStorage.setItem(REVIEWED_EMAIL_FP_KEY, JSON.stringify([...set])); } catch (e) {}
+    try { localStorage.setItem(REVIEWED_EMAIL_FP_KEY, JSON.stringify([...set])); queueSettingsSave(); } catch (e) {}
   }
   // Filter emails[] against BOTH reviewed sets BEFORE rendering so sync-regenerated IDs still get caught
   (function pruneEmailsOnLoad() {
@@ -1423,7 +1478,7 @@
     catch (e) { return new Set(); }
   }
   function saveDismissedAppts(set) {
-    try { localStorage.setItem(DISMISSED_APPT_KEY, JSON.stringify([...set])); } catch (e) {}
+    try { localStorage.setItem(DISMISSED_APPT_KEY, JSON.stringify([...set])); queueSettingsSave(); } catch (e) {}
   }
   function dismissAppt(key) {
     const set = loadDismissedAppts();
@@ -1441,7 +1496,7 @@
     catch (e) { return []; }
   }
   function saveCarryoverAppts(arr) {
-    try { localStorage.setItem(CARRYOVER_APPT_KEY, JSON.stringify(arr)); } catch (e) {}
+    try { localStorage.setItem(CARRYOVER_APPT_KEY, JSON.stringify(arr)); queueSettingsSave(); } catch (e) {}
   }
 
   // &#9472;&#9472; Date display &#9472;&#9472;
