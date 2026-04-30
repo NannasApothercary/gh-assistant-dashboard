@@ -1294,7 +1294,10 @@
   function saveTaskOrder(orderArray) {
     try {
       localStorage.setItem('gh_task_order', JSON.stringify(orderArray));
-      queueSettingsSave();
+      // NOTE: do NOT call queueSettingsSave() here — saveTaskOrder is called
+      // during page load (auto-appending new task IDs) and we don't want that
+      // to overwrite the Sheet's order. Only explicit user reorder actions
+      // (moveToTop, moveTask) trigger a settings save.
     } catch (e) { console.error('Could not save task order:', e); }
   }
 
@@ -1344,6 +1347,7 @@
     ids.splice(idx, 1);
     ids.unshift(taskId);
     saveTaskOrder(ids);
+    queueSettingsSave(); // user explicitly reordered — sync to Sheet
     renderTasks();
   }
 
@@ -1358,6 +1362,7 @@
     // Swap
     [ids[idx], ids[newIdx]] = [ids[newIdx], ids[idx]];
     saveTaskOrder(ids);
+    queueSettingsSave(); // user explicitly reordered — sync to Sheet
     renderTasks();
   }
 
