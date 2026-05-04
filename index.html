@@ -1057,13 +1057,8 @@
     }
 
     // After loading, ensure all active task IDs are in the saved order
-    const currentOrder = getTaskOrder();
-    const activeIds = tasks.filter(t => !t.done && t.section === 'active').map(t => t.id);
-    const newIds = activeIds.filter(id => !currentOrder.includes(id));
-    if (newIds.length > 0) {
-      saveTaskOrder([...currentOrder.filter(id => activeIds.includes(id)), ...newIds]);
-    }
-
+    // Task order now comes from the Rank column in Google Sheets.
+    // No localStorage rank logic needed here.
     restoreTaskData();
     renderTasks();
     document.getElementById('lastUpdated').textContent = 'Page loaded: ' + new Date().toLocaleTimeString();
@@ -1340,30 +1335,46 @@
 
   // Move a task to the very top of the list
   function moveToTop(taskId) {
-    const ordered = snapshotOrder();
-    const ids = ordered.map(t => t.id);
-    const idx = ids.indexOf(taskId);
+    const active = tasks.filter(t => !t.done && t.section === 'active');
+    const sorted = [...active].sort((a, b) => (Number(a.rank)||9999) - (Number(b.rank)||9999));
+    const idx = sorted.findIndex(t => t.id === taskId);
     if (idx <= 0) return;
-    ids.splice(idx, 1);
-    ids.unshift(taskId);
-    saveTaskOrder(ids);
-    queueSettingsSave(); // user explicitly reordered — sync to Sheet
+    const [item] = sorted.splice(idx, 1);
+    sorted.unshift(item);
+    sorted.forEach((t, i) => { t.rank = i + 1; });
+    saveRanksToSheet(sorted);
     renderTasks();
   }
 
   // Move a task up (-1) or down (+1) in the list
   function moveTask(taskId, direction) {
-    const ordered = snapshotOrder();
-    const ids = ordered.map(t => t.id);
-    const idx = ids.indexOf(taskId);
+    const active = tasks.filter(t => !t.done && t.section === 'active');
+    const sorted = [...active].sort((a, b) => (Number(a.rank)||9999) - (Number(b.rank)||9999));
+    const idx = sorted.findIndex(t => t.id === taskId);
     if (idx === -1) return;
     const newIdx = idx + direction;
-    if (newIdx < 0 || newIdx >= ids.length) return;
-    // Swap
-    [ids[idx], ids[newIdx]] = [ids[newIdx], ids[idx]];
-    saveTaskOrder(ids);
-    queueSettingsSave(); // user explicitly reordered — sync to Sheet
+    if (newIdx < 0 || newIdx >= sorted.length) return;
+    [sorted[idx], sorted[newIdx]] = [sorted[newIdx], sorted[idx]];
+    sorted.forEach((t, i) => { t.rank = i + 1; });
+    saveRanksToSheet(sorted);
     renderTasks();
+  }
+
+  // Save rank order to Google Sheets — called on every reorder.
+  // No localStorage involved. Next page load on ANY device reads the updated ranks.
+  async function saveRanksToSheet(sortedTasks) {
+    if (!sheetsConnected) return;
+    const ranks = sortedTasks.map((t, i) => ({ id: t.id, rank: i + 1 }));
+    try {
+      await fetch(API_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'updateRanks', ranks })
+      });
+    } catch (err) {
+      console.error('Failed to save ranks to Sheet:', err);
+    }
   }
 
   // Legacy stubs so nothing breaks
@@ -1677,15 +1688,12 @@
     document.getElementById('taskCount').textContent = active.length;
     document.getElementById('doneCount').textContent = done.length;
 
-    // Sort active tasks by saved manual order (localStorage), new tasks go to bottom
-    const savedOrder = getTaskOrder();
+    // Sort active tasks by rank from Google Sheets (server-side, same on every device)
+    // Tasks without a rank fall to the bottom.
     const sorted = [...active].sort((a, b) => {
-      const aIdx = savedOrder.indexOf(a.id);
-      const bIdx = savedOrder.indexOf(b.id);
-      // Tasks not in saved order go to end, keeping their original relative order
-      const aPos = aIdx === -1 ? 9999 : aIdx;
-      const bPos = bIdx === -1 ? 9999 : bIdx;
-      return aPos - bPos;
+      const aRank = (a.rank !== undefined && a.rank !== null && a.rank !== '') ? Number(a.rank) : 9999;
+      const bRank = (b.rank !== undefined && b.rank !== null && b.rank !== '') ? Number(b.rank) : 9999;
+      return aRank - bRank;
     });
 
     // Helper to render a single active task with up/down controls
