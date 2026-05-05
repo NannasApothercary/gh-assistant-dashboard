@@ -1035,11 +1035,19 @@
       if (data.error) throw new Error(data.error);
 
       tasks = data.tasks || [];
-      sheetsConnected = true;
 
-      document.getElementById('sheetStatus').className = 'status-dot green';
-      document.getElementById('sheetStatusText').textContent = 'Sheets: connected';
-      showSync('Tasks synced!', 'success', 2000);
+      // If Sheets returned no tasks, fall back to local task list
+      if (tasks.length === 0) {
+        tasks = [...FALLBACK_TASKS];
+        document.getElementById('sheetStatus').className = 'status-dot yellow';
+        document.getElementById('sheetStatusText').textContent = 'Sheets: empty — showing local tasks';
+        showSync('Sheets returned no tasks — using local list', 'warning', 3000);
+      } else {
+        sheetsConnected = true;
+        document.getElementById('sheetStatus').className = 'status-dot green';
+        document.getElementById('sheetStatusText').textContent = 'Sheets: connected';
+        showSync('Tasks synced!', 'success', 2000);
+      }
 
       // Also load calendar events if the updated script returns them
       if (data.calendar && Array.isArray(data.calendar)) {
