@@ -798,7 +798,7 @@
     </div>
     <div class="section-body">
       <div id="taskList">
-        <div class="empty">Loading tasks from Google Sheets...</div>
+        <div class="empty">Loading tasks from Notion...</div>
       </div>
     </div>
     <div class="add-form" id="addTaskForm">
@@ -874,7 +874,7 @@
   <div class="status-bar">
     <div class="status-item">
       <div class="status-dot" id="sheetStatus"></div>
-      <span id="sheetStatusText">Sheets: connecting...</span>
+      <span id="sheetStatusText">Notion: connecting...</span>
     </div>
     <div class="status-item">
       <div class="status-dot" id="emailStatus"></div>
@@ -962,7 +962,7 @@
   // &#9553;  Replace this URL after deploying the      &#9553;
   // &#9553;  Apps Script as a web app                  &#9553;
   // &#9562;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9565;
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyHstuRlmzaTgB_ecOi208GxFhrdWIVkPCdC5JlV2a45YiiW708_pUdbc6RZ8t7cFRV/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyXONgjpwWrj0nlfVRCYdaMGtB939CotnlD0u9OhfaZ4eFqN-g-JI7Sv67IeEm5kfFj/exec';
 
   // ── Email API (iherschell12@gmail.com Apps Script) ──
   // Paste your deployed email script URL here after setup
@@ -1022,12 +1022,12 @@
       tasks = [...FALLBACK_TASKS];
       restoreTaskData();
       document.getElementById('sheetStatus').classList.add('yellow');
-      document.getElementById('sheetStatusText').textContent = 'Sheets: not connected yet';
+      document.getElementById('sheetStatusText').textContent = 'Notion: not connected yet';
       renderTasks();
       return;
     }
 
-    showSync('Syncing tasks from Google Sheets...');
+    showSync('Syncing tasks from Notion...');
     try {
       const response = await fetch(API_URL);
       const data = await response.json();
@@ -1040,12 +1040,12 @@
       if (tasks.length === 0) {
         tasks = [...FALLBACK_TASKS];
         document.getElementById('sheetStatus').className = 'status-dot yellow';
-        document.getElementById('sheetStatusText').textContent = 'Sheets: empty — showing local tasks';
+        document.getElementById('sheetStatusText').textContent = 'Notion: empty — showing local tasks';
         showSync('Sheets returned no tasks — using local list', 'warning', 3000);
       } else {
         sheetsConnected = true;
         document.getElementById('sheetStatus').className = 'status-dot green';
-        document.getElementById('sheetStatusText').textContent = 'Sheets: connected';
+        document.getElementById('sheetStatusText').textContent = 'Notion: connected';
         showSync('Tasks synced!', 'success', 2000);
       }
 
@@ -1061,7 +1061,7 @@
       console.error('Failed to load from Sheets:', err);
       showSync('Sync failed &#8212; using cached data', 'error', 3000);
       document.getElementById('sheetStatus').className = 'status-dot red';
-      document.getElementById('sheetStatusText').textContent = 'Sheets: offline';
+      document.getElementById('sheetStatusText').textContent = 'Notion: offline';
 
       // Fall back to cached data if we have no tasks
       if (tasks.length === 0) {
@@ -1084,7 +1084,7 @@
     renderTasks();
 
     if (!sheetsConnected) {
-      showSync('Sheets not connected &#8212; task saved locally only', 'error', 3000);
+      showSync('Notion not connected &#8212; task saved locally only', 'error', 3000);
       return;
     }
 
@@ -1092,7 +1092,7 @@
     // Google Apps Script redirects on POST; mobile browsers drop the body on redirect.
     // no-cors bypasses that — data reaches Apps Script, but response is opaque (unreadable).
     // We verify success by re-fetching tasks after a short delay.
-    showSync('Saving to Sheets...');
+    showSync('Saving to Notion...');
     try {
       await fetch(API_URL, {
         method: 'POST',
