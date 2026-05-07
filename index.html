@@ -1513,12 +1513,33 @@
     const set = loadDismissedAppts();
     set.add(key);
     saveDismissedAppts(set);
+    // Also remove from user-added storage so it doesn't resurface
+    const userSaved = loadUserAppts().filter(a => apptKey(a) !== key);
+    saveUserAppts(userSaved);
     renderAppts();
   }
 
   // &#9472;&#9472; Carryover appointments (past items not dismissed stick on the dashboard) &#9472;&#9472;
   // Stores full appt objects that have a past date and haven&#8217;t been dismissed. They survive
   // daily dashboard-sync rewrites, which would otherwise drop past dates from the appointments[] array.
+  // ── User-added appointments (persisted across refreshes via localStorage) ──
+  const USER_APPT_KEY = 'userAddedAppts';
+  function loadUserAppts() {
+    try { return JSON.parse(localStorage.getItem(USER_APPT_KEY) || '[]'); }
+    catch (e) { return []; }
+  }
+  function saveUserAppts(arr) {
+    try { localStorage.setItem(USER_APPT_KEY, JSON.stringify(arr)); queueSettingsSave(); } catch (e) {}
+  }
+  // Merge saved user appointments into the live array on page load (runs after apptKey is defined)
+  function mergeUserAppts() {
+    const saved = loadUserAppts();
+    if (saved.length) {
+      const existingKeys = new Set(appointments.map(a => apptKey(a)));
+      saved.forEach(a => { if (!existingKeys.has(apptKey(a))) appointments.push(a); });
+    }
+  }
+
   const CARRYOVER_APPT_KEY = 'carryoverAppts';
   function loadCarryoverAppts() {
     try { return JSON.parse(localStorage.getItem(CARRYOVER_APPT_KEY) || '[]'); }
@@ -1539,6 +1560,7 @@
     document.querySelector('.header h1').textContent = `👋 ${greeting}, GH`;
   }
   updateDate();
+  mergeUserAppts(); // restore user-added reminders after page load
 
   // &#9472;&#9472; Section toggle &#9472;&#9472;
   function toggleSection(id) {
@@ -1582,7 +1604,14 @@
     const text = input.value.trim();
     if (!text) return;
 
-    appointments.push({ title: text, added: new Date().toISOString() });
+    const newAppt = { title: text, added: new Date().toISOString(), source: 'user' };
+    appointments.push(newAppt);
+
+    // Persist so it survives page refreshes
+    const saved = loadUserAppts();
+    saved.push(newAppt);
+    saveUserAppts(saved);
+
     input.value = '';
     renderAppts();
   }
