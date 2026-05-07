@@ -1053,6 +1053,10 @@
       if (data.calendar && Array.isArray(data.calendar)) {
         loadCalendarFromResponse(data.calendar);
       }
+      // Load cross-device reminders from Notion
+      if (data.reminders && Array.isArray(data.reminders)) {
+        loadNotionReminders(data.reminders);
+      }
       // Apply cross-device settings (task order, dismissed emails/appts)
       if (data.settings && typeof data.settings === 'object') {
         applySheetSettings(data.settings);
@@ -1513,9 +1517,19 @@
     const set = loadDismissedAppts();
     set.add(key);
     saveDismissedAppts(set);
-    // Also remove from user-added storage so it doesn't resurface
+    // Remove from user-added localStorage so it doesn't resurface
     const userSaved = loadUserAppts().filter(a => apptKey(a) !== key);
     saveUserAppts(userSaved);
+    // If it came from Notion, mark it Done there too (cross-device dismiss)
+    const notionAppt = appointments.find(a => apptKey(a) === key && a.source === 'notion' && a.pageId);
+    if (notionAppt && API_URL && API_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+      fetch(API_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'dismissReminder', pageId: notionAppt.pageId })
+      }).catch(() => {});
+    }
     renderAppts();
   }
 
@@ -1598,22 +1612,76 @@
     addTaskToSheet(text, priority, section);
   }
 
-  // &#9472;&#9472; Add appointment &#9472;&#9472;
+  // ── Parse reminder text into { title, date, time } ──────────
+  function parseReminderText(text) {
+    // Match: "5/8 3pm something", "5/8 3:30pm something", "5/8 3:30 PM something"
+    const m = text.match(/^(\d{1,2})\/(\d{1,2})\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\s*(.*)/i);
+    if (m) {
+      const month = String(parseInt(m[1])).padStart(2, '0');
+      const day   = String(parseInt(m[2])).padStart(2, '0');
+      const year  = new Date().getFullYear();
+      const date  = `${year}-${month}-${day}`;
+      const time  = m[3].trim().toUpperCase();
+      const title = m[4].trim() || text;
+      return { title, date, time };
+    }
+    // No date found — store as-is
+    return { title: text, date: null, time: null };
+  }
+
+  // ── Load Notion reminders into appointments[] ─────────────────
+  function loadNotionReminders(notionReminders) {
+    // Remove previous Notion-sourced reminders, keep gcal + user-added
+    appointments = appointments.filter(a => a.source !== 'notion');
+    const dismissed = loadDismissedAppts();
+    notionReminders.forEach(r => {
+      if (!dismissed.has(apptKey(r))) {
+        appointments.push(r);
+      }
+    });
+    renderAppts();
+  }
+
+  // ── Add appointment ───────────────────────────────────────────
   function addAppt() {
     const input = document.getElementById('newApptInput');
     const text = input.value.trim();
     if (!text) return;
 
-    const newAppt = { title: text, added: new Date().toISOString(), source: 'user' };
-    appointments.push(newAppt);
+    const parsed = parseReminderText(text);
+    const newAppt = {
+      title: parsed.title,
+      date: parsed.date,
+      time: parsed.time,
+      added: new Date().toISOString(),
+      source: 'user'
+    };
 
-    // Persist so it survives page refreshes
+    // Show on dashboard immediately
+    appointments.push(newAppt);
+    renderAppts();
+
+    // Save to localStorage as fallback (works even if script is offline)
     const saved = loadUserAppts();
     saved.push(newAppt);
     saveUserAppts(saved);
 
+    // Send to Notion via Apps Script for cross-device sync
+    if (API_URL && API_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+      fetch(API_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'addReminder',
+          title: parsed.title,
+          date: parsed.date,
+          time: parsed.time
+        })
+      }).catch(() => {}); // silent fail — localStorage is the backup
+    }
+
     input.value = '';
-    renderAppts();
   }
 
   // &#9472;&#9472; Toggle task done (now writes to Sheets!) &#9472;&#9472;
