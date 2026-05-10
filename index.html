@@ -461,6 +461,43 @@
     margin-top: 6px;
   }
 
+  /* Appointment add form — structured fields */
+  .appt-input-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 8px;
+    align-items: center;
+  }
+  @media (max-width: 600px) {
+    .appt-input-row { grid-template-columns: 1fr 1fr; }
+    .appt-input-row .appt-add-btn { grid-column: 1 / -1; }
+  }
+  .appt-input-row input[type="date"],
+  .appt-input-row input[type="time"] {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 8px;
+    color: var(--text);
+    font-size: 0.85rem;
+    outline: none;
+    color-scheme: dark;
+  }
+  .appt-input-row input[type="date"]:focus,
+  .appt-input-row input[type="time"]:focus { border-color: var(--accent); }
+  .appt-add-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .appt-add-btn:hover { background: var(--accent-light); }
+
   /* Equipment cards */
   .equip-grid {
     display: grid;
@@ -819,8 +856,13 @@
       </div>
     </div>
     <div class="add-form" id="addApptForm">
-      <input type="text" id="newApptInput" placeholder="e.g. Doctor at 2pm Thursday" onkeydown="if(event.key==='Enter')addAppt()">
-      <div class="hint">Press Enter to add. Include time and date if possible.</div>
+      <div class="appt-input-row">
+        <input type="text" id="newApptTitle" placeholder="What? e.g. Doctor appointment" onkeydown="if(event.key==='Enter')addAppt()">
+        <input type="date" id="newApptDate">
+        <input type="time" id="newApptTime">
+        <button class="appt-add-btn" onclick="addAppt()">Add →</button>
+      </div>
+      <div class="hint">Creates a real Google Calendar event — shows on all your devices automatically.</div>
     </div>
   </div>
 
@@ -881,7 +923,7 @@
       <span id="emailStatusText">Gmail</span>
     </div>
     <div class="status-item" id="dataTimestamp" title="When this dashboard was last deployed. If two devices show different values here, the older one needs a hard refresh (Ctrl+Shift+R).">
-      <span style="color:var(--text);font-weight:600">📅 Data: May 6, 2026 — 7:00 AM ET</span>
+      <span style="color:var(--text);font-weight:600" id="calDataTime">📅 Calendar: loading...</span>
     </div>
     <div class="status-item" id="lastUpdated">
       Page loaded: --
@@ -1245,6 +1287,13 @@
         calendarName: ev.calendarName || ''
       };
     });
+
+    // Stamp the live fetch time so the footer shows real data freshness
+    const calEl = document.getElementById('calDataTime');
+    if (calEl) {
+      const ts = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+      calEl.textContent = '📅 Calendar synced: ' + ts;
+    }
 
     // Keep manually-added appointments; replace all previous gcal ones
     appointments = appointments.filter(function(a) { return a.source !== 'gcal'; });
@@ -1642,46 +1691,60 @@
     renderAppts();
   }
 
-  // ── Add appointment ───────────────────────────────────────────
-  function addAppt() {
-    const input = document.getElementById('newApptInput');
-    const text = input.value.trim();
-    if (!text) return;
+  // ── Add appointment → writes directly to Google Calendar ─────
+  async function addAppt() {
+    const titleEl = document.getElementById('newApptTitle');
+    const dateEl  = document.getElementById('newApptDate');
+    const timeEl  = document.getElementById('newApptTime');
 
-    const parsed = parseReminderText(text);
-    const newAppt = {
-      title: parsed.title,
-      date: parsed.date,
-      time: parsed.time,
-      added: new Date().toISOString(),
-      source: 'user'
-    };
+    const title = titleEl.value.trim();
+    const date  = dateEl.value;   // "2026-05-15" or ""
+    const time  = timeEl.value;   // "14:00" or ""
 
-    // Show on dashboard immediately
+    if (!title) { showSync('Please enter a title', 'error', 2500); return; }
+    if (!date)  { showSync('Please pick a date', 'error', 2500); return; }
+
+    // Format time for display
+    let timeDisplay = 'All day';
+    if (time) {
+      const [h, m] = time.split(':').map(Number);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const h12 = h % 12 || 12;
+      timeDisplay = `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+    }
+
+    // Show on dashboard immediately (optimistic UI)
+    const newAppt = { title, date, time: timeDisplay, source: 'user', added: new Date().toISOString() };
     appointments.push(newAppt);
     renderAppts();
 
-    // Save to localStorage as fallback (works even if script is offline)
-    const saved = loadUserAppts();
-    saved.push(newAppt);
-    saveUserAppts(saved);
+    // Clear form
+    titleEl.value = '';
+    dateEl.value  = '';
+    timeEl.value  = '';
 
-    // Send to Notion via Apps Script for cross-device sync
-    if (API_URL && API_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
-      fetch(API_URL, {
+    // POST to Apps Script → creates real Google Calendar event
+    showSync('Creating Google Calendar event...');
+    try {
+      await fetch(API_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'addReminder',
-          title: parsed.title,
-          date: parsed.date,
-          time: parsed.time
-        })
-      }).catch(() => {}); // silent fail — localStorage is the backup
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'createEvent', title, date, time })
+      });
+      // Wait for Apps Script to write to Calendar, then re-fetch to confirm
+      showSync('Syncing with Google Calendar...');
+      await new Promise(r => setTimeout(r, 4000));
+      await loadTasksFromSheet();
+      showSync('✓ Added to Google Calendar — shows on all devices!', 'success', 4000);
+    } catch(err) {
+      console.error('createEvent failed:', err);
+      // Keep local copy visible as fallback
+      const saved = loadUserAppts();
+      saved.push(newAppt);
+      saveUserAppts(saved);
+      showSync('⚠ Saved locally — tap Refresh to retry Google Calendar sync', 'error', 5000);
     }
-
-    input.value = '';
   }
 
   // &#9472;&#9472; Toggle task done (now writes to Sheets!) &#9472;&#9472;
