@@ -1412,6 +1412,19 @@
     renderTasks();
   }
 
+  // Move a task to the very bottom of the list
+  function moveToBottom(taskId) {
+    const active = tasks.filter(t => !t.done && t.section === 'active');
+    const sorted = [...active].sort((a, b) => (Number(a.rank)||9999) - (Number(b.rank)||9999));
+    const idx = sorted.findIndex(t => t.id === taskId);
+    if (idx === -1 || idx === sorted.length - 1) return;
+    const [item] = sorted.splice(idx, 1);
+    sorted.push(item);
+    sorted.forEach((t, i) => { t.rank = i + 1; });
+    saveRanksToSheet(sorted);
+    renderTasks();
+  }
+
   // Move a task up (-1) or down (+1) in the list
   function moveTask(taskId, direction) {
     const active = tasks.filter(t => !t.done && t.section === 'active');
@@ -1877,6 +1890,7 @@
         <button class="prio-btn" onclick="event.stopPropagation();moveToTop('${t.id}')" ${isFirst?'disabled':''} title="Move to top">&#8648;</button>
         <button class="prio-btn" onclick="event.stopPropagation();moveTask('${t.id}',-1)" ${isFirst?'disabled':''} title="Move up">&#9650;</button>
         <button class="prio-btn" onclick="event.stopPropagation();moveTask('${t.id}',1)" ${isLast?'disabled':''} title="Move down">&#9660;</button>
+        <button class="prio-btn" onclick="event.stopPropagation();moveToBottom('${t.id}')" ${isLast?'disabled':''} title="Move to bottom">&#8650;</button>
       </span>`;
       const noteHtml = t.note ? `<div class="active-note">📝 ${t.note}</div>` : '';
       return `<div class="task-item">
