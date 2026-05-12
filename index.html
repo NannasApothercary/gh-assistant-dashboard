@@ -1102,6 +1102,10 @@
       // Apply cross-device settings (task order, dismissed emails/appts)
       if (data.settings && typeof data.settings === 'object') {
         applySheetSettings(data.settings);
+        // Re-render appointments now that carryover/dismissed state is loaded from Sheets.
+        // Without this, renderAppts() runs before applySheetSettings writes carryover to
+        // localStorage, so new devices never see the synced carryover state.
+        renderAppts();
       }
     } catch (err) {
       console.error('Failed to load from Sheets:', err);
@@ -2001,7 +2005,7 @@
     const cutoff = new Date(today);
     cutoff.setDate(cutoff.getDate() + 5); // show today + 5 days out
     const horizonPast = new Date(today);
-    horizonPast.setDate(horizonPast.getDate() - 2); // carryover horizon: 2 days back — anything older auto-expires on all devices
+    horizonPast.setDate(horizonPast.getDate() - 14); // carryover horizon: 14 days back
 
     const dismissed = loadDismissedAppts();
 
