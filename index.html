@@ -2727,4 +2727,9 @@
     loadEmailsFromAPI();  // refreshes email
   }, 300000);
 
-  // &#9472;&#9472; Register service 
+  // &#9472;&#9472; Register service worker (PWA) &#9472;&#9472;
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
+</script>
+</body>
