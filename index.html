@@ -2001,7 +2001,7 @@
     const cutoff = new Date(today);
     cutoff.setDate(cutoff.getDate() + 5); // show today + 5 days out
     const horizonPast = new Date(today);
-    horizonPast.setDate(horizonPast.getDate() - 14); // carryover horizon: 14 days back
+    horizonPast.setDate(horizonPast.getDate() - 2); // carryover horizon: 2 days back — anything older auto-expires on all devices
 
     const dismissed = loadDismissedAppts();
 
@@ -2733,3 +2733,11 @@
   }
 </script>
 </body>
+</html>
+worker (PWA) ──
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
+</script>
+</body>
+</html>
