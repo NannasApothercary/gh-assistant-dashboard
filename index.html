@@ -808,7 +808,7 @@
       <div class="icon">&#128197;</div>
       <div class="label">Add Reminder</div>
     </div>
-    <div class="action-btn" onclick="loadTasksFromSheet()">
+    <div class="action-btn" onclick="refreshAll()">
       <div class="icon">&#128260;</div>
       <div class="label">Refresh</div>
     </div>
@@ -1344,6 +1344,12 @@
     }
   }
 
+  // &#9472;&#9472; Refresh All &#8212; fires tasks+calendar AND email together &#9472;&#9472;
+  async function refreshAll() {
+    showSync('Refreshing all data...');
+    await Promise.all([loadTasksFromSheet(), loadEmailsFromAPI()]);
+  }
+
   // &#9472;&#9472; TASK ORDER (localStorage) &#9472;&#9472;
   function getTaskOrder() {
     try {
@@ -1521,11 +1527,9 @@
     }
   ];
 
-  // &#9472;&#9472; Appointments &#8212; synced from Google Calendar &#9472;&#9472;
-  // Last synced: 2026-05-06 7:00 AM (gtprecisionmfg@gmail.com + ghersche12@gmail.com)
-  let appointments = [
-    { title: "Barber", date: "2026-05-07", time: "2:00 PM &#8211; 3:00 PM", recurring: false },
-  ];
+  // &#9472;&#9472; Appointments &#8212; always fetched live from Google Calendar via Apps Script &#9472;&#9472;
+  // Do NOT hardcode appointments here &#8212; live fetch keeps all devices in sync.
+  let appointments = [];
 
   // &#9472;&#9472; Emails &#8212; Nanna's Apothecary business emails (via iherschell12@gmail.com) &#9472;&#9472;
   // Last synced: 2026-05-06 7:00 AM (manual sync) &#8212; inbox clear, no unread items
