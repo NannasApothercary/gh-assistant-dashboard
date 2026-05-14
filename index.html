@@ -1162,7 +1162,7 @@
     }
 
     // After loading, ensure all active task IDs are in the saved order
-    // Task order now comes from the Rank column in Google Sheets.
+    // Task order comes from Notion status/priority order.
     // No localStorage rank logic needed here.
     restoreTaskData();
     renderTasks();
@@ -1264,7 +1264,7 @@
 
   // ── Cross-device settings sync ──
 
-  // Apply settings loaded from Google Sheets to this device's localStorage
+  // Apply settings loaded from Notion to this device's localStorage
   function applySheetSettings(s) {
     if (s.taskOrder && Array.isArray(s.taskOrder)) {
       try { localStorage.setItem('gh_task_order', JSON.stringify(s.taskOrder)); } catch(e) {}
@@ -1491,8 +1491,8 @@
     renderTasks();
   }
 
-  // Save rank order to Google Sheets — called on every reorder.
-  // No localStorage involved. Next page load on ANY device reads the updated ranks.
+  // Save rank order — called on every reorder.
+  // Next page load on ANY device reads the updated order from Notion.
   async function saveRanksToSheet(sortedTasks) {
     if (!sheetsConnected) return;
     const ranks = sortedTasks.map((t, i) => ({ id: t.id, rank: i + 1 }));
@@ -1968,7 +1968,7 @@
     document.getElementById('taskCount').textContent = active.length;
     document.getElementById('doneCount').textContent = done.length;
 
-    // Sort active tasks by rank from Google Sheets (server-side, same on every device)
+    // Sort active tasks by priority from Notion (same on every device)
     // Tasks without a rank fall to the bottom.
     const sorted = [...active].sort((a, b) => {
       const aRank = (a.rank !== undefined && a.rank !== null && a.rank !== '') ? Number(a.rank) : 9999;
