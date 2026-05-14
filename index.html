@@ -396,6 +396,41 @@
   .action-btn .icon { font-size: 1.4rem; margin-bottom: 4px; }
   .action-btn .label { font-size: 0.8rem; font-weight: 500; }
 
+  /* Offline state for Add Task + Refresh buttons */
+  .action-btn.offline {
+    border-color: var(--danger);
+    background: rgba(239,68,68,0.08);
+  }
+  .action-btn.offline .label { color: var(--danger); }
+  .action-btn.offline:hover { background: rgba(239,68,68,0.15); }
+
+  /* Add task form offline warning */
+  .add-form-warning {
+    display: none;
+    background: rgba(239,68,68,0.12);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    color: var(--danger);
+    margin-bottom: 8px;
+    align-items: center;
+    gap: 8px;
+  }
+  .add-form-warning.visible { display: flex; }
+  .add-form-warning button {
+    margin-left: auto;
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
   /* Empty state */
   .empty {
     text-align: center;
@@ -800,7 +835,7 @@
 
   <!-- Quick Actions -->
   <div class="quick-actions">
-    <div class="action-btn" onclick="showAddTask()">
+    <div class="action-btn" id="addTaskBtn" onclick="showAddTask()">
       <div class="icon">&#10133;</div>
       <div class="label">Add Task</div>
     </div>
@@ -808,9 +843,9 @@
       <div class="icon">&#128197;</div>
       <div class="label">Add Reminder</div>
     </div>
-    <div class="action-btn" onclick="refreshAll()">
-      <div class="icon">&#128260;</div>
-      <div class="label">Refresh</div>
+    <div class="action-btn" id="refreshBtn" onclick="refreshAll()">
+      <div class="icon" id="refreshIcon">&#128260;</div>
+      <div class="label" id="refreshLabel">Refresh</div>
     </div>
     <div class="action-btn" onclick="toggleDone()">
       <div class="icon">&#9989;</div>
@@ -839,6 +874,10 @@
       </div>
     </div>
     <div class="add-form" id="addTaskForm">
+      <div class="add-form-warning" id="addTaskWarning">
+        ⚠ Notion offline — task will be local only
+        <button onclick="retryAndAdd()">Reconnect</button>
+      </div>
       <input type="text" id="newTaskInput" placeholder="What needs to be done?" onkeydown="if(event.key==='Enter')addTask()">
       <div class="hint">Press Enter to add. Tip: start with ! for high priority, ? for someday</div>
     </div>
@@ -1086,6 +1125,7 @@
         showSync('Sheets returned no tasks — using local list', 'warning', 3000);
       } else {
         sheetsConnected = true;
+        updateConnectionUI();
         document.getElementById('sheetStatus').className = 'status-dot green';
         document.getElementById('sheetStatusText').textContent = 'Notion: connected';
         showSync('Tasks synced!', 'success', 2000);
@@ -1109,6 +1149,8 @@
       }
     } catch (err) {
       console.error('Failed to load from Sheets:', err);
+      sheetsConnected = false;
+      updateConnectionUI();
       showSync('Sync failed &#8212; using cached data', 'error', 3000);
       document.getElementById('sheetStatus').className = 'status-dot red';
       document.getElementById('sheetStatusText').textContent = 'Notion: offline';
@@ -1652,11 +1694,55 @@
   }
 
   // &#9472;&#9472; Show add forms &#9472;&#9472;
+  // ── Update button + form visual state based on Notion connection ──
+  function updateConnectionUI() {
+    const addBtn     = document.getElementById('addTaskBtn');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const warning    = document.getElementById('addTaskWarning');
+    const icon       = document.getElementById('refreshIcon');
+    const label      = document.getElementById('refreshLabel');
+
+    if (sheetsConnected) {
+      addBtn.classList.remove('offline');
+      refreshBtn.classList.remove('offline');
+      if (warning) warning.classList.remove('visible');
+      icon.textContent  = '🔄';
+      label.textContent = 'Refresh';
+    } else {
+      addBtn.classList.add('offline');
+      refreshBtn.classList.add('offline');
+      icon.textContent  = '🔴';
+      label.textContent = 'Offline';
+    }
+  }
+
   function showAddTask() {
     const form = document.getElementById('addTaskForm');
     form.classList.toggle('active');
     if (form.classList.contains('active')) {
+      // Show offline warning if not connected
+      const warning = document.getElementById('addTaskWarning');
+      if (warning) {
+        sheetsConnected ? warning.classList.remove('visible') : warning.classList.add('visible');
+      }
       document.getElementById('newTaskInput').focus();
+    }
+  }
+
+  // Reconnect button inside the add-task form
+  async function retryAndAdd() {
+    const warning = document.getElementById('addTaskWarning');
+    if (warning) warning.innerHTML = '⏳ Reconnecting to Notion...';
+    await loadTasksFromSheet();
+    updateConnectionUI();
+    if (sheetsConnected) {
+      if (warning) warning.classList.remove('visible');
+      document.getElementById('newTaskInput').focus();
+    } else {
+      if (warning) {
+        warning.innerHTML = '⚠ Still offline — task will be local only <button onclick="retryAndAdd()">Try again</button>';
+        warning.classList.add('visible');
+      }
     }
   }
   function showAddAppt() {
