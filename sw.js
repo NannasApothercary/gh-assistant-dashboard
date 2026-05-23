@@ -2,7 +2,7 @@
 // Caches the shell so the app loads instantly even on slow connections.
 // Live data (tasks, calendar, email) always fetches fresh from the network.
 
-const CACHE_NAME = 'gh-assistant-v2';
+const CACHE_NAME = 'gh-assistant-v3';
 const SHELL_FILES = [
   '/',
   '/index.html',
@@ -38,7 +38,21 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Cache-first for shell files
+  // Network-first for index.html so updates always show immediately
+  if (url.endsWith('/') || url.includes('index.html')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Cache-first for other shell files (icons, etc.)
   event.respondWith(
     caches.match(event.request).then(cached => cached || fetch(event.request))
   );
