@@ -6,8 +6,8 @@
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "Wix site live at gtprecisionmfg.com. ⚠ Stale open issues (>14 days): service icons missing in Services section + map embed not rendering. FabBridge quote form live at fabbridgequote.netlify.app (noindex confirmed).",
-        "Fix service icons + map embed in Wix editor (≤30 min each). PROJECT-STATUS last updated May 13 — worth a quick review this week."
+        "Wix site live at gtprecisionmfg.com. ⚠ Stale open issues (>14 days): service icons missing in Services section + map embed not rendering. FabBridge quote form live at fabbridgequote.netlify.app (noindex confirmed). FabBridge merged into this project 2026-05-21.",
+        "Fix service icons + map embed in Wix editor (≤30 min each). FabBridge work tracked in FabBridge/FABBRIDGE-STATUS.md inside this project folder."
       ],
       "updated": "2026-05-23"
     },
@@ -20,16 +20,6 @@
         "Next FB post: Mon May 25 (Week 9 — Nettle Leaf). Batch 11 CSV uploads when queue ≤14 days (~mid-June). Drop a Saw Palmetto photo in Herb Image/ to unblock B14 video."
       ],
       "updated": "2026-05-23"
-    },
-    {
-      "name": "FabBridge (merged into GT Precision)",
-      "icon": "🔧",
-      "status": "waiting",
-      "bullets": [
-        "MERGED 2026-05-21 — FabBridge is no longer a standalone project. All files now live in GT Precision Website Project under FabBridge/ subfolder.",
-        "Work on the quote tool happens inside the GT Precision project. FABBRIDGE-STATUS.md is the tracker. Old Cowork project at Documents/Claude/Projects/FabBridge is archived."
-      ],
-      "updated": "2026-05-22"
     }
   ]
 }
