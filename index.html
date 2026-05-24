@@ -1493,39 +1493,22 @@
     }
   }
 
-  // &#9472;&#9472; CoWork Projects State (still managed from Cowork sessions) &#9472;&#9472;
-  let projects = [
-    {
-      name: "GT Precision Website",
-      icon: "&#127981;",
-      status: "active",
-      bullets: [
-        "Wix site live at gtprecisionmfg.com. &#9888; Stale open issues (>14 days): service icons missing in Services section + map embed not rendering. FabBridge quote form live at fabbridgequote.netlify.app (noindex confirmed).",
-        "Fix service icons + map embed in Wix editor (&#8804;30 min each). PROJECT-STATUS last updated May 13 &#8212; worth a quick review this week."
-      ],
-      updated: "2026-05-23"
-    },
-    {
-      name: "Nanna\'s Herbal Apothecary",
-      icon: "&#127807;",
-      status: "active",
-      bullets: [
-        "18 blog posts live. 5 drafts awaiting Iola approval (Batch A: 2 sent May 22, Batch B: 3 for May 31 digest). Tailwind queue healthy through ~Jun 26 (34 days). Iola is now full FB Page admin &#10003;. B14 Saw Palmetto video blocked (need photo).",
-        "Next FB post: Mon May 25 (Week 9 &#8212; Nettle Leaf). Batch 11 CSV uploads when queue &#8804;14 days (~mid-June). Drop a Saw Palmetto photo in Herb Image/ to unblock B14 video."
-      ],
-      updated: "2026-05-23"
-    },
-    {
-      name: "FabBridge (merged into GT Precision)",
-      icon: "&#128295;",
-      status: "archived",
-      bullets: [
-        "MERGED 2026-05-21 &#8212; FabBridge is no longer a standalone project. All files now live in GT Precision Website Project under FabBridge/ subfolder.",
-        "Work on the quote tool happens inside the GT Precision project. FABBRIDGE-STATUS.md is the tracker. Old Cowork project at Documents/Claude/Projects/FabBridge is archived."
-      ],
-      updated: "2026-05-22"
+  // ── CoWork Projects State — loaded live from project-status.json ──
+  // Written by the morning runner each day. No manual edits needed here.
+  let projects = [];
+
+  async function loadProjectStatus() {
+    try {
+      const res = await fetch('/project-status.json?v=' + Date.now());
+      if (!res.ok) throw new Error('fetch failed');
+      const data = await res.json();
+      projects = data.projects || [];
+    } catch (e) {
+      projects = [{ name: "Project status unavailable", icon: "⚠️", status: "error",
+        bullets: ["Could not load project-status.json. Morning runner will refresh this."], updated: "" }];
     }
-  ];
+    renderProjects();
+  }
 
   // &#9472;&#9472; Appointments &#8212; always fetched live from Google Calendar via Apps Script &#9472;&#9472;
   // Do NOT hardcode appointments here &#8212; live fetch keeps all devices in sync.
@@ -2758,8 +2741,8 @@
     renderEquipment();
   }
 
-  // &#9472;&#9472; Initial render &#9472;&#9472;
-  renderProjects();
+  // ── Initial render ──
+  loadProjectStatus(); // fetches project-status.json, then calls renderProjects()
   loadTasksFromSheet(); // Loads tasks + calendar events (once Apps Script is updated)
   loadEmailsFromAPI();  // Loads live unread Gmail from iherschell12
   restoreEquipMaint();

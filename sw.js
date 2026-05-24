@@ -38,8 +38,8 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Network-first for index.html so updates always show immediately
-  if (url.endsWith('/') || url.includes('index.html')) {
+  // Network-first for index.html and project-status.json so updates always show immediately
+  if (url.endsWith('/') || url.includes('index.html') || url.includes('project-status.json')) {
     event.respondWith(
       fetch(event.request)
         .then(response => {
