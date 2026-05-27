@@ -1,35 +1,25 @@
 {
-  "generated": "2026-05-26",
+  "generated": "2026-05-23",
   "projects": [
     {
       "name": "GT Precision Website",
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "Wix site live at gtprecisionmfg.com. 2 open issues (>14 days): service icons missing + map embed not rendering. STATUS last updated May 13.",
-        "Fix service icons + map embed in Wix editor (30 min each). Add Iola as FB Page backup admin (retry - attempted May 13)."
+        "Wix site live at gtprecisionmfg.com. ⚠ Stale open issues (>14 days): service icons missing in Services section + map embed not rendering. FabBridge quote form live at fabbridgequote.netlify.app (noindex confirmed). FabBridge merged into this project 2026-05-21.",
+        "Fix service icons + map embed in Wix editor (≤30 min each). FabBridge work tracked in FabBridge/FABBRIDGE-STATUS.md inside this project folder."
       ],
-      "updated": "2026-05-26"
+      "updated": "2026-05-23"
     },
     {
       "name": "Nanna's Herbal Apothecary",
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "18 blog posts live. 5 drafts in queue (committed May 24, awaiting Iola review). Tailwind healthy through Jun 26 (33 days). Mon May 25 post unconfirmed.",
-        "Wed May 27 Milk Thistle post ready - copy-paste to Page + Group. Watch for Iola Batch A approval (furosemide + sitagliptin sent May 22)."
+        "18 blog posts live. 5 drafts awaiting Iola approval (Batch A: 2 sent May 22, Batch B: 3 for May 31 digest). Tailwind queue healthy through ~Jun 26 (34 days). Iola is now full FB Page admin ✓. B14 Saw Palmetto video blocked (need photo).",
+        "Next FB post: Mon May 25 (Week 9 — Nettle Leaf). Batch 11 CSV uploads when queue ≤14 days (~mid-June). Drop a Saw Palmetto photo in Herb Image/ to unblock B14 video."
       ],
-      "updated": "2026-05-26"
-    },
-    {
-      "name": "FabBridge Quote Tool",
-      "icon": "🔧",
-      "status": "waiting",
-      "bullets": [
-        "FabBridge archived to old project folder May 21. Active location: GTPData/GT Precision/FabBridge/ (not mounted this session).",
-        "No active tasks. Resumes when GT Precision session is open with GTPData folder mounted."
-      ],
-      "updated": "2026-05-26"
+      "updated": "2026-05-23"
     }
   ]
 }
