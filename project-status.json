@@ -1,25 +1,35 @@
 {
-  "generated": "2026-05-23",
+  "generated": "2026-05-30",
   "projects": [
     {
       "name": "GT Precision Website",
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "Wix site live at gtprecisionmfg.com. ⚠ Stale open issues (>14 days): service icons missing in Services section + map embed not rendering. FabBridge quote form live at fabbridgequote.netlify.app (noindex confirmed). FabBridge merged into this project 2026-05-21.",
-        "Fix service icons + map embed in Wix editor (≤30 min each). FabBridge work tracked in FabBridge/FABBRIDGE-STATUS.md inside this project folder."
+        "Wix site live at gtprecisionmfg.com. Open: service icons missing + map embed broken (>14 days stale). FabBridge quote form live at fabbridgequote.netlify.app (noindex confirmed). Last updated May 13.",
+        "Next up: Fix service icons + map embed in Wix editor (<30 min each). Add Iola as FB Page backup admin when FB login available."
       ],
-      "updated": "2026-05-23"
+      "updated": "2026-05-30"
     },
     {
       "name": "Nanna's Herbal Apothecary",
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "18 blog posts live. 5 drafts awaiting Iola approval (Batch A: 2 sent May 22, Batch B: 3 for May 31 digest). Tailwind queue healthy through ~Jun 26 (34 days). Iola is now full FB Page admin ✓. B14 Saw Palmetto video blocked (need photo).",
-        "Next FB post: Mon May 25 (Week 9 — Nettle Leaf). Batch 11 CSV uploads when queue ≤14 days (~mid-June). Drop a Saw Palmetto photo in Herb Image/ to unblock B14 video."
+        "18 blog posts live. 5 drafts awaiting Iola review (committed May 24, 6 days old - follow-up triggers tomorrow). Tailwind queue healthy through Jun 26 (27 days). FB Group 20 members.",
+        "Next up: Iola Batch A+B approval then publish 5 posts. Next FB post Mon Jun 1 (file ready). Upload Batch 11 CSV to Tailwind when queue <= 14 days (~mid-June)."
       ],
-      "updated": "2026-05-23"
+      "updated": "2026-05-30"
+    },
+    {
+      "name": "FabBridge (merged into GT Precision)",
+      "icon": "🔧",
+      "status": "waiting",
+      "bullets": [
+        "Merged into GT Precision project May 21. Form live at fabbridgequote.netlify.app. Auto-publishing locked in Netlify; unlock before any deploy, re-lock after.",
+        "Next up: Fix any FabBridge issues via GT Precision project folder. No standalone FabBridge work needed."
+      ],
+      "updated": "2026-05-30"
     }
   ]
 }
