@@ -6,8 +6,8 @@
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "Wix site live at gtprecisionmfg.com. Open: service icons missing + map embed broken (>14 days stale). FabBridge quote form live at fabbridgequote.netlify.app (noindex confirmed). Last updated May 13.",
-        "Next up: Fix service icons + map embed in Wix editor (<30 min each). Add Iola as FB Page backup admin when FB login available."
+        "Wix site live at gtprecisionmfg.com. Open issues: service icons missing in Services section, map embed not rendering. FabBridge quote form live at fabbridgequote.netlify.app (noindex confirmed).",
+        "Fix service icons + map embed in Wix editor (~30 min each). Add Iola as FB Page backup admin (pending since May 13 — FB login issue)."
       ],
       "updated": "2026-05-30"
     },
@@ -16,8 +16,8 @@
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "18 blog posts live. 5 drafts awaiting Iola review (committed May 24, 6 days old - follow-up triggers tomorrow). Tailwind queue healthy through Jun 26 (27 days). FB Group 20 members.",
-        "Next up: Iola Batch A+B approval then publish 5 posts. Next FB post Mon Jun 1 (file ready). Upload Batch 11 CSV to Tailwind when queue <= 14 days (~mid-June)."
+        "18 blog posts live. 5 drafts awaiting Iola RN approval (Batch A sent May 22 — no reply yet; Batch B sending May 31). Tailwind queue ~27 days. FB Group at 20 members. 17 video pins live.",
+        "Watch for Iola's Batch A approval (furosemide + sitagliptin). May 31: Sunday digest sends Batch B to Iola. Jun 1: Week 10 FB post (Mon)."
       ],
       "updated": "2026-05-30"
     },
@@ -26,8 +26,8 @@
       "icon": "🔧",
       "status": "waiting",
       "bullets": [
-        "Merged into GT Precision project May 21. Form live at fabbridgequote.netlify.app. Auto-publishing locked in Netlify; unlock before any deploy, re-lock after.",
-        "Next up: Fix any FabBridge issues via GT Precision project folder. No standalone FabBridge work needed."
+        "Quote form live at fabbridgequote.netlify.app (noindex). Project merged into GT Precision folder May 21. Form functional — awaiting GT site traffic before promoting.",
+        "No active work. Auto-publish locked on Netlify. Unlock before deploying, re-lock after."
       ],
       "updated": "2026-05-30"
     }
