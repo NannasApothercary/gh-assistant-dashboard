@@ -1,5 +1,5 @@
 {
-  "generated": "2026-05-30",
+  "generated": "2026-05-31",
   "projects": [
     {
       "name": "GT Precision Website",
@@ -7,19 +7,19 @@
       "status": "active",
       "bullets": [
         "Wix site live at gtprecisionmfg.com. Open issues: service icons missing in Services section, map embed not rendering. FabBridge quote form live at fabbridgequote.netlify.app (noindex confirmed).",
-        "Fix service icons + map embed in Wix editor (~30 min each). Add Iola as FB Page backup admin (pending since May 13 — FB login issue)."
+        "Fix service icons + map embed in Wix editor (~30 min each). GT folder not mounted in today's run — open GT session for full status."
       ],
-      "updated": "2026-05-30"
+      "updated": "2026-05-31"
     },
     {
       "name": "Nanna's Herbal Apothecary",
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "18 blog posts live. 5 drafts awaiting Iola RN approval (Batch A sent May 22 — no reply yet; Batch B sending May 31). Tailwind queue ~27 days. FB Group at 20 members. 17 video pins live.",
-        "Watch for Iola's Batch A approval (furosemide + sitagliptin). May 31: Sunday digest sends Batch B to Iola. Jun 1: Week 10 FB post (Mon)."
+        "18 blog posts live. 5 drafts: Batch A (furosemide, sitagliptin — sent May 22, no reply in 9 days); Batch B (HCTZ, cyclobenzaprine, montelukast — sent to Iola today May 31). Tailwind ~26 days. FB Group 20 members. 17 video pins live.",
+        "Waiting on Iola approval for all 5 draft posts. Jun 1 Mon: Week 10 FB post (Saw Palmetto). Batch 9 voice tags still needed (A15, B16, C23-C26)."
       ],
-      "updated": "2026-05-30"
+      "updated": "2026-05-31"
     },
     {
       "name": "FabBridge (merged into GT Precision)",
@@ -29,7 +29,7 @@
         "Quote form live at fabbridgequote.netlify.app (noindex). Project merged into GT Precision folder May 21. Form functional — awaiting GT site traffic before promoting.",
         "No active work. Auto-publish locked on Netlify. Unlock before deploying, re-lock after."
       ],
-      "updated": "2026-05-30"
+      "updated": "2026-05-31"
     }
   ]
 }
