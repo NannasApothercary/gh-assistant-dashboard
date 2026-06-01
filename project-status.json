@@ -6,8 +6,8 @@
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "Wix site live at gtprecisionmfg.com. Open issues: service icons missing in Services section, map embed not rendering. FabBridge quote form live at fabbridgequote.netlify.app (noindex confirmed).",
-        "Fix service icons + map embed in Wix editor (~30 min each). GT folder not mounted in today's run — open GT session for full status."
+        "Wix site live at gtprecisionmfg.com. ⚠ Stale open issues (>14 days): service icons missing in Services section + map embed not rendering. FabBridge quote form live at fabbridgequote.netlify.app (noindex confirmed). FabBridge merged into this project 2026-05-21.",
+        "Fix service icons + map embed in Wix editor (≤30 min each). FabBridge work tracked in FabBridge/FABBRIDGE-STATUS.md inside this project folder."
       ],
       "updated": "2026-05-31"
     },
@@ -16,18 +16,8 @@
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "18 blog posts live. 5 drafts: Batch A (furosemide, sitagliptin — sent May 22, no reply in 9 days); Batch B (HCTZ, cyclobenzaprine, montelukast — sent to Iola today May 31). Tailwind ~26 days. FB Group 20 members. 17 video pins live.",
-        "Waiting on Iola approval for all 5 draft posts. Jun 1 Mon: Week 10 FB post (Saw Palmetto). Batch 9 voice tags still needed (A15, B16, C23-C26)."
-      ],
-      "updated": "2026-05-31"
-    },
-    {
-      "name": "FabBridge (merged into GT Precision)",
-      "icon": "🔧",
-      "status": "waiting",
-      "bullets": [
-        "Quote form live at fabbridgequote.netlify.app (noindex). Project merged into GT Precision folder May 21. Form functional — awaiting GT site traffic before promoting.",
-        "No active work. Auto-publish locked on Netlify. Unlock before deploying, re-lock after."
+        "18 blog posts live. 5 drafts awaiting Iola approval (Batch A: 2 sent May 22, Batch B: 3 for May 31 digest). Tailwind queue healthy through ~Jun 26 (34 days). Iola is now full FB Page admin ✓. B14 Saw Palmetto video blocked (need photo).",
+        "Next FB post: Mon May 25 (Week 9 — Nettle Leaf). Batch 11 CSV uploads when queue ≤14 days (~mid-June). Drop a Saw Palmetto photo in Herb Image/ to unblock B14 video."
       ],
       "updated": "2026-05-31"
     }
