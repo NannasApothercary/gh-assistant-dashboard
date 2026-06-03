@@ -6,8 +6,8 @@
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "Wix site live at gtprecisionmfg.com. HIBU closed ✅ (verified today). FabBridge scam filter built — deploy pending (drag fabbridge-form/index.html to Netlify fabbridgequote). Service icons + map embed still open in Wix editor (>21 days).",
-        "Next: deploy FabBridge form to Netlify fabbridgequote. Fix service icons + map embed in Wix (~30 min each). Check GSC 404 validation ~6/8–6/10."
+        "Wix site live at gtprecisionmfg.com. Open issues (21+ days): service icons missing in Services section + map embed not rendering. FabBridge merged May 21.",
+        "Fix service icons + map embed in Wix editor (30 min each). Update GT PROJECT-STATUS.md — 21 days stale."
       ],
       "updated": "2026-06-03"
     },
@@ -16,8 +16,8 @@
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "18 blog posts live. 5 drafts pending Iola approval (follow-up sent Jun 1). Tailwind queue through ~Jun 26 (23 days). Group at 22 members. Lavender Week 10 Post 2 FB posts needed today.",
-        "Post Lavender FB today (text in today's briefing). Watch Iola email for blog approval — auto-publishes on reply. Batch 11 CSV uploads ~mid-June when queue ≤14 days."
+        "18 blog posts live. 5 drafts awaiting Iola approval (all sent May 22-31). Tailwind queue through ~Jun 26 (23 days). Lavender Jun 3 posted. Group: 22 members.",
+        "Fri Jun 5 Echinacea FB posts next. Watch for Iola blog approval (5 drafts). Batch 11 CSV upload when queue drops to 14 days (~mid-June)."
       ],
       "updated": "2026-06-03"
     }
