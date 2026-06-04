@@ -6,10 +6,10 @@
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "Wix site live at gtprecisionmfg.com. HIBU closed ✅ (verified Jun 3). FabBridge scam filter built — deploy pending (drag fabbridge-form/index.html to Netlify fabbridgequote). Service icons + map embed still open in Wix (>21 days).",
-        "Next: deploy FabBridge form to Netlify fabbridgequote. Fix service icons + map embed in Wix (~30 min each). Check GSC 404 validation ~6/8–6/10."
+        "Wix site live at gtprecisionmfg.com. HIBU account closed. Equipment specs corrected and verified live on 5 pages (Dener 50-ton, US Industrial 88-ton, beds to 8 ft). FabBridge scam filter built; deploy pending.",
+        "Next: deploy FabBridge form to Netlify (fabbridgequote). Check GSC 404 validation ~6/8-6/10. Optional: add a Google Map embed to the site footer."
       ],
-      "updated": "2026-06-03"
+      "updated": "2026-06-04"
     },
     {
       "name": "Nanna's Herbal Apothecary",
