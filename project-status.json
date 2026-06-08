@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-07",
+  "generated": "2026-06-08",
   "projects": [
     {
       "name": "GT Precision Website",
@@ -16,10 +16,10 @@
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "23 blog posts live. First Kit newsletter sent Jun 6. Garden story shipped to FB + blog draft + About page. Tailwind queue healthy through ~Jun 26 (~19 days). FB posts pre-written through Jul 17. Group at 24 members.",
-        "Next: garden blog draft awaits Iola (Sunday digest sent Jun 7). Upload Batch 11 Tailwind CSV when queue <=14 days (~Jun 12). Ask Iola for vertical herb close-up photos to unlock real-photo pins."
+        "23 blog posts live; first Kit newsletter sent Jun 6. Garden 'Our Story' content live on site (EN/ES). 24 FB Group members. Tailwind queue healthy through ~Jun 26 (~18 days); FB posts + calendar pre-written to Jul 17.",
+        "Next: Greg posts Rhodiola Week 11 FB posts (Mon/Wed/Fri); nudge Iola to review the garden blog draft; upload Batch 11 Tailwind CSV when queue drops to <=14 days (~Jun 12)."
       ],
-      "updated": "2026-06-07"
+      "updated": "2026-06-08"
     }
   ]
 }
