@@ -1,25 +1,25 @@
 {
-  "generated": "2026-06-10",
+  "generated": "2026-06-11",
   "projects": [
     {
       "name": "GT Precision Website",
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "FabBridge Stages 1-3 DEPLOYED live (Need-By + Priority + size/bend fields, Quote Review Brief, machine capability pre-check); noindex still on. GSC 404 patch expanded to 8 URLs (caught 2 the prior patch missed) and imported — Wix redirects now 64.",
-        "Next: GSC 404 validation running, recheck ~6/14-6/19. Then FabBridge Stage 4+ needs Fusion PC + sample STEP files + die/tooling tables; validate bend-tonnage math. FabBridge Priority 2 (remove noindex, route leads to service@) when ready for real traffic."
+        "Google Map now LIVE in site footer. FabBridge Priority 2 resolved: noindex stays permanent, auto-publish locked, leads route to service@; quarantine filter deferred. Bi-monthly live-site content-accuracy audit wired into runner.",
+        "Next: GSC 404 validation running, recheck ~6/14-6/19. FabBridge Stage 4+ needs Fusion PC + sample STEP files + die/tooling tables + supplier pricing; validate bend-tonnage math."
       ],
-      "updated": "2026-06-09"
+      "updated": "2026-06-10"
     },
     {
       "name": "Nanna's Herbal Apothecary",
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "24 blog posts live (garden story published Jun 9). 2 new drafts (liver-support, stimulant-alternatives) await Iola RN approval. Tailwind queue healthy ~Jun 26. FB + calendar pre-written to Jul 17. 24 Group members.",
-        "Greg: post today's Holy Basil FB Page + Group (manual — FB automation blocked). Upload Batch 11 Tailwind CSV when queue drops to 14 days (~Jun 12). Nudge Iola on 2 pending blog drafts."
+        "24 blog posts live; 2 drafts (liver-support, stimulant-alt) staged for Iola's RN review via Sunday digest. Tailwind healthy ~Jun 26. FB + calendar pre-written to Jul 17. FB Group 24 members.",
+        "Greg: post Fri Jun 12 FB Page+Group; upload Batch 11 Tailwind CSV as queue nears 14 days. Watch for Iola blog approvals; Sun Jun 14 digest surfaces the 2 drafts."
       ],
-      "updated": "2026-06-10"
+      "updated": "2026-06-11"
     }
   ]
 }
