@@ -6,7 +6,7 @@
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "Google Map now LIVE in site footer. FabBridge Priority 2 resolved: noindex stays permanent, auto-publish locked, leads route to service@; quarantine filter deferred. Bi-monthly live-site content-accuracy audit wired into runner.",
+        "Google Map now LIVE in site footer. FabBridge Priority 2 resolved: noindex permanent, auto-publish locked, leads route to service@. Bi-monthly live-site content-accuracy audit now wired into morning runner.",
         "Next: GSC 404 validation running, recheck ~6/14-6/19. FabBridge Stage 4+ needs Fusion PC + sample STEP files + die/tooling tables + supplier pricing; validate bend-tonnage math."
       ],
       "updated": "2026-06-10"
