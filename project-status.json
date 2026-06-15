@@ -1,13 +1,13 @@
 {
-  "generated": "2026-06-13",
+  "generated": "2026-06-15",
   "projects": [
     {
       "name": "GT Precision Website",
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "GH decided to SKIP all FL manufacturer association memberships: BAMA gave zero return; FloridaMakes/Connex = procurement-spam risk, not local jobs. Customers are local and find GT via Google/AI search.",
-        "Next: GSC 404 validation running, recheck ~6/14-6/19. FabBridge Stage 4+ needs Fusion PC, sample STEP files, die/tooling tables, supplier pricing. Focus: local + AI-search visibility for 'metal fabricator Tampa.'"
+        "Researched FL manufacturer association listings. GH decided to SKIP all memberships: BAMA gave zero return over several years; FloridaMakes/Connex = procurement-spam risk, not local jobs. Small-shop reality: customers are local and find GT via Google/AI search, so directory listings are off the table.",
+        "Next: GSC 404 validation running, recheck ~6/14-6/19. FabBridge Stage 4+ needs Fusion PC + sample STEP files + die/tooling tables + supplier material pricing; validate bend-tonnage math. New direction: focus on local + AI-search visibility for 'metal fabricator Tampa.'"
       ],
       "updated": "2026-06-11"
     },
@@ -16,10 +16,10 @@
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "24 blog posts live; 2 drafts await Iola's RN review (4 days old). Tailwind queue healthy through ~Jun 26 (~13 days). FB posts + content calendar pre-written through Jul 17. 23 voice tags built.",
-        "Next: Greg posts Mon Jun 15 FB Page+Group; upload Batch 11 Tailwind CSV as queue nears 14 days; watching for Iola's 2 blog-draft approvals to auto-publish."
+        "24 blog posts live; 2 drafts await Iola's RN approval (5 days old). Tailwind queue through ~Jun 26 (~11 days). FB + content calendar pre-written through Jul 17. FB Group at 26 members.",
+        "Next: upload Batch 11 Tailwind CSV now (queue at 14-day mark, extends to ~Jul 12); post Mon Jun 15 Astragalus FB Page+Group; watch for Iola's 2 blog-draft approvals to auto-publish."
       ],
-      "updated": "2026-06-13"
+      "updated": "2026-06-15"
     }
   ]
 }
