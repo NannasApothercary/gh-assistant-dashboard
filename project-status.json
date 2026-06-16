@@ -1,25 +1,25 @@
 {
-  "generated": "2026-06-15",
+  "generated": "2026-06-16",
   "projects": [
     {
       "name": "GT Precision Website",
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "GH decided to SKIP all FL manufacturer association memberships: BAMA gave zero return; FloridaMakes/Connex = procurement-spam risk, not local jobs. Customers are local and find GT via Google/AI search.",
-        "Next: GSC 404 validation running, recheck ~6/14-6/19. FabBridge Stage 4+ needs Fusion PC, sample STEP files, die/tooling tables, supplier pricing. Focus: local + AI-search visibility for 'metal fabricator Tampa.'"
+        "GSC 404 recheck FAILED again 6/13 — Google re-crawled 3 new HIBU URLs (holiday, land-o-lakes, dunedin); 8 prior-patched all 301 fine. GH imported the 6/15 patch (now 67); Validate Fix running, recheck ~6/20-6/25.",
+        "Comprehensive redirect CSV built (48 rows, all 50 cities in both URL families, 67->115) to end the 404 cycle — GH to import in Wix. Also open: FabBridge Stage 4+; local/AI-search visibility (GBP, Yelp, Bing)."
       ],
-      "updated": "2026-06-11"
+      "updated": "2026-06-15"
     },
     {
       "name": "Nanna's Herbal Apothecary",
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "24 blog posts live; 2 drafts await Iola's RN approval (5 days old). Tailwind queue through ~Jun 26 (~11 days). FB + content calendar pre-written through Jul 17. FB Group at 26 members.",
-        "Next: upload Batch 11 Tailwind CSV now (queue at 14-day mark, extends to ~Jul 12); post Mon Jun 15 Astragalus FB Page+Group; watch for Iola's 2 blog-draft approvals to auto-publish."
+        "Pinterest pipeline rescued Jun 15 (>500-char descriptions had been failing); 12 pins scheduled through ~Jun 18. 24 blog posts live, 2 drafts awaiting Iola. FB Group 26; calendar to Jul 17.",
+        "Verify a Pinterest pin actually publishes (first in weeks) — queue critically low (~2 days). Wed Jun 17 FB Post 2; blog staleness nudge to Iola fires Jun 17; then build Batch 12 pins."
       ],
-      "updated": "2026-06-15"
+      "updated": "2026-06-16"
     }
   ]
 }
