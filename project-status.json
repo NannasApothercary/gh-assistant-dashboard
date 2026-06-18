@@ -1,25 +1,25 @@
 {
-  "generated": "2026-06-17",
+  "generated": "2026-06-18",
   "projects": [
     {
       "name": "GT Precision Website",
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "GSC 404 recheck FAILED again 6/13 — Google re-crawled 3 new HIBU URLs (holiday, land-o-lakes, dunedin); 8 prior-patched all 301 fine. GH imported the 6/15 patch (now 67); Validate Fix running, recheck ~6/20-6/25.",
-        "Comprehensive redirect CSV built (48 rows, all 50 cities in both URL families, 67->115) to end the 404 cycle — GH to import in Wix. Also open: FabBridge Stage 4+; local/AI-search visibility (GBP, Yelp, Bing)."
+        "FabBridge milestone: complete end-to-end quote engine (flat_pattern_calculator_v2.html) — flat pattern, nesting, material + punch/brake/weld/PEM labor, 20% margin, $250 floor; all params sheet-driven.",
+        "Redirects: 48-row CSV imported + verified (HIBU 404 cycle closed); GBP overclaims fixed. Open: wire FabBridge to live xlsx, Fusion/STEP auto-read, trim Mirror-Polish finish; claim Bing Places + Yelp."
       ],
-      "updated": "2026-06-15"
+      "updated": "2026-06-17"
     },
     {
       "name": "Nanna's Herbal Apothecary",
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "Pinterest healthy — Batch 12 (6 pins) scheduled in Tailwind Jun 16; queue 14 pins through ~Jun 24; publishing confirmed fixed. 24 blog posts live, 2 drafts awaiting Iola's RN review. FB Group 26.",
-        "Next: build Batch 13 before queue empties ~Jun 24 (needs interactive Tailwind upload). Chased Iola on 2 blog drafts (8 days old). Reishi FB Page+Group post queued Jun 17 (manual post)."
+        "Blog now 26 live posts — 2 Iola-approved posts published Jun 18 (stimulant/fatigue adaptogens + liver/NAFLD herbs). Pinterest Batch 12 live in Tailwind; FB Page+Group queue stocked through July.",
+        "Tailwind queue runs ~through Jun 24 (~6 days) — build + upload Batch 13 soon (interactive). Next FB post Fri Jun 19. Watching Iola's Gmail for blog approvals."
       ],
-      "updated": "2026-06-17"
+      "updated": "2026-06-18"
     }
   ]
 }
