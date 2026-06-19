@@ -6,7 +6,7 @@
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "FabBridge MILESTONE: built a complete end-to-end quote engine (flat_pattern_calculator_v2.html) — flat pattern from the real bend-deduction sheet (interpolates missing gauges), nesting, material, shear/punch/forming/weld/PEM labor + setups + packaging, 20% margin, $250 floor. All params read from Weekly Matieral Pricing.xlsx (staleness guard). Punch model built from 64 real PEGA programs.",
+        "FabBridge MILESTONE: complete end-to-end quote engine (flat_pattern_calculator_v2.html) — flat pattern + nesting + material + punch/brake/weld/PEM labor, 20% margin, $250 floor; all params sheet-driven.",
         "Redirects: comprehensive 48-row CSV imported + verified (67->115); recurring HIBU 404 cycle closed. GBP + website 'certified welders' overclaim removed; GBP '88 tons/8 ft' fix confirmed live."
       ],
       "updated": "2026-06-17"
