@@ -1,13 +1,13 @@
 {
-  "generated": "2026-06-18",
+  "generated": "2026-06-19",
   "projects": [
     {
       "name": "GT Precision Website",
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "FabBridge milestone: complete end-to-end quote engine (flat_pattern_calculator_v2.html) — flat pattern, nesting, material + punch/brake/weld/PEM labor, 20% margin, $250 floor; all params sheet-driven.",
-        "Redirects: 48-row CSV imported + verified (HIBU 404 cycle closed); GBP overclaims fixed. Open: wire FabBridge to live xlsx, Fusion/STEP auto-read, trim Mirror-Polish finish; claim Bing Places + Yelp."
+        "FabBridge MILESTONE: built a complete end-to-end quote engine (flat_pattern_calculator_v2.html) — flat pattern from the real bend-deduction sheet (interpolates missing gauges), nesting, material, shear/punch/forming/weld/PEM labor + setups + packaging, 20% margin, $250 floor. All params read from Weekly Matieral Pricing.xlsx (staleness guard). Punch model built from 64 real PEGA programs.",
+        "Redirects: comprehensive 48-row CSV imported + verified (67->115); recurring HIBU 404 cycle closed. GBP + website 'certified welders' overclaim removed; GBP '88 tons/8 ft' fix confirmed live."
       ],
       "updated": "2026-06-17"
     },
@@ -16,10 +16,10 @@
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "Blog now 26 live posts — 2 Iola-approved posts published Jun 18 (stimulant/fatigue adaptogens + liver/NAFLD herbs). Pinterest Batch 12 live in Tailwind; FB Page+Group queue stocked through July.",
-        "Tailwind queue runs ~through Jun 24 (~6 days) — build + upload Batch 13 soon (interactive). Next FB post Fri Jun 19. Watching Iola's Gmail for blog approvals."
+        "Blog now 26 live posts (2 auto-published Jun 18 on Iola approval). FB queue stocked through Jul 17; Calendula Page+Group ready for Fri Jun 19. Pinterest Batch 12 live + scheduled in Tailwind.",
+        "Next: build + upload Pinterest Batch 13 before ~Jun 24 (queue ~5 days left; needs an interactive Tailwind upload). Keep posting Mon/Wed/Fri FB; Sunday blog digest if new drafts."
       ],
-      "updated": "2026-06-18"
+      "updated": "2026-06-19"
     }
   ]
 }
