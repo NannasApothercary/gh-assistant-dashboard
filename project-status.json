@@ -7,7 +7,7 @@
       "status": "active",
       "updated": "2026-06-17",
       "bullets": [
-        "FabBridge MILESTONE: complete end-to-end quote engine (flat_pattern_calculator_v2.html) — flat pattern, nesting, material, shear/punch/forming/weld/PEM labor + setups, 20% margin, $250 floor; all params sheet-driven w/ staleness guard.",
+        "FabBridge MILESTONE: complete end-to-end quote engine (flat_pattern_calculator_v2.html) — flat pattern, nesting, material, labor + setups, 20% margin, $250 floor; all params sheet-driven w/ staleness guard.",
         "Redirects: 48-row CSV imported + verified (67->115); HIBU 404 cycle closed. GBP/site 'certified welders' overclaim removed; '88 tons/8 ft' fix live.",
         "Open: FabBridge production wiring (live xlsx read, Fusion/STEP auto-read, trim Mirror-Polish finish). Local-search: claim Bing Places + Yelp."
       ]
