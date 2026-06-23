@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-22",
+  "generated": "2026-06-23",
   "projects": [
     {
       "name": "GT Precision Website",
@@ -17,10 +17,10 @@
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "26 blog posts live; Pinterest Batches 12+13 uploaded (24/150 monthly posts); 23 video pins; FB Week 13 underway. Tailwind queue thin (~through Jun 24) — Batch 14 needs an interactive build + upload.",
-        "Next: build + upload Pinterest Batch 14 (interactive) before Jun 24; Iola to record 12 voice tags for narrated video pins; write next 2 blog drafts live (pipeline empty)."
+        "26 blog posts live + 2 drafts (migraine, IBS) pushed to /blog/draft awaiting Iola's RN approval. Pinterest Batch 14 (6 herbs) uploaded + scheduled Jun 22 (30/150 monthly posts); 23 video pins. FB Week 13 underway.",
+        "Next: build + upload Pinterest Batch 15 interactively (Tailwind queue running low); Iola to record 12 voice tags for narrated video pins; awaiting Iola approval to publish the 2 blog drafts."
       ],
-      "updated": "2026-06-22"
+      "updated": "2026-06-23"
     }
   ]
 }
