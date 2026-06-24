@@ -1,26 +1,26 @@
 {
-  "generated": "2026-06-23",
+  "generated": "2026-06-24",
   "projects": [
     {
       "name": "GT Precision Website",
       "icon": "🏭",
       "status": "active",
-      "updated": "2026-06-17",
+      "updated": "2026-06-23",
       "bullets": [
-        "FabBridge MILESTONE: complete end-to-end quote engine (flat_pattern_calculator_v2.html) — flat pattern, nesting, material, labor + setups, 20% margin, $250 floor; all params sheet-driven w/ staleness guard.",
-        "Redirects: 48-row CSV imported + verified (67->115); HIBU 404 cycle closed. GBP/site 'certified welders' overclaim removed; '88 tons/8 ft' fix live.",
-        "Open: FabBridge production wiring (live xlsx read, Fusion/STEP auto-read, trim Mirror-Polish finish). Local-search: claim Bing Places + Yelp."
+        "Website/SEO review (6/23): ranks #1-2 'precision sheet metal Tampa', named first in AI answers. GSC 231 clicks/25.8K impr (3mo). GBP 4.7star/12 reviews, photos 68d stale. Monthly auto-review live (1st run Jul 1).",
+        "Open for GH: upload 4 staged GBP photos (clears stale flag); ask 2-3 customers for Google reviews (top 'near me' lever, stuck at 12); claim Apple Business Connect + Bing Places.",
+        "FabBridge: complete end-to-end quote engine built (flat_pattern_calculator_v2.html). Remaining = production wiring (live xlsx, Fusion/STEP auto-read, finish-dropdown trim)."
       ]
     },
     {
       "name": "Nanna's Herbal Apothecary",
       "icon": "🌿",
       "status": "active",
+      "updated": "2026-06-24",
       "bullets": [
-        "26 blog posts live + 2 drafts (migraine, IBS) pushed to /blog/draft awaiting Iola's RN approval. Pinterest Batch 14 (6 herbs) uploaded + scheduled Jun 22 (30/150 monthly posts); 23 video pins. FB Week 13 underway.",
-        "Next: build + upload Pinterest Batch 15 interactively (Tailwind queue running low); Iola to record 12 voice tags for narrated video pins; awaiting Iola approval to publish the 2 blog drafts."
-      ],
-      "updated": "2026-06-23"
+        "26 blog posts live; 2 drafts (migraine, IBS) staged in /blog/draft awaiting Iola's RN approval. Pinterest Batch 14 (6 herbs) scheduled in Tailwind Jun 22 (30/150 monthly). FB content queued Mon/Wed/Fri through Jul 17.",
+        "Next: build+upload Pinterest Batch 15 (queue runs low ~Jun 28-30, needs live session); Iola records 12 voice tags + approves 2 blog drafts; Wed Jun 24 FB Page+Group post (manual)."
+      ]
     }
   ]
 }
