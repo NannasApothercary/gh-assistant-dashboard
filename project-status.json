@@ -1,13 +1,13 @@
 {
-  "generated": "2026-06-25",
+  "generated": "2026-06-26",
   "projects": [
     {
       "name": "GT Precision Website",
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "Website/SEO review done (6/23): owns #1-2 for 'precision sheet metal Tampa' + named first in AI answers. Live GSC: 231 clicks / 25.8K impressions / 0.9% CTR (3 mo). GBP: 4.7star/12 reviews (flat 30 days), 702 interactions, 863 monthly views, photos 68 days stale. Built maintenance runbook + monthly auto-review (1st of month, first run Jul 1).",
-        "Open for GH (Action_Pack_2026-06-23): upload 4 staged fresh GBP photos (clears stale flag); ASK 2-3 customers for Google reviews (top lever for the 'near me' gap - stuck at 12); claim Apple Business Connect (new AI/Siri lever) + Bing Places.",
+        "Website/SEO review (6/23): #1-2 for precision sheet metal Tampa, first in AI answers. GSC 231 clicks/25.8K impr (3mo). GBP 4.7star/12 reviews, 863 views/mo, photos 68d stale. Auto-review live (Jul 1).",
+        "Open for GH (Action_Pack 6/23): upload 4 staged GBP photos (clears stale flag); ask 2-3 customers for Google reviews (top lever, stuck at 12); claim Apple Business Connect + Bing Places.",
         "FabBridge: complete end-to-end quote engine built (flat_pattern_calculator_v2.html). Remaining = production wiring (live xlsx, Fusion/STEP auto-read, finish-dropdown trim)."
       ],
       "updated": "2026-06-23"
@@ -17,10 +17,10 @@
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "Blog at 26 live posts; 2 new drafts (migraine, IBS) pushed Jun 22 await Iola's RN approval. FB Week 13 on track (next Fri Jun 26, Passionflower). Pinterest 30/150 monthly via Tailwind.",
-        "Upload Batch 15 (2 RN-approved pins: Boswellia, DGL licorice) to Tailwind before queue empties ~Jun 28-30 (needs interactive Chrome pass). Iola: record 12 voice tags + approve 2 blog drafts."
+        "26 blog posts live + 2 drafts (migraine, IBS) awaiting Iola RN approval. Pinterest Batches 16+17 (12 new pins) uploaded to Tailwind as drafts Jun 25; queue critically low at 2 scheduled (Batch 15).",
+        "Next: schedule the 12 Tailwind drafts interactively (queue near-empty). Iola to record 12 voice tags + RN-review 2 blog drafts. FB Passionflower Page+Group surfaced for manual posting Jun 26."
       ],
-      "updated": "2026-06-25"
+      "updated": "2026-06-26"
     }
   ]
 }
