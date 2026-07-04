@@ -1,14 +1,13 @@
 {
-  "generated": "2026-07-03",
+  "generated": "2026-07-04",
   "projects": [
     {
       "name": "GT Precision Website",
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "Website/SEO review (6/23): #1-2 for precision sheet metal Tampa, first in AI answers. GSC 231 clicks/25.8K impr (3mo). GBP 4.7star/12 reviews, 863 views/mo, photos 68d stale. Auto-review live (Jul 1).",
-        "Open for GH (Action_Pack 6/23): upload 4 staged GBP photos (clears stale flag); ask 2-3 customers for Google reviews (top lever, stuck at 12); claim Apple Business Connect + Bing Places.",
-        "FabBridge: complete end-to-end quote engine built (flat_pattern_calculator_v2.html). Remaining = production wiring (live xlsx, Fusion/STEP auto-read, finish-dropdown trim)."
+        "Website/SEO review done (6/23): owns #1-2 for 'precision sheet metal Tampa' + named first in AI answers. Live GSC: 231 clicks / 25.8K impressions (3 mo). GBP 4.7star/12 reviews. Monthly auto-review live (1st).",
+        "Open for GH: upload 4 staged fresh GBP photos; ask 2-3 customers for Google reviews; claim Apple Business Connect + Bing Places. FabBridge quote engine built; remaining = production wiring."
       ],
       "updated": "2026-06-23"
     },
@@ -17,10 +16,10 @@
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "28 blog posts live; July Kit newsletter Iola-approved, ready for Greg to send. Pinterest Batch 18 scheduled Jun 30 (~10 queued); FB Page+Group Mon/Wed/Fri; Amazon Associates set to lapse ~Sept 24.",
-        "Next: post Fri Jul 3 FB Red Clover (VERIFY PMID 17704975 first - evidence flag) + send July Kit newsletter; nudge Iola on 12 voice tags. Six-month go/no-go Sept 28; hold spend flat until then."
+        "Blog trimmed to 9 citation-verified posts after Jul 3 audit (fabricated + uncited removed under Iola's RN license). Citation gate + Iola RN human-gate now enforce every post. ~50 Pinterest pins live via Tailwind.",
+        "Next: fix 5 bad Pinterest pin citations; 5 queued FB posts flagged DO-NOT-POST (Schisandra Mon Jul 6, Rosemary, Marshmallow, Burdock, Black Cohosh) need Iola retire/reframe; send July Kit newsletter; build Batch 19."
       ],
-      "updated": "2026-07-03"
+      "updated": "2026-07-04"
     }
   ]
 }
