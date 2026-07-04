@@ -890,7 +890,7 @@
       <span class="chevron">&#9660;</span>
     </div>
     <div class="section-body">
-      <div id="apptList">
+      <div id="apptList" style="max-height:260px;overflow-y:auto">
         <div class="empty">No upcoming appointments.</div>
       </div>
     </div>
@@ -1245,6 +1245,17 @@
     if (s.carryoverAppts && Array.isArray(s.carryoverAppts)) {
       try { localStorage.setItem(CARRYOVER_APPT_KEY, JSON.stringify(s.carryoverAppts)); } catch(e) {}
     }
+    // Equipment maintenance state (mark-done / lastDone / log) and snoozes — synced cross-device.
+    let equipChanged = false;
+    if (s.equipMaint && Array.isArray(s.equipMaint)) {
+      try { localStorage.setItem('gh_equip_maint', JSON.stringify(s.equipMaint)); equipChanged = true; } catch(e) {}
+    }
+    if (s.maintSnoozed && typeof s.maintSnoozed === 'object') {
+      try { localStorage.setItem('gh_maint_snoozed', JSON.stringify(s.maintSnoozed)); equipChanged = true; } catch(e) {}
+    }
+    if (equipChanged) {
+      try { restoreEquipMaint(); renderEquipment(); } catch(e) {}
+    }
   }
 
   // Debounced save — waits 1.5s after last change before writing to Sheet
@@ -1257,19 +1268,25 @@
 
   async function saveSettingsToSheet() {
     if (!sheetsConnected) return;
+    let equipMaint = null, maintSnoozed = null;
+    try { equipMaint = JSON.parse(localStorage.getItem('gh_equip_maint') || 'null'); } catch(e) {}
+    try { maintSnoozed = JSON.parse(localStorage.getItem('gh_maint_snoozed') || 'null'); } catch(e) {}
     const settings = {
       taskOrder: getTaskOrder(),
       reviewedEmailIds: [...loadReviewedEmailIds()],
       reviewedEmailFingerprints: [...loadReviewedEmailFingerprints()],
       dismissedAppts: [...loadDismissedAppts()],
-      carryoverAppts: loadCarryoverAppts()
+      carryoverAppts: loadCarryoverAppts(),
+      equipMaint: equipMaint,
+      maintSnoozed: maintSnoozed
     };
+    const device = (navigator.userAgent && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) ? 'phone/tablet' : 'laptop';
     try {
       await fetch(API_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'saveSettings', settings })
+        body: JSON.stringify({ action: 'saveSettings', settings, device })
       });
     } catch(err) {
       console.error('Settings sync failed:', err);
@@ -2025,8 +2042,7 @@
   function renderAppts() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const cutoff = new Date(today);
-    cutoff.setDate(cutoff.getDate() + 5); // show today + 5 days out
+    const MAX_UPCOMING = 6; // show up to the next 6 appointments (list scrolls)
     const horizonPast = new Date(today);
     horizonPast.setDate(horizonPast.getDate() - 14); // carryover horizon: 14 days back
 
@@ -2058,8 +2074,8 @@
       if (dismissed.has(apptKey(a))) return false;
       const d = new Date(a.date + 'T12:00:00');
       d.setHours(0, 0, 0, 0);
-      return d >= today && d <= cutoff;
-    });
+      return d >= today;
+    }).sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, MAX_UPCOMING);
     // Merge carryover (dedupe against upcoming keys)
     const upcomingKeys = new Set(upcoming.map(apptKey));
     const carryoverToShow = carryover.filter(a => !upcomingKeys.has(apptKey(a)));
@@ -2067,7 +2083,7 @@
 
     document.getElementById('apptCount').textContent = all.length;
     if (all.length === 0) {
-      document.getElementById('apptList').innerHTML = '<div class="empty">No upcoming appointments in the next 5 days.</div>';
+      document.getElementById('apptList').innerHTML = '<div class="empty">No upcoming appointments.</div>';
     } else {
       document.getElementById('apptList').innerHTML = all.map(a => {
         const d = new Date(a.date + 'T12:00:00');
@@ -2197,6 +2213,8 @@
         { name: 'Air filter', number: '110130752' },
         { name: 'Pre-filter', number: '110137046' },
         { name: 'Fuel filter', number: '490190031' },
+        { name: 'Spark plug', number: 'NGK BPR4ES (#6578)' },
+        { name: 'Ignition coil', number: 'Coi-0743-2 / X003U3OI0N' },
         { name: 'Hydraulic fluid', number: 'Mobil 1 15w-50' },
       ],
       log: [
@@ -2205,6 +2223,7 @@
         { date: '2024-08-25', service: 'Sharpened blades', notes: '20 hrs, ordered 2nd set' },
         { date: '2025-02-01', service: 'Blades replaced', notes: '' },
         { date: '2025-07-20', service: 'Trans fluid & filters changed', notes: '60.7 hrs. Next due ~July 2027' },
+        { date: '2026-07-03', service: 'Replaced ignition coil & spark plug', notes: '70 hrs. NGK BPR4ES (#6578) + coil Coi-0743-2 (X003U3OI0N). Verified good coil.' },
       ]
     },
     {
@@ -2230,21 +2249,21 @@
     {
       id: 'gator', name: 'John Deere TX Gator', type: 'Utility Vehicle | PIN ...181951', icon: '🚙',
       maintenance: [
-        { name: 'Oil & filter change', intervalDays: 90, lastDone: '2024-07-19', parts: ['Oil filter AM107423', 'TY22029 oil (2 qt)'] },
-        { name: 'Fuel filter', intervalDays: 180, lastDone: null, parts: ['Fuel filter AM116304'] },
+        { name: 'Oil & filter change', intervalDays: 365, lastDone: '2024-07-19', parts: ['Oil filter AM107423', 'Turf-Gard 10W30 (TY22029) ~1.8 qt'] },
+        { name: 'Fuel filter', intervalDays: 180, lastDone: null, parts: ['Kawasaki 49019-0031 (factory) / AM116304 equiv'] },
         { name: 'Air filter', intervalDays: 365, lastDone: null, parts: ['Air element M113621'] },
-        { name: 'Spark plug', intervalDays: 365, lastDone: null, parts: ['M138938 (BPR2ES)'] },
+        { name: 'Spark plug (×2 — V-twin)', intervalDays: 1095, lastDone: null, parts: ['M138938 (BPR2ES) ×2 — by 200 hrs, not yearly'] },
       ],
       parts: [
         { name: 'Oil filter', number: 'AM107423' },
-        { name: 'Fuel filter', number: 'AM116304' },
+        { name: 'Fuel filter', number: '49019-0031 (also fits Hustler) / AM116304' },
         { name: 'Air element', number: 'M113621' },
-        { name: 'Spark plug', number: 'M138938 (BPR2ES)' },
+        { name: 'Spark plug', number: 'M138938 (BPR2ES) — need ×2 (V-twin)' },
         { name: 'Complete kit', number: 'LG258 (Amazon)' },
       ],
       log: [
-        { date: '2024-07-19', service: 'Oil change', notes: 'Then picked up for head gasket recall' },
-        { date: '2025-02-01', service: 'New tires', notes: '' },
+        { date: '2024-07-19', service: 'Oil change', notes: 'Then picked up for head gasket recall (oil likely done during gasket job)' },
+        { date: '2026-07-02', service: '~120 hrs logged', notes: 'Low-hour machine' },
       ]
     },
     {
@@ -2371,13 +2390,15 @@
       maintenance: [
         { name: 'Engine oil change', intervalDays: 365, lastDone: null, parts: ['SAE 10W-30 (~20 oz)'] },
         { name: 'Air filter', intervalDays: 365, lastDone: null, parts: [] },
-        { name: 'Spark plug', intervalDays: 365, lastDone: null, parts: [] },
-        { name: 'Pump winterization', intervalDays: 365, lastDone: null, parts: ['Pump saver solution'] },
+        { name: 'Spark plug (by hours)', intervalDays: 3650, lastDone: null, parts: ['~15 hrs total — not due (200-hr part, goes by hours not calendar)'] },
       ],
       parts: [
         { name: 'Oil', number: 'SAE 10W-30 (~20 oz)' },
+        { name: 'Engine', number: 'DH212 212cc (S/N 23090872659VN)' },
+        { name: 'Pump', number: 'Hikey V-PW29R2.6 (DJ)' },
         { name: 'Replacement pump', number: '050320180001-WPX3400' },
         { name: 'Pump type', number: 'Maintenance-free axial cam' },
+        { name: 'Storage', number: 'No winterizing needed (Plant City FL — no freeze)' },
       ],
       log: [
         { date: '2024-03-14', service: 'Power washed house', notes: 'Not patio (chicks)' },
@@ -2450,7 +2471,7 @@
     {
       id: 'ac35ton', name: 'Trane/RunTru 3.5 Ton AC', type: 'Heat Pump + Air Handler | Installed 2/18/2026', icon: '❄️',
       maintenance: [
-        { name: 'Replace 3" pleated filter', intervalDays: 90, lastDone: '2026-02-18', parts: ['3" pleated filter (confirm size from unit)'] },
+        { name: 'Replace 3" pleated filter', intervalDays: 183, lastDone: '2026-02-18', parts: ['3" pleated filter (confirm size from unit)'] },
         { name: 'Professional tune-up / coil cleaning', intervalDays: 365, lastDone: '2026-02-18', parts: [] },
         { name: 'Check refrigerant levels', intervalDays: 365, lastDone: '2026-02-18', parts: [] },
         { name: 'Drain line \u2014 annual flush (commercial service)', intervalDays: 365, lastDone: '2026-02-18', parts: ['Part of commercial tune-up'] },
@@ -2461,7 +2482,7 @@
       parts: [
         { name: 'Heat Pump Model', number: '5TWX5048A1000AA (SN 243846F2JF)' },
         { name: 'Air Handler Model', number: '5TEM6D06AV41SAA (SN 26063YYG3V)' },
-        { name: 'Filter', number: '3" pleated (every 3 mo)' },
+        { name: 'Filter', number: '3" pleated (every 6 mo)' },
         { name: 'Warranty #', number: '37423422' },
         { name: 'Compressor warranty', number: '12 yr — expires 02/18/2038' },
         { name: 'Parts warranty', number: '10 yr — expires 02/18/2036' },
@@ -2506,6 +2527,7 @@
   }
   function saveMaintSnoozed(data) {
     try { localStorage.setItem('gh_maint_snoozed', JSON.stringify(data)); } catch(e) {}
+    queueSettingsSave(); // sync snoozes across devices
   }
 
   function getMaintStatus(m, eqId) {
@@ -2600,6 +2622,7 @@
       }));
       localStorage.setItem('gh_equip_maint', JSON.stringify(data));
     } catch(e) {}
+    queueSettingsSave(); // sync mark-done / log entries across devices
   }
   function restoreEquipMaint() {
     try {

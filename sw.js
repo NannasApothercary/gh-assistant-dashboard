@@ -2,7 +2,7 @@
 // Caches the shell so the app loads instantly even on slow connections.
 // Live data (tasks, calendar, email) always fetches fresh from the network.
 
-const CACHE_NAME = 'gh-assistant-v3';
+const CACHE_NAME = 'gh-assistant-v4';
 const SHELL_FILES = [
   '/',
   '/index.html',
