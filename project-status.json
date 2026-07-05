@@ -1,13 +1,13 @@
 {
-  "generated": "2026-07-04",
+  "generated": "2026-07-05",
   "projects": [
     {
       "name": "GT Precision Website",
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "Website/SEO review done (6/23): owns #1-2 for 'precision sheet metal Tampa' + named first in AI answers. Live GSC: 231 clicks / 25.8K impressions (3 mo). GBP 4.7star/12 reviews. Monthly auto-review live (1st).",
-        "Open for GH: upload 4 staged fresh GBP photos; ask 2-3 customers for Google reviews; claim Apple Business Connect + Bing Places. FabBridge quote engine built; remaining = production wiring."
+        "Website/SEO review done (6/23): owns #1-2 for 'precision sheet metal Tampa' + named first in AI answers. GSC 231 clicks / 25.8K impressions (3 mo). GBP 4.7star/12 reviews. Monthly auto-review live (1st).",
+        "Open for GH: upload 4 staged GBP photos; ask 2-3 customers for Google reviews (near-me gap, stuck at 12); claim Apple Business Connect + Bing Places. FabBridge quote engine built, needs production wiring."
       ],
       "updated": "2026-06-23"
     },
@@ -16,10 +16,10 @@
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "Blog trimmed to 9 citation-verified posts after Jul 3 audit (fabricated + uncited removed under Iola's RN license). Citation gate + Iola RN human-gate now enforce every post. ~50 Pinterest pins live via Tailwind.",
-        "Next: fix 5 bad Pinterest pin citations; 5 queued FB posts flagged DO-NOT-POST (Schisandra Mon Jul 6, Rosemary, Marshmallow, Burdock, Black Cohosh) need Iola retire/reframe; send July Kit newsletter; build Batch 19."
+        "Blog = 9 citation-verified posts live (Jul-3 takedown pulled fabricated/uncited posts). FB posting now code-gated by citation_gate.py. 5 flagged May-25 FB posts held DO-NOT-POST pending Iola RN review.",
+        "Next: Iola to approve/reframe 5 flagged FB posts (RN-review draft sent Jul 4); send approved July Kit newsletter; fix 5 bad Pinterest pin citations; 12 voice tags still outstanding."
       ],
-      "updated": "2026-07-04"
+      "updated": "2026-07-05"
     }
   ]
 }
