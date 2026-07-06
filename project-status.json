@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-05",
+  "generated": "2026-07-06",
   "projects": [
     {
       "name": "GT Precision Website",
@@ -16,10 +16,10 @@
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "Blog = 9 citation-verified posts live (Jul-3 takedown pulled fabricated/uncited posts). FB posting now code-gated by citation_gate.py. 5 flagged May-25 FB posts held DO-NOT-POST pending Iola RN review.",
-        "Next: Iola to approve/reframe 5 flagged FB posts (RN-review draft sent Jul 4); send approved July Kit newsletter; fix 5 bad Pinterest pin citations; 12 voice tags still outstanding."
+        "Blog = 9 citation-verified posts. citation_gate.py correctly BLOCKED today's flagged Schisandra FB post this morning. 5 May-25 FB posts held DO-NOT-POST pending Iola RN review.",
+        "Next: Iola to approve/reframe the 5 flagged FB posts (RN-review draft sent Jul 4, not yet approved); send approved July Kit newsletter; fix 5 Pinterest pin citations; Batch 19 pins next."
       ],
-      "updated": "2026-07-05"
+      "updated": "2026-07-06"
     }
   ]
 }
