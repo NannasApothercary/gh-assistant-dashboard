@@ -1,9 +1,9 @@
 {
-  "generated": "2026-07-07",
+  "generated": "2026-07-08",
   "projects": [
     {
       "name": "GT Precision Website",
-      "icon": "\ud83c\udfed",
+      "icon": "🏭",
       "status": "active",
       "bullets": [
         "Website/SEO review done (6/23): owns #1-2 for 'precision sheet metal Tampa' + named first in AI answers. GSC 231 clicks / 25.8K impressions (3 mo). GBP 4.7star/12 reviews. Monthly auto-review live (1st).",
@@ -13,13 +13,13 @@
     },
     {
       "name": "Nanna's Herbal Apothecary",
-      "icon": "\ud83c\udf3f",
+      "icon": "🌿",
       "status": "active",
       "bullets": [
-        "Blog = 9 citation-verified posts; citation gate live. Wed Jul 8 Thyme FB post passes the gate (safe to post). 5 flagged May-25 FB posts held DO-NOT-POST pending Iola RN review.",
-        "Next: Iola to approve the 5 corrected FB posts (RN-review draft pending since Jul 4); send approved July Kit newsletter; fix 5 Pinterest pin citations; build Pinterest Batch 19."
+        "Blog = 9 citation-verified posts; citation gate live. Wed Jul 8 Thyme FB post passes the gate (surfaced for manual posting). 5 flagged May-25 FB posts held DO-NOT-POST pending Iola RN review.",
+        "Next: Iola to approve the 5 corrected FB posts (RN-review draft pending since Jul 4, unblocks Jul 10/13/15/17); fix 5 Pinterest pin citations; check Tailwind Batch 18 depth / build Batch 19."
       ],
-      "updated": "2026-07-07"
+      "updated": "2026-07-08"
     }
   ]
 }
