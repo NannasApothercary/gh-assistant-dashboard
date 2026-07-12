@@ -1,13 +1,14 @@
 {
-  "generated": "2026-07-11",
+  "generated": "2026-07-12",
   "projects": [
     {
       "name": "GT Precision Website",
       "icon": "🏭",
       "status": "active",
       "bullets": [
-        "Website/SEO review done (6/23): owns #1-2 for 'precision sheet metal Tampa' + named first in AI answers. Live GSC: 231 clicks / 25.8K impressions / 0.9% CTR (3 mo). GBP: 4.7star/12 reviews (flat 30 days), 702.",
-        "Open for GH (Action_Pack_2026-06-23): upload 4 staged fresh GBP photos (clears stale flag); ASK 2-3 customers for Google reviews (top lever for the 'near me' gap — stuck at 12); claim Apple Business Connect (new."
+        "Ranks #1-2 for 'precision sheet metal Tampa' + named first in AI answers. GSC 3mo: 231 clicks / 25.8K impressions. GBP 4.7 stars / 12 reviews (flat 30 days); photos stale. Monthly auto-review live.",
+        "Open for GH: upload the 4 staged GBP photos; ask 2-3 customers for Google reviews (top lever, stuck at 12); claim Apple Business Connect + Bing Places.",
+        "FabBridge: end-to-end quote engine built (flat_pattern_calculator_v2). Remaining = production wiring (live xlsx, Fusion/STEP auto-read, finish-dropdown trim)."
       ],
       "updated": "2026-06-23"
     },
@@ -16,10 +17,10 @@
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "PINTEREST IS DARK - Tailwind queue empty since Jul 9. 12 finished Batch 19+20 pins are built + QC-passed, waiting only on a Greg browser click to upload/schedule. FB also silent: Jul 10/13/15/17 all citation-BLOCKED.",
-        "Next: (1) Tailwind - upload + schedule the 12 staged pins. (2) Nudge Iola - RN review pending since Jul 4 unblocks 4 FB posts. (3) Check 5 'Voice tag' drafts in Iola's Gmail - may hold recordings sitting since Jun 25."
+        "Pinterest UNBLOCKED: the 12 Batch 19+20 pins are now hosted live at /pins/ (all verified 200/image-png) + a Tailwind import CSV is written — kills the file-picker step that left the queue at 0 since Jul 9.",
+        "Next: Greg imports Tailwind-Batch19-20-Import-2026-07-12.csv (fills Jul 13-18). Iola's Jul-4 RN review is 8 days old and is the SOLE cause of the FB blackout — blocks Jul 13/15/17; next auto-post Jul 20."
       ],
-      "updated": "2026-07-11"
+      "updated": "2026-07-12"
     }
   ]
 }
