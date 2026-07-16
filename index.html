@@ -925,6 +925,10 @@
       <span class="chevron">&#9660;</span>
     </div>
     <div class="section-body">
+      <div style="margin-bottom:12px">
+        <a href="weekend-engine-maintenance-shopping-list.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:9px 14px;background:var(--accent);color:#fff;text-decoration:none;border-radius:10px;font-size:0.9rem;font-weight:600">🔧 Engine Buy List</a>
+        <span style="font-size:0.74rem;color:var(--text-muted);margin-left:10px">Parts shopping list for the small engines</span>
+      </div>
       <div class="equip-grid" id="equipGrid"></div>
     </div>
   </div>
@@ -984,6 +988,19 @@
     <div class="parts-section" id="modalPartsSection">
       <h4>📦 Parts & Specs</h4>
       <div id="modalPartsList"></div>
+    </div>
+    <div class="manuals-section" id="modalManualsSection" style="display:none;margin-top:14px;padding-top:10px;border-top:1px solid var(--border)">
+      <h4 style="font-size:0.88rem;margin-bottom:8px;color:var(--accent-light)">📖 Manuals</h4>
+      <div id="modalManualsList"></div>
+    </div>
+    <div class="notes-section" id="modalNotesSection" style="margin-top:14px;padding-top:10px;border-top:1px solid var(--border)">
+      <h4 style="font-size:0.88rem;margin-bottom:4px;color:var(--accent-light)">📝 My Notes</h4>
+      <div style="font-size:0.74rem;color:var(--text-muted);margin-bottom:6px">Wrench sizes, torque specs, methods — saved here and synced to all your devices. Stays put every time this comes due again.</div>
+      <textarea id="equipMemoInput" placeholder="e.g. 15mm drain plug · 76mm / 14-flute filter cap · fill 5.5 qt · torque 18 ft·lb" style="width:100%;min-height:74px;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:0.9rem;resize:vertical;box-sizing:border-box"></textarea>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+        <button type="button" onclick="saveEquipMemoFromModal()" style="padding:8px 16px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:0.88rem;font-weight:600;cursor:pointer">Save note</button>
+        <span id="equipMemoSaved" style="font-size:0.8rem;color:var(--success);opacity:0;transition:opacity .25s">✓ Saved &amp; syncing</span>
+      </div>
     </div>
     <h4 style="font-size:0.88rem;margin-top:14px;margin-bottom:8px;color:var(--accent-light)">📋 Service Log</h4>
     <table>
@@ -1253,6 +1270,9 @@
     if (s.maintSnoozed && typeof s.maintSnoozed === 'object') {
       try { localStorage.setItem('gh_maint_snoozed', JSON.stringify(s.maintSnoozed)); equipChanged = true; } catch(e) {}
     }
+    if (s.equipMemos && typeof s.equipMemos === 'object') {
+      try { localStorage.setItem('gh_equip_memos', JSON.stringify(s.equipMemos)); } catch(e) {}
+    }
     if (equipChanged) {
       try { restoreEquipMaint(); renderEquipment(); } catch(e) {}
     }
@@ -1268,9 +1288,10 @@
 
   async function saveSettingsToSheet() {
     if (!sheetsConnected) return;
-    let equipMaint = null, maintSnoozed = null;
+    let equipMaint = null, maintSnoozed = null, equipMemos = null;
     try { equipMaint = JSON.parse(localStorage.getItem('gh_equip_maint') || 'null'); } catch(e) {}
     try { maintSnoozed = JSON.parse(localStorage.getItem('gh_maint_snoozed') || 'null'); } catch(e) {}
+    try { equipMemos = JSON.parse(localStorage.getItem('gh_equip_memos') || 'null'); } catch(e) {}
     const settings = {
       taskOrder: getTaskOrder(),
       reviewedEmailIds: [...loadReviewedEmailIds()],
@@ -1278,7 +1299,8 @@
       dismissedAppts: [...loadDismissedAppts()],
       carryoverAppts: loadCarryoverAppts(),
       equipMaint: equipMaint,
-      maintSnoozed: maintSnoozed
+      maintSnoozed: maintSnoozed,
+      equipMemos: equipMemos
     };
     const device = (navigator.userAgent && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) ? 'phone/tablet' : 'laptop';
     try {
@@ -2197,6 +2219,35 @@
     }
   }
 
+  // ── Official manuals per machine (researched & link-verified July 2026) ──
+  // Direct PDFs open right on the phone; a couple are official lookup portals where no
+  // stable direct PDF exists. To add/fix a link later, just edit an entry here.
+  const EQUIP_MANUALS = {
+    hustler:     [{ label: "Raptor XDX — product & manual lookup", url: "https://www.hustlerturf.com/products/raptor-xdx" }],
+    generator:   [{ label: "DuroMax XP13000HX — Owner's Manual (PDF)", url: "https://cdn.shopify.com/s/files/1/0613/1168/0689/files/XP13000HX_manual_revised_09162022_WEB.pdf?v=1663372666" }],
+    gator:       [{ label: "John Deere TX Turf Gator — Operator's Manual (search techpubs)", url: "https://techpubs.deere.com/" }],
+    grace:       [{ label: "2020 Chevy Colorado — Owner's Manual (PDF)", url: "https://www.chevrolet.com/ownercenter/content/dam/gmownercenter/gmna/dynamic/manuals/2020/chevrolet/colorado/2020-chevrolet-colorado-owners-manual.pdf" }],
+    jewel:       [{ label: "2022 Chevy Colorado — Owner's Manual (PDF)", url: "https://www.chevrolet.com/ownercenter/content/dam/gmownercenter/gmna/dynamic/manuals/2022/chevrolet/colorado/2022-chevrolet-colorado-owners-manual.pdf" }],
+    corolla:     [{ label: "2024 Toyota Corolla — Owner's Manual", url: "https://www.toyota.com/owners/warranty-owners-manuals/vehicle/corolla/2024/" }],
+    weedeater:   [{ label: "Husqvarna 522L — Operator's Manual (PDF)", url: "https://content.tdr.dss.husqvarnagroup.net/pub000063231/doc000109584" }],
+    pressure:    [{ label: "Westinghouse WPX3400 — Owner's Manual (PDF)", url: "https://cdn.westinghouseoutdoorpower.com/owners_manuals/WPX2700_WPX3200_WPX3400_manual_web.pdf" }],
+    tiller:      [{ label: "Troy-Bilt Super Bronco CRT Tiller — Manual (PDF)", url: "https://apps.mtdproducts.com/manuals/769-26694.pdf" }],
+    chipper:     [{ label: "Kohler CH440 Engine — Owner's Manual (PDF)", url: "https://resources.kohler.com/power/kohler/enginesUS/pdf/17_590_20_EN.pdf" }],
+    waterheater: [
+      { label: "Rheem Electric WH — Use & Care (PDF)", url: "https://files.rheem.com/blobazrheem/wp-content/uploads/sites/2/AP21980-Rev-02-Electric-Residential-WH-with-e-control-HIGH-TIER.pdf" },
+      { label: "Rheem Professional Classic — Spec Sheet (PROE50 listed)", url: "https://media.rheem.com/blobazrheem/wp-content/uploads/sites/36/2024/06/PROE-RH-N-Rev16-Classic-Elec.pdf" }
+    ],
+    ac35ton: [
+      { label: "Trane 5TEM6 Air Handler — Install/Operation (PDF)", url: "https://elibrary.tranetechnologies.com/public/residential-hvac/Literature/Installation%20Operation%20and%20Maintenance/AHR-SVX001C-EN_11052025.pdf" },
+      { label: "Trane 5TWX5 Heat Pump — Product Data (PDF)", url: "https://elibrary.tranetechnologies.com/public/residential-hvac/Literature/Product%20and%20Submittal%20Data/ODR-PSD018A-EN_06102025.pdf" }
+    ],
+    minisplit:   [{ label: "Mitsubishi MSZ-HM12NA Mini-Split — Install Manual (PDF)", url: "https://www.mitsubishitechinfo.ca/sites/default/files/IM_MSZ-HM09_15NA_JG79Y102H01_M.pdf" }],
+    eg4solar: [
+      { label: "EG4 18kPV Inverter — User Manual (PDF)", url: "https://eg4electronics.com/wp-content/uploads/2024/04/EG4-18KPV-12LV-Manual.pdf" },
+      { label: "EG4 WallMount 280Ah Battery — Quick Start (PDF)", url: "https://eg4electronics.com/wp-content/uploads/2024/04/EG4%C2%AE-Indoor-280Ah-Battery-Quick-Start-Guide.pdf" }
+    ]
+  };
+
   // &#9472;&#9472; Equipment Data &#9472;&#9472;
   let equipment = [
     {
@@ -2230,8 +2281,8 @@
       id: 'generator', name: 'DuroMax XP13000HX', type: 'Dual Fuel Generator | 500cc', icon: '⚡',
       maintenance: [
         { name: 'Oil change', intervalDays: 180, lastDone: null, parts: ['10W-30 oil (~1.1 qt)'] },
-        { name: 'Air filter', intervalDays: 180, lastDone: null, parts: ['DuroMax air filter element'] },
-        { name: 'Spark plug', intervalDays: 180, lastDone: null, parts: ['NGK BPR6ES (gap 0.7-0.8mm)'] },
+        { name: 'Air filter (by hours)', intervalDays: 3650, lastDone: null, parts: ['DuroMax air filter element — service by run-hours, not calendar'] },
+        { name: 'Spark plug (by hours)', intervalDays: 3650, lastDone: null, parts: ['NGK BPR6ES (gap 0.7-0.8mm) — by run-hours, not calendar'] },
         { name: 'Valve clearance check', intervalDays: 365, lastDone: null, parts: [] },
       ],
       parts: [
@@ -2374,8 +2425,8 @@
     {
       id: 'weedeater', name: 'Husqvarna 522L', type: 'String Trimmer | SN 586-765304', icon: '🌿',
       maintenance: [
-        { name: 'Spark plug', intervalDays: 365, lastDone: null, parts: ['BPMR8Y NGK (1 spare on hand)'] },
-        { name: 'Air filter & pre-filter', intervalDays: 180, lastDone: null, parts: ['Air filter 576401601', 'Pre-filter 577851501'] },
+        { name: 'Spark plug (by hours)', intervalDays: 3650, lastDone: null, parts: ['BPMR8Y NGK (1 spare on hand) — by run-hours, not calendar'] },
+        { name: 'Air filter & pre-filter (by hours)', intervalDays: 3650, lastDone: null, parts: ['Air filter 576401601', 'Pre-filter 577851501', 'By run-hours, not calendar'] },
         { name: 'Inspect fuel lines', intervalDays: 365, lastDone: null, parts: [] },
       ],
       parts: [
@@ -2409,8 +2460,8 @@
       id: 'tiller', name: 'TroyBilt Tiller', type: 'Garden Tiller | Needs model #', icon: '🌱',
       maintenance: [
         { name: 'Oil change', intervalDays: 365, lastDone: null, parts: [] },
-        { name: 'Spark plug', intervalDays: 365, lastDone: null, parts: [] },
-        { name: 'Air filter', intervalDays: 365, lastDone: null, parts: [] },
+        { name: 'Spark plug (by hours)', intervalDays: 3650, lastDone: null, parts: ['By run-hours, not calendar'] },
+        { name: 'Air filter (by hours)', intervalDays: 3650, lastDone: null, parts: ['By run-hours, not calendar'] },
       ],
       parts: [],
       log: [
@@ -2422,7 +2473,7 @@
       id: 'chipper', name: 'Chipper Shredder', type: 'Wood Chipper | Needs model #', icon: '🪵',
       maintenance: [
         { name: 'Oil change', intervalDays: 365, lastDone: null, parts: [] },
-        { name: 'Spark plug', intervalDays: 365, lastDone: null, parts: [] },
+        { name: 'Spark plug (by hours)', intervalDays: 3650, lastDone: null, parts: ['By run-hours, not calendar'] },
         { name: 'Sharpen blades', intervalDays: 365, lastDone: null, parts: [] },
       ],
       parts: [],
@@ -2641,6 +2692,26 @@
     } catch(e) {}
   }
 
+  // ── Persistent per-machine notes (memo) — synced cross-device ──
+  function getEquipMemos() {
+    try { return JSON.parse(localStorage.getItem('gh_equip_memos') || '{}'); } catch(e) { return {}; }
+  }
+  function saveEquipMemos(data) {
+    try { localStorage.setItem('gh_equip_memos', JSON.stringify(data)); } catch(e) {}
+    queueSettingsSave(); // sync notes across phone/tablet/laptop
+  }
+  function saveEquipMemoFromModal() {
+    const memoInput = document.getElementById('equipMemoInput');
+    const eqId = memoInput && memoInput.dataset ? memoInput.dataset.eqid : '';
+    if (!eqId) return;
+    const memos = getEquipMemos();
+    const val = memoInput.value.trim();
+    if (val) memos[eqId] = val; else delete memos[eqId];
+    saveEquipMemos(memos);
+    const saved = document.getElementById('equipMemoSaved');
+    if (saved) { saved.style.opacity = '1'; setTimeout(() => { saved.style.opacity = '0'; }, 2200); }
+  }
+
   // ── Render Equipment Cards ──
   function renderEquipment() {
     const grid = document.getElementById('equipGrid');
@@ -2742,6 +2813,26 @@
     tbody.innerHTML = [...eq.log].reverse().map(l =>
       `<tr><td>${new Date(l.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td><td>${l.service}</td><td>${l.notes}</td></tr>`
     ).join('') || '<tr><td colspan="3" style="text-align:center;color:var(--text-muted)">No maintenance logged yet</td></tr>';
+
+    // Manuals (official links, per machine)
+    const manuals = EQUIP_MANUALS[eq.id] || [];
+    const manualsSection = document.getElementById('modalManualsSection');
+    const manualsList = document.getElementById('modalManualsList');
+    if (manuals.length > 0) {
+      manualsSection.style.display = 'block';
+      manualsList.innerHTML = manuals.map(mn =>
+        `<div style="font-size:0.85rem;padding:3px 0"><a href="${mn.url}" target="_blank" rel="noopener" style="color:var(--accent-light);text-decoration:none">📄 ${mn.label}</a></div>`
+      ).join('');
+    } else {
+      manualsSection.style.display = 'none';
+    }
+
+    // My Notes (persistent per-machine memo — survives every time maintenance comes due)
+    const memoInput = document.getElementById('equipMemoInput');
+    memoInput.value = getEquipMemos()[eq.id] || '';
+    memoInput.dataset.eqid = eq.id;
+    const memoSaved = document.getElementById('equipMemoSaved');
+    if (memoSaved) memoSaved.style.opacity = '0';
 
     document.getElementById('logEquipId').value = id;
     modal.classList.add('active');
