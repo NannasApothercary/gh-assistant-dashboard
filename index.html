@@ -921,7 +921,7 @@
   <!-- Equipment Maintenance -->
   <div class="section" id="equipSection">
     <div class="section-header" onclick="toggleSection('equipSection')">
-      <h2>&#128295; Equipment Maintenance <span class="badge" id="equipCount">14</span></h2>
+      <h2>&#128295; Equipment Maintenance <span class="badge" id="equipCount">15</span></h2>
       <span class="chevron">&#9660;</span>
     </div>
     <div class="section-body">
@@ -2566,6 +2566,36 @@
         { date: '2024-03-11', service: 'Drain cleaned', notes: 'Took 90\u00b0 off drain; was clogged causing drain sounds' },
         { date: '2026-02-18', service: 'Coil cleaning', notes: "Done during new 3.5 ton AC install by Gould\u2019s" },
         { date: '2026-04-18', service: 'DIY drain line cleanout', notes: 'Established quarterly DIY cadence; next due ~2026-07-18' },
+      ]
+    },
+    {
+      id: 'wellwater', name: 'Well & Water Treatment', type: 'Well + 1HP Pump + Nelsen AIO Iron Filter + Clack Softener | DIY self-service', icon: '💧',
+      maintenance: [
+        { name: 'AIO monthly check — clock right, confirm backwash, run tap for air/sulphur', intervalDays: 30, lastDone: '2026-07-18', parts: ['~10 min; scheduled first Saturday 9 AM'] },
+        { name: 'AIO — force manual regen & watch the full cycle', intervalDays: 90, lastDone: '2026-07-18', parts: ['Turn 3200 knob clockwise; watch drain flow + air draw'] },
+        { name: 'AIO annual service — clean air check, injector (#2 blue) + screen, DLFC, check media bed', intervalDays: 365, lastDone: '2026-07-18', parts: ['Vinegar/citric soak; injector screen Fleck PN 10227'] },
+        { name: 'Softener — ResCare resin deep-clean + full regen', intervalDays: 365, lastDone: '2026-07-18', parts: ['ResCare ~1 cup into brine well, fill-first regen'] },
+        { name: 'Check brine tank salt level', intervalDays: 30, lastDone: '2026-07-18', parts: ['Softener salt'] },
+      ],
+      parts: [
+        { name: 'Well drilled', number: '9/6/2002' },
+        { name: 'Pump', number: '1 HP Schaefer — pulled & set 10/20/2017 (Frank Martines, $1,200) — ~8.7 yrs old, watch for age' },
+        { name: 'Pressure switch', number: 'Square D Pumptrol 9013FSG2J21M4 — 30/50 psi (replaced 4/21/2022)' },
+        { name: 'AIO filter', number: 'Nelsen AIO — Fleck 2510 valve + 3200 mech timer — 12" tank, injectors #2 blue (installed 3/5/2020)' },
+        { name: 'Softener valve', number: 'Clack V3115 CS (installed 3/5/2020)' },
+        { name: 'Injector color', number: '#2 blue = 12" tank — confirmed 7/18/2026 (corrects earlier 10" guess)' },
+        { name: 'Injector screen', number: 'Fleck PN 10227' },
+        { name: 'AIO tank warranty', number: 'to ~3/2030' },
+        { name: 'Installer (AIO/softener)', number: "Greg's MTBW — (813) 752-5604" },
+        { name: 'Well/pump contractors', number: "David's Pump; Frank Martines; Preferred/Jim Embry" },
+      ],
+      log: [
+        { date: '2020-03-05', service: 'AIO + softener installed', notes: "By Greg's MTBW" },
+        { date: '2021-06-02', service: 'Yearly maintenance — AIO & softener', notes: "Greg's MTBW, $89.95" },
+        { date: '2023-02-09', service: 'Yearly maintenance on AIO', notes: "Greg's MTBW, $89.95 — last professional service" },
+        { date: '2026-07-18', service: 'Full DIY water-system service', notes: 'AIO: pulled & cleaned both injectors (blue #2 → 12" tank), reassembled, full manual backwash — clean water, no air slug. Softener (Clack V3115 CS): ResCare deep-clean + full regen. $0 DIY.' },
+        { date: '2026-07-18', service: 'Wellhead weep — CLOSED, no action', notes: 'Tech confirmed the weeping riser port is a pressure relief valve — cosmetic, low priority, no action needed. Do NOT cap it.' },
+        { date: '2026-07-19', service: 'Skipper wheel checked', notes: 'All tabs out = AIO regens every day — a good, safe setting for an AIO; no change needed.' },
       ]
     },
   ];
