@@ -879,7 +879,7 @@
         <button onclick="retryAndAdd()">Reconnect</button>
       </div>
       <input type="text" id="newTaskInput" placeholder="What needs to be done?" onkeydown="if(event.key==='Enter')addTask()">
-      <div class="hint">Press Enter to add. Tip: start with ! for high priority, ? for someday</div>
+      <div class="hint">Press Enter to add. Tip: start with ! for high priority, ? for low priority</div>
     </div>
   </div>
 
@@ -930,17 +930,6 @@
         <span style="font-size:0.74rem;color:var(--text-muted);margin-left:10px">Parts shopping list for the small engines</span>
       </div>
       <div class="equip-grid" id="equipGrid"></div>
-    </div>
-  </div>
-
-  <!-- Someday / Backlog -->
-  <div class="section collapsed" id="somedaySection">
-    <div class="section-header" onclick="toggleSection('somedaySection')">
-      <h2>&#128173; Someday / Backlog <span class="badge" id="somedayCount">0</span></h2>
-      <span class="chevron">&#9660;</span>
-    </div>
-    <div class="section-body">
-      <div id="somedayList"></div>
     </div>
   </div>
 
@@ -1738,7 +1727,7 @@
     let priority = 'medium';
     let section = 'active';
     if (text.startsWith('!')) { priority = 'high'; text = text.substring(1).trim(); }
-    if (text.startsWith('?')) { priority = 'low'; section = 'someday'; text = text.substring(1).trim(); }
+    if (text.startsWith('?')) { priority = 'low'; text = text.substring(1).trim(); }
 
     input.value = '';
     addTaskToSheet(text, priority, section);
@@ -1938,7 +1927,6 @@
   // &#9472;&#9472; Render tasks &#9472;&#9472;
   function renderTasks() {
     const active = tasks.filter(t => !t.done && t.section === 'active');
-    const someday = tasks.filter(t => !t.done && t.section === 'someday');
     const done = tasks.filter(t => t.done);
 
     document.getElementById('taskCount').textContent = active.length;
@@ -2021,26 +2009,6 @@
     }
 
     document.getElementById('taskList').innerHTML = html;
-
-    // Someday section
-    const somedaySection = document.getElementById('somedaySection');
-    if (somedaySection) {
-      document.getElementById('somedayCount').textContent = someday.length;
-      if (someday.length === 0) {
-        document.getElementById('somedayList').innerHTML = '<div class="empty">No someday tasks.</div>';
-      } else {
-        document.getElementById('somedayList').innerHTML = someday.map((t) => {
-          const noteHtml = t.note ? `<div class="active-note">📝 ${t.note}</div>` : '';
-          return `<div class="task-item">
-            <div class="task-checkbox" onclick="toggleTask('${t.id}')"></div>
-            <div class="task-text" onclick="openActiveNote('${t.id}')">
-              <div class="title">${t.title}</div>
-              ${noteHtml}
-            </div>
-          </div>`;
-        }).join('');
-      }
-    }
 
     // Old done section (hidden by default, kept for full history)
     if (done.length > 0) {
@@ -2595,6 +2563,7 @@
         { date: '2023-02-09', service: 'Yearly maintenance on AIO', notes: "Greg's MTBW, $89.95 — last professional service" },
         { date: '2026-07-18', service: 'Full DIY water-system service', notes: 'AIO: pulled & cleaned both injectors (blue #2 → 12" tank), reassembled, full manual backwash — clean water, no air slug. Softener (Clack V3115 CS): ResCare deep-clean + full regen. $0 DIY.' },
         { date: '2026-07-18', service: 'Wellhead weep — CLOSED, no action', notes: 'Tech confirmed the weeping riser port is a pressure relief valve — cosmetic, low priority, no action needed. Do NOT cap it.' },
+        { date: '2026-07-18', service: 'AIO air-check (Fleck 62116) received — NOT installed', notes: "62116 '2510AIO REV-E' is a side-port poppet; GH's air-draw is a tube-to-bare-barb intake, so it doesn't match. Air draw tested strong on the 7/18 backwash — no replacement needed. Keeping the 62116 as a spare." },
         { date: '2026-07-19', service: 'Skipper wheel checked', notes: 'All tabs out = AIO regens every day — a good, safe setting for an AIO; no change needed.' },
       ]
     },
