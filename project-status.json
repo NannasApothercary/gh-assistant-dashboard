@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-22",
+  "generated": "2026-07-23",
   "projects": [
     {
       "name": "GT Precision Website",
@@ -16,10 +16,10 @@
       "icon": "🌿",
       "status": "active",
       "bullets": [
-        "Pinterest queue critically low: 23 pins through Jul 24 (2-day runway). Batch 22 descriptions staged + citation-verified. 9 blog posts live + 2 drafts awaiting Iola RN approval. Affiliate $0 MTD (verified).",
-        "Next: build + Tailwind-import Batch 22 before Jul 24 (needs species-checked photos, interactive). Watch for Iola blog approval (auto-publishes on reply). Decide FabBridge (35 days quiet)."
+        "Iola APPROVED both blog drafts Jul 22, but headless auto-publish is BLOCKED: the site GitHub repo is unreachable with the current token. Pinterest 1-day runway (23 pins thru Jul 24). 7 new voice recordings arrived.",
+        "Greg: fix the site-repo token so the 2 approved posts publish; build + Tailwind-import Batch 22 before Jul 24 (interactive, needs species-checked photos); process 7 recordings. Affiliate $0 MTD verified."
       ],
-      "updated": "2026-07-22"
+      "updated": "2026-07-23"
     }
   ]
 }
