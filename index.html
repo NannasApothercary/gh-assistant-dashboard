@@ -329,48 +329,6 @@
     margin-top: 2px;
   }
 
-  /* Email items */
-  .email-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-  }
-  .email-item:last-child { border-bottom: none; }
-  .email-dot {
-    width: 8px; height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    margin-top: 6px;
-    flex-shrink: 0;
-  }
-  .email-dot.unread { background: var(--warning); }
-  .email-text { flex: 1; }
-  .email-text .from { font-weight: 500; font-size: 0.9rem; }
-  .email-text .subject { font-size: 0.85rem; color: var(--text-muted); margin-top: 1px; }
-  .email-text .snippet { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; opacity: 0.7; }
-  .email-text .email-note { font-size: 0.78rem; color: var(--accent-light); font-style: italic; margin-top: 3px; }
-  .email-text .email-resolved-date { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
-
-  /* Reviewed email log link */
-  .reviewed-link {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    border-top: 1px solid var(--border);
-    margin-top: 10px;
-    padding-top: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .reviewed-link a {
-    color: var(--accent-light);
-    text-decoration: none;
-    font-weight: 500;
-  }
-  .reviewed-link a:hover { text-decoration: underline; }
-
   /* Quick actions */
   .quick-actions {
     display: grid;
@@ -905,23 +863,10 @@
     </div>
   </div>
 
-  <!-- Email Follow-ups -->
-  <div class="section" id="emailSection">
-    <div class="section-header" onclick="toggleSection('emailSection')">
-      <h2>&#128231; Email Follow-ups <span class="badge" id="emailCount">0</span></h2>
-      <span class="chevron">&#9660;</span>
-    </div>
-    <div class="section-body">
-      <div id="emailList">
-        <div class="empty">No Nanna's Apothecary emails to follow up on.</div>
-      </div>
-    </div>
-  </div>
-
   <!-- Equipment Maintenance -->
   <div class="section" id="equipSection">
     <div class="section-header" onclick="toggleSection('equipSection')">
-      <h2>&#128295; Equipment Maintenance <span class="badge" id="equipCount">15</span></h2>
+      <h2>&#128295; Equipment Maintenance <span class="badge" id="equipCount">16</span></h2>
       <span class="chevron">&#9660;</span>
     </div>
     <div class="section-body">
@@ -949,10 +894,6 @@
     <div class="status-item">
       <div class="status-dot" id="sheetStatus"></div>
       <span id="sheetStatusText">Notion: connecting...</span>
-    </div>
-    <div class="status-item">
-      <div class="status-dot" id="emailStatus"></div>
-      <span id="emailStatusText">Gmail</span>
     </div>
     <div class="status-item" id="dataTimestamp" title="When this dashboard was last deployed. If two devices show different values here, the older one needs a hard refresh (Ctrl+Shift+R).">
       <span style="color:var(--text);font-weight:600" id="calDataTime">📅 Calendar: loading...</span>
@@ -1030,19 +971,6 @@
   </div>
 </div>
 
-<!-- Email Resolve Note Modal -->
-<div class="note-modal-overlay" id="emailNoteModal" onclick="if(event.target===this)skipEmailNote()">
-  <div class="note-modal">
-    <h3>&#128233; Email Reviewed</h3>
-    <div class="task-name" id="emailNoteTaskName"></div>
-    <textarea id="emailNoteInput" placeholder="Which email / what happened? e.g. 'Replied 4/9 &#8212; confirmed appointment' or 'No action needed'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveEmailNote()}"></textarea>
-    <div class="btn-row">
-      <button class="btn btn-skip" onclick="skipEmailNote()">Skip</button>
-      <button class="btn btn-done" onclick="saveEmailNote()">Done</button>
-    </div>
-  </div>
-</div>
-
 <script>
   // &#9556;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9559;
   // &#9553;  GOOGLE SHEETS API CONFIG                  &#9553;
@@ -1050,10 +978,6 @@
   // &#9553;  Apps Script as a web app                  &#9553;
   // &#9562;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9565;
   const API_URL = 'https://script.google.com/macros/s/AKfycbyXONgjpwWrj0nlfVRCYdaMGtB939CotnlD0u9OhfaZ4eFqN-g-JI7Sv67IeEm5kfFj/exec';
-
-  // ── Email API (iherschell12@gmail.com Apps Script) ──
-  // Paste your deployed email script URL here after setup
-  const EMAIL_API_URL = 'https://script.google.com/macros/s/AKfycby_V1MAF7LvMR1tQBcAdekr7MspzHIn6gehC8VXEk2CvfJ-TDk448GTR8ra_g53kdIWFA/exec';
 
   // &#9472;&#9472; STATE &#9472;&#9472;
   let tasks = [];
@@ -1109,7 +1033,7 @@
       if (data.reminders && Array.isArray(data.reminders)) {
         loadNotionReminders(data.reminders);
       }
-      // Apply cross-device settings (task order, dismissed emails/appts)
+      // Apply cross-device settings (task order, dismissed appts)
       if (data.settings && typeof data.settings === 'object') {
         applySheetSettings(data.settings);
         // Re-render appointments now that carryover/dismissed state is loaded from Notion.
@@ -1239,12 +1163,6 @@
     if (s.taskOrder && Array.isArray(s.taskOrder)) {
       try { localStorage.setItem('gh_task_order', JSON.stringify(s.taskOrder)); } catch(e) {}
     }
-    if (s.reviewedEmailIds && Array.isArray(s.reviewedEmailIds)) {
-      try { localStorage.setItem(REVIEWED_EMAIL_KEY, JSON.stringify(s.reviewedEmailIds)); } catch(e) {}
-    }
-    if (s.reviewedEmailFingerprints && Array.isArray(s.reviewedEmailFingerprints)) {
-      try { localStorage.setItem(REVIEWED_EMAIL_FP_KEY, JSON.stringify(s.reviewedEmailFingerprints)); } catch(e) {}
-    }
     if (s.dismissedAppts && Array.isArray(s.dismissedAppts)) {
       try { localStorage.setItem(DISMISSED_APPT_KEY, JSON.stringify(s.dismissedAppts)); } catch(e) {}
     }
@@ -1283,8 +1201,6 @@
     try { equipMemos = JSON.parse(localStorage.getItem('gh_equip_memos') || 'null'); } catch(e) {}
     const settings = {
       taskOrder: getTaskOrder(),
-      reviewedEmailIds: [...loadReviewedEmailIds()],
-      reviewedEmailFingerprints: [...loadReviewedEmailFingerprints()],
       dismissedAppts: [...loadDismissedAppts()],
       carryoverAppts: loadCarryoverAppts(),
       equipMaint: equipMaint,
@@ -1339,53 +1255,10 @@
     renderAppts();
   }
 
-  // ── Live email: fetch unread Gmail from iherschell12 Apps Script ──
-  async function loadEmailsFromAPI() {
-    if (!EMAIL_API_URL || EMAIL_API_URL === 'PASTE_YOUR_EMAIL_SCRIPT_URL_HERE') {
-      document.getElementById('emailStatus').className = 'status-dot yellow';
-      document.getElementById('emailStatusText').textContent = 'Gmail: not connected yet';
-      return;
-    }
-
-    try {
-      const resp = await fetch(EMAIL_API_URL);
-      const data = await resp.json();
-      if (data.error) throw new Error(data.error);
-
-      const reviewedIds = loadReviewedEmailIds();
-      const reviewedFps = loadReviewedEmailFingerprints();
-
-      emails = (data.emails || [])
-        .filter(function(e) {
-          return !reviewedIds.has(e.id) && !reviewedFps.has(emailFingerprint(e));
-        })
-        .map(function(e) {
-          // Extract display name from "Name <addr>" format
-          var fromMatch = (e.from || '').match(/^"?(.+?)"?\s*</);
-          var fromName = fromMatch ? fromMatch[1].trim() : (e.from || 'Unknown');
-          return {
-            id: e.id,
-            from: fromName,
-            subject: e.subject || '(no subject)',
-            snippet: e.snippet || '',
-            date: e.date ? e.date.split('T')[0] : ''
-          };
-        });
-
-      document.getElementById('emailStatus').className = 'status-dot green';
-      document.getElementById('emailStatusText').textContent = 'Gmail: ' + emails.length + ' unread';
-      renderEmails();
-    } catch (err) {
-      console.error('Email load failed:', err);
-      document.getElementById('emailStatus').className = 'status-dot yellow';
-      document.getElementById('emailStatusText').textContent = 'Gmail: offline';
-    }
-  }
-
-  // &#9472;&#9472; Refresh All &#8212; fires tasks+calendar AND email together &#9472;&#9472;
+  // &#9472;&#9472; Refresh All &#8212; fires tasks + calendar &#9472;&#9472;
   async function refreshAll() {
     showSync('Refreshing all data...');
-    await Promise.all([loadTasksFromSheet(), loadEmailsFromAPI()]);
+    await Promise.all([loadTasksFromSheet()]);
   }
 
   // &#9472;&#9472; TASK ORDER (localStorage) &#9472;&#9472;
@@ -1541,44 +1414,6 @@
   // &#9472;&#9472; Appointments &#8212; always fetched live from Google Calendar via Apps Script &#9472;&#9472;
   // Do NOT hardcode appointments here &#8212; live fetch keeps all devices in sync.
   let appointments = [];
-
-  // &#9472;&#9472; Emails &#8212; Nanna's Apothecary business emails (via iherschell12@gmail.com) &#9472;&#9472;
-  // Last synced: 2026-05-06 7:00 AM (manual sync) &#8212; inbox clear, no unread items
-  let emails = [];
-
-  // &#9472;&#9472; Reviewed email log (persists in this array, rendered on separate page) &#9472;&#9472;
-  let reviewedEmails = [];
-
-  // &#9472;&#9472; Reviewed email fingerprints (localStorage-persisted so sync doesn&#8217;t resurface them) &#9472;&#9472;
-  // Track BOTH the email id AND a content fingerprint (subject+from+date) so reviews survive even
-  // when the sync task regenerates different IDs for the same email tomorrow.
-  const REVIEWED_EMAIL_KEY = 'reviewedEmailIds';           // legacy: set of ids
-  const REVIEWED_EMAIL_FP_KEY = 'reviewedEmailFingerprints'; // preferred: set of subject+from+date hashes
-  function emailFingerprint(e) {
-    return ((e.subject || '') + '|' + (e.from || '') + '|' + (e.date || '')).toLowerCase().replace(/\s+/g, ' ').trim();
-  }
-  function loadReviewedEmailIds() {
-    try { return new Set(JSON.parse(localStorage.getItem(REVIEWED_EMAIL_KEY) || '[]')); }
-    catch (e) { return new Set(); }
-  }
-  function saveReviewedEmailIds(set) {
-    try { localStorage.setItem(REVIEWED_EMAIL_KEY, JSON.stringify([...set])); queueSettingsSave(); } catch (e) {}
-  }
-  function loadReviewedEmailFingerprints() {
-    try { return new Set(JSON.parse(localStorage.getItem(REVIEWED_EMAIL_FP_KEY) || '[]')); }
-    catch (e) { return new Set(); }
-  }
-  function saveReviewedEmailFingerprints(set) {
-    try { localStorage.setItem(REVIEWED_EMAIL_FP_KEY, JSON.stringify([...set])); queueSettingsSave(); } catch (e) {}
-  }
-  // Filter emails[] against BOTH reviewed sets BEFORE rendering so sync-regenerated IDs still get caught
-  (function pruneEmailsOnLoad() {
-    const reviewedIds = loadReviewedEmailIds();
-    const reviewedFps = loadReviewedEmailFingerprints();
-    if (reviewedIds.size > 0 || reviewedFps.size > 0) {
-      emails = emails.filter(e => !reviewedIds.has(e.id) && !reviewedFps.has(emailFingerprint(e)));
-    }
-  })();
 
   // &#9472;&#9472; Dismissed appointments (localStorage-persisted) &#9472;&#9472;
   const DISMISSED_APPT_KEY = 'dismissedApptKeys';
@@ -2104,89 +1939,6 @@
     }
   }
 
-  // &#9472;&#9472; Email follow-up functions &#9472;&#9472;
-  let emailNoteTarget = null;
-
-  function reviewEmail(emailId) {
-    const e = emails.find(x => x.id === emailId);
-    if (!e) return;
-    // Show note modal
-    emailNoteTarget = emailId;
-    document.getElementById('emailNoteTaskName').textContent = e.from + ': ' + e.subject;
-    document.getElementById('emailNoteInput').value = '';
-    document.getElementById('emailNoteModal').classList.add('active');
-    setTimeout(() => document.getElementById('emailNoteInput').focus(), 100);
-  }
-
-  function skipEmailNote() { completeEmailReview(''); }
-  function saveEmailNote() { completeEmailReview(document.getElementById('emailNoteInput').value.trim()); }
-
-  function completeEmailReview(note) {
-    document.getElementById('emailNoteModal').classList.remove('active');
-    if (!emailNoteTarget) return;
-    const idx = emails.findIndex(x => x.id === emailNoteTarget);
-    if (idx !== -1) {
-      const e = emails[idx];
-      // Move to reviewed log
-      reviewedEmails.unshift({
-        from: e.from,
-        subject: e.subject,
-        snippet: e.snippet,
-        emailDate: e.date,
-        note: note || '',
-        reviewedDate: new Date().toISOString()
-      });
-      // Persist BOTH the email ID and a content fingerprint so tomorrow&#8217;s dashboard sync can&#8217;t resurface
-      // the same email even if it assigns a different id string this morning vs yesterday.
-      const reviewedIds = loadReviewedEmailIds();
-      reviewedIds.add(e.id);
-      saveReviewedEmailIds(reviewedIds);
-      const reviewedFps = loadReviewedEmailFingerprints();
-      reviewedFps.add(emailFingerprint(e));
-      saveReviewedEmailFingerprints(reviewedFps);
-      // Remove from active list
-      emails.splice(idx, 1);
-    }
-    emailNoteTarget = null;
-    renderEmails();
-  }
-
-  // &#9472;&#9472; Render emails &#9472;&#9472;
-  function renderEmails() {
-    document.getElementById('emailCount').textContent = emails.length;
-    if (emails.length === 0 && reviewedEmails.length === 0) {
-      document.getElementById('emailList').innerHTML = '<div class="empty">Inbox clear — no unread emails.</div>';
-    } else {
-      let html = '';
-
-      if (emails.length === 0) {
-        html += '<div class="empty" style="margin-bottom:8px;">All caught up!</div>';
-      } else {
-        html += emails.map(e => {
-          const dateStr = e.date ? new Date(e.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
-          return `<div class="email-item">
-            <div class="task-checkbox" onclick="reviewEmail('${e.id}')" title="Mark as reviewed"></div>
-            <div class="email-text">
-              <div class="from">${e.from || 'Unknown'} <span style="font-size:0.72rem;color:var(--text-muted);font-weight:400;">${dateStr}</span></div>
-              <div class="subject">${e.subject || ''}</div>
-              <div class="snippet">${e.snippet || ''}</div>
-            </div>
-          </div>`;
-        }).join('');
-      }
-
-      // Log link (only if there are reviewed emails)
-      if (reviewedEmails.length > 0) {
-        html += `<div class="reviewed-link">
-          <span>${reviewedEmails.length} reviewed</span>
-          <a href="reviewed-emails.html" target="_blank">View log &#8594;</a>
-        </div>`;
-      }
-
-      document.getElementById('emailList').innerHTML = html;
-    }
-  }
-
   // ── Official manuals per machine (researched & link-verified July 2026) ──
   // Direct PDFs open right on the phone; a couple are official lookup portals where no
   // stable direct PDF exists. To add/fix a link later, just edit an entry here.
@@ -2567,6 +2319,21 @@
         { date: '2026-07-19', service: 'Skipper wheel checked', notes: 'All tabs out = AIO regens every day — a good, safe setting for an AIO; no change needed.' },
       ]
     },
+    {
+      id: 'guitar', name: 'Guitar', type: 'Annual restring + basic setup | DIY', icon: '🎸',
+      maintenance: [
+        { name: 'Restring (full set)', intervalDays: 365, lastDone: '2025-12-01', parts: ['Fresh string set — check stock before starting'] },
+        { name: 'Clean & condition fretboard (strings off)', intervalDays: 365, lastDone: '2025-12-01', parts: ['Fretboard cleaner / lemon oil for rosewood'] },
+        { name: 'Check neck relief & action', intervalDays: 365, lastDone: '2025-12-01', parts: ['Truss-rod adjust only if needed'] },
+      ],
+      parts: [
+        { name: 'Cadence', number: 'Restring yearly, every December' },
+        { name: 'Baseline', number: 'Anchored to Dec 2025 so the first reminder lands ~Dec 2026' },
+      ],
+      log: [
+        { date: '2026-07-24', service: 'Added to dashboard', notes: 'Annual restring maintenance item. Baseline lastDone set to 2025-12-01 so the first due date lands ~Dec 2026, then yearly. Update lastDone whenever you actually restring.' },
+      ]
+    },
   ];
 
   let archivedTasks = [];
@@ -2857,14 +2624,12 @@
   // ── Initial render ──
   loadProjectStatus(); // fetches project-status.json, then calls renderProjects()
   loadTasksFromSheet(); // Loads tasks + calendar events (once Apps Script is updated)
-  loadEmailsFromAPI();  // Loads live unread Gmail from iherschell12
   restoreEquipMaint();
   renderEquipment();
 
   // &#9472;&#9472; Auto-refresh every 5 minutes &#9472;&#9472;
   setInterval(() => {
     loadTasksFromSheet(); // refreshes tasks + calendar
-    loadEmailsFromAPI();  // refreshes email
   }, 300000);
 
   // &#9472;&#9472; Register service worker (PWA) &#9472;&#9472;
