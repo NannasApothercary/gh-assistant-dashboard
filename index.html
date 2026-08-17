@@ -851,6 +851,7 @@
       <div id="apptList" style="max-height:260px;overflow-y:auto">
         <div class="empty">No upcoming appointments.</div>
       </div>
+      <div id="apptDoneInline"></div>
     </div>
     <div class="add-form" id="addApptForm">
       <div class="appt-input-row">
@@ -1169,6 +1170,9 @@
     if (s.carryoverAppts && Array.isArray(s.carryoverAppts)) {
       try { localStorage.setItem(CARRYOVER_APPT_KEY, JSON.stringify(s.carryoverAppts)); } catch(e) {}
     }
+    if (s.dismissedApptLog && Array.isArray(s.dismissedApptLog)) {
+      try { localStorage.setItem(DISMISSED_LOG_KEY, JSON.stringify(s.dismissedApptLog)); } catch(e) {}
+    }
     // Equipment maintenance state (mark-done / lastDone / log) and snoozes — synced cross-device.
     let equipChanged = false;
     if (s.equipMaint && Array.isArray(s.equipMaint)) {
@@ -1203,6 +1207,7 @@
       taskOrder: getTaskOrder(),
       dismissedAppts: [...loadDismissedAppts()],
       carryoverAppts: loadCarryoverAppts(),
+      dismissedApptLog: loadDismissLog(),
       equipMaint: equipMaint,
       maintSnoozed: maintSnoozed,
       equipMemos: equipMemos
@@ -1429,6 +1434,8 @@
     const set = loadDismissedAppts();
     set.add(key);
     saveDismissedAppts(set);
+    // Log it (with a timestamp) so it shows in "Recently Done" and can be undone
+    logDismissedAppt(key);
     // Remove from user-added localStorage so it doesn't resurface
     const userSaved = loadUserAppts().filter(a => apptKey(a) !== key);
     saveUserAppts(userSaved);
@@ -1443,6 +1450,140 @@
       }).catch(() => {});
     }
     renderAppts();
+  }
+
+  // ── Recently-done appointment log (powers the "Recently Done" list under the calendar) ──
+  // dismissedApptKeys only stores "title|date" strings, so this keeps the full object plus a
+  // timestamp — enough to show what was just closed and to put it back with Undo.
+  const DISMISSED_LOG_KEY = 'dismissedApptLog';
+  const DISMISS_LOG_MAX = 25;
+  function loadDismissLog() {
+    try { const a = JSON.parse(localStorage.getItem(DISMISSED_LOG_KEY) || '[]'); return Array.isArray(a) ? a : []; }
+    catch (e) { return []; }
+  }
+  function saveDismissLog(arr) {
+    try { localStorage.setItem(DISMISSED_LOG_KEY, JSON.stringify(arr.slice(0, DISMISS_LOG_MAX))); queueSettingsSave(); } catch (e) {}
+  }
+  function sortDismissLog(log) {
+    log.sort((a, b) => {
+      if (a.dismissedAt && b.dismissedAt) return new Date(b.dismissedAt) - new Date(a.dismissedAt);
+      if (a.dismissedAt) return -1;
+      if (b.dismissedAt) return 1;
+      return new Date(b.date || 0) - new Date(a.date || 0);   // no timestamp: newest event date first
+    });
+    return log;
+  }
+  // Find the full appointment for a key wherever it currently lives
+  function findApptByKey(key) {
+    return appointments.find(a => apptKey(a) === key)
+        || loadCarryoverAppts().find(a => apptKey(a) === key)
+        || loadUserAppts().find(a => apptKey(a) === key)
+        || null;
+  }
+  function apptRecordFromKey(key) {
+    const a = findApptByKey(key);
+    const i = key.lastIndexOf('|');
+    return {
+      key: key,
+      title: a ? a.title : (i > -1 ? key.slice(0, i) : key),
+      date: a ? a.date : (i > -1 ? key.slice(i + 1) : ''),
+      time: a ? (a.time || '') : '',
+      source: a ? (a.source || '') : '',
+      dismissedAt: null
+    };
+  }
+  function logDismissedAppt(key) {
+    const log = loadDismissLog().filter(r => r.key !== key);
+    const rec = apptRecordFromKey(key);
+    rec.dismissedAt = new Date().toISOString();
+    log.unshift(rec);
+    saveDismissLog(log);
+  }
+  // Dismissals made before this feature existed have no log entry — rebuild them from the
+  // stored keys so old mis-clicks are still recoverable. No timestamp, so they sort by event date.
+  function backfillDismissLog() {
+    const log = loadDismissLog();
+    const known = new Set(log.map(r => r.key));
+    let added = false;
+    [...loadDismissedAppts()].forEach(key => {
+      if (known.has(key)) return;
+      log.push(apptRecordFromKey(key));
+      added = true;
+    });
+    if (added) saveDismissLog(sortDismissLog(log));
+  }
+  // Put a dismissed appointment back on the calendar
+  function undoDismissAppt(key) {
+    const set = loadDismissedAppts();
+    set.delete(key);
+    saveDismissedAppts(set);
+
+    const log = loadDismissLog();
+    const rec = log.find(r => r.key === key);
+    saveDismissLog(log.filter(r => r.key !== key));
+
+    if (rec && rec.date) {
+      // Restore as a user appointment unless it came from Google (which re-supplies its own)
+      const appt = { title: rec.title, date: rec.date, time: rec.time || '', source: rec.source === 'gcal' ? 'gcal' : 'user' };
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      const d = new Date(rec.date + 'T12:00:00'); d.setHours(0, 0, 0, 0);
+      if (!appointments.some(a => apptKey(a) === key)) appointments.push(appt);
+      if (d < today) {
+        // Past-dated: park it in carryover — the daily sync only pulls today+future
+        const carry = loadCarryoverAppts();
+        if (!carry.some(a => apptKey(a) === key)) { carry.push(appt); saveCarryoverAppts(carry); }
+      } else if (appt.source !== 'gcal') {
+        const users = loadUserAppts();
+        if (!users.some(a => apptKey(a) === key)) { users.push(appt); saveUserAppts(users); }
+      }
+    }
+    renderAppts();
+  }
+  // Render the last 2 closed appointments (plus a View All toggle) under the calendar list
+  function renderApptDone() {
+    const el = document.getElementById('apptDoneInline');
+    if (!el) return;
+    backfillDismissLog();
+    const log = sortDismissLog(loadDismissLog());
+    if (!log.length) { el.innerHTML = ''; return; }
+    const btn = 'background:none;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;padding:4px 8px;border-radius:4px;font-size:0.8rem;white-space:nowrap';
+    const row = (r) => {
+      const k = r.key.replace(/'/g, "\\'");
+      let when;
+      if (r.dismissedAt) {
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const yest = new Date(today); yest.setDate(yest.getDate() - 1);
+        const dd = new Date(r.dismissedAt);
+        const dd0 = new Date(dd); dd0.setHours(0, 0, 0, 0);
+        when = 'Closed ' + (dd0.getTime() === today.getTime() ? 'today' :
+               dd0.getTime() === yest.getTime() ? 'yesterday' :
+               dd.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }));
+      } else {
+        when = r.date ? 'Closed earlier &#183; was ' + new Date(r.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                      : 'Closed earlier';
+      }
+      return `<div class="done-inline-item">
+        <div style="color:var(--success);line-height:1.3">&#10003;</div>
+        <div class="task-text done" style="flex:1">
+          <div class="title">${r.title}</div>
+          <div class="done-date">${when}</div>
+        </div>
+        <button onclick="undoDismissAppt('${k}')" title="Put this back on the calendar" style="${btn}">&#8617; Undo</button>
+      </div>`;
+    };
+    // Only what was closed in the last 24 hours stays visible; everything older
+    // (including pre-upgrade dismissals, which carry no timestamp) hides behind View All.
+    const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+    const recent = log.filter(r => r.dismissedAt && new Date(r.dismissedAt).getTime() >= cutoff);
+    const rest = log.filter(r => !recent.includes(r));
+    const toggle = rest.length ? `<div id="apptDoneAll" style="display:none">${rest.map(row).join('')}</div>
+      <button onclick="const el=document.getElementById('apptDoneAll');const showing=el.style.display!=='none';el.style.display=showing?'none':'block';this.textContent=showing?'View older (${rest.length})':'Hide older';" style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--accent-light);padding:6px 14px;border-radius:8px;cursor:pointer;width:100%;margin-top:8px;font-size:0.8rem;">View older (${rest.length})</button>` : '';
+    if (!recent.length && !rest.length) { el.innerHTML = ''; return; }
+    el.innerHTML = `<div class="done-inline-section">
+      <div class="done-inline-label">&#10003; ${recent.length ? 'Done in the last 24 hours' : 'Recently done'}</div>
+      ${recent.map(row).join('')}
+      ${toggle}
+    </div>`;
   }
 
   // &#9472;&#9472; Carryover appointments (past items not dismissed stick on the dashboard) &#9472;&#9472;
@@ -1487,6 +1628,7 @@
   }
   updateDate();
   mergeUserAppts(); // restore user-added reminders after page load
+  renderAppts();    // paint the calendar + "Recently Done" list even if the API is slow/offline
 
   // &#9472;&#9472; Section toggle &#9472;&#9472;
   function toggleSection(id) {
@@ -1937,6 +2079,8 @@
         </div>`;
       }).join('');
     }
+
+    renderApptDone();
   }
 
   // ── Official manuals per machine (researched & link-verified July 2026) ──
@@ -2300,7 +2444,7 @@
       ],
       parts: [
         { name: 'Well drilled', number: '9/6/2002' },
-        { name: 'Pump', number: '1 HP Schaefer — pulled & set 10/20/2017 (Frank Martines, $1,200) — ~8.7 yrs old, watch for age' },
+        { name: 'Pump', number: '1 HP Schaefer + new drop pipe — REPLACED 7/30/2026 (Plant City Well Pump, $1,850). Prior: Schaefer set 10/20/2017 by Frank Martines' },
         { name: 'Pressure switch', number: 'Square D Pumptrol 9013FSG2J21M4 — 30/50 psi (replaced 4/21/2022)' },
         { name: 'AIO filter', number: 'Nelsen AIO — Fleck 2510 valve + 3200 mech timer — 12" tank, injectors #2 blue (installed 3/5/2020)' },
         { name: 'Softener valve', number: 'Clack V3115 CS (installed 3/5/2020)' },
@@ -2318,6 +2462,7 @@
         { date: '2026-07-18', service: 'Wellhead weep — CLOSED, no action', notes: 'Tech confirmed the weeping riser port is a pressure relief valve — cosmetic, low priority, no action needed. Do NOT cap it.' },
         { date: '2026-07-18', service: 'AIO air-check (Fleck 62116) received — NOT installed', notes: "62116 '2510AIO REV-E' is a side-port poppet; GH's air-draw is a tube-to-bare-barb intake, so it doesn't match. Air draw tested strong on the 7/18 backwash — no replacement needed. Keeping the 62116 as a spare." },
         { date: '2026-07-19', service: 'Skipper wheel checked', notes: 'All tabs out = AIO regens every day — a good, safe setting for an AIO; no change needed.' },
+        { date: '2026-07-30', service: 'WELL PUMP REPLACED', notes: 'Plant City Well Pump — new 1 HP Schaefer submersible + new drop pipe. $1,850. Replaced the 2017 Schaefer (~8.7 yrs). Pressure switch NOT changed (still the 2022 unit).' },
       ]
     },
     {
