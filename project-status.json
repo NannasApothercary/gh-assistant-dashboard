@@ -7,7 +7,7 @@
       "status": "active",
       "bullets": [
         "Website/SEO review (6/23): #1-2 'precision sheet metal Tampa', named first in AI answers. GSC 231 clicks/25.8K impr/0.9% CTR 3mo. GBP 4.7star/12 reviews, 702 interactions, 863 views/mo. Monthly auto-review live (1st).",
-        "GSC 404 sweep 8/27: validation had FAILED 7/1 unseen for 57 days; affected pages 43->107. All live-tested: 71 genuine 404s. Patch CSV ready to import (71 rows). The 6/15 'comprehensive' fix did not close the cycle."
+        "GSC 404 CLOSED OUT 8/27: a 7/1 validation failure had gone unseen 57 days; 404s 43->107. Live-tested all, imported 71 redirects (Wix 115->186), verified 71/71 live. New validation running, recheck ~9/5."
       ],
       "updated": "2026-08-27"
     }
