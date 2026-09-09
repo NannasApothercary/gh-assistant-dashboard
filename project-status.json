@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-07",
+  "generated": "2026-09-09",
   "projects": [
     {
       "name": "GT Precision Website",
@@ -9,7 +9,7 @@
         "Website/SEO review (6/23): #1-2 'precision sheet metal Tampa', named first in AI answers. GSC 231 clicks/25.8K impr/0.9% CTR 3mo. GBP 4.7star/12 reviews, 702 interactions, 863 views/mo. Monthly auto-review live (1st).",
         "GSC 404 recheck 9/07: validation FAILED 9/5 again. But the 8/27 import held - live-tested all 110, 104 redirect correctly, only 6 new slugs Google crawled Sept 1-3 are gaps. 6-row CSV ready to import."
       ],
-      "updated": "2026-08-27"
+      "updated": "2026-09-07"
     }
   ]
 }
