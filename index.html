@@ -2115,21 +2115,25 @@
   // &#9472;&#9472; Equipment Data &#9472;&#9472;
   let equipment = [
     {
-      id: 'hustler', name: 'Hustler Raptor XDX', type: 'Riding Mower | Model #939827', icon: '🚜',
+      id: 'hustler', name: 'Hustler Raptor XDX', type: 'Riding Mower 48" | Model #939827 · 120 hrs (9/14/26)', icon: '🚜',
       maintenance: [
-        { name: 'Oil & filter change', intervalDays: 90, lastDone: '2024-08-08', parts: ['Oil filter 602581', '10W-40 or 20W-50 oil'] },
+        { name: 'Oil & filter change', intervalDays: 365, lastDone: '2026-07-03', parts: ['Oil filter Russo L29 (Kawasaki 49065-7010)', '10W-30, ~1.8 qt with filter', 'Every 100 run-hrs or annually. Done 7/3/2026 @70 hrs → next due 170 hrs or ~Jul 2027.'] },
         { name: 'Air filter & pre-filter', intervalDays: 180, lastDone: null, parts: ['Air filter 110130752', 'Pre-filter 110137046'] },
         { name: 'Fuel filter', intervalDays: 180, lastDone: null, parts: ['Fuel filter 490190031'] },
-        { name: 'Sharpen/replace blades', intervalDays: 365, lastDone: '2025-02-01', parts: ['Blade set (spare on hand)'] },
+        { name: 'Sharpen/replace blades', intervalDays: 365, lastDone: '2026-09-13', parts: ['Blade 601123-PK3 (pack of 3). Stock: new set reordered 9/10/26 (2 packs/6 blades, order #500108076) PLUS 2 sharpened old sets on hand → good for 2–3 changes. Verify 601123 fits Raptor XDX 48".'] },
+        { name: 'Spark plug (by hours)', intervalDays: 3650, lastDone: '2026-07-03', parts: ['NGK BPR4ES (#6578) — replaced 7/3/26 @70 hrs; next ~370 hrs (by run-hours, not calendar)'] },
+        { name: 'Deck belt — inspect (by hours)', intervalDays: 3650, lastDone: '2026-07-03', parts: ['Hustler 771634 (48" XDX). Condition-based — inspect ~every 25 run-hrs'] },
         { name: 'Trans fluid & filters', intervalDays: 730, lastDone: '2025-07-20', parts: ['Mobil 1 15w-50 or Castrol 5w-50 Syntec'] },
       ],
       parts: [
-        { name: 'Oil filter', number: '602581 (OEM) / 490650721' },
+        { name: 'Oil filter', number: 'Russo L29 / Kawasaki 49065-7010 (Hustler OEM 602581)' },
+        { name: 'Engine oil', number: '10W-30, ~1.8 qt with filter' },
         { name: 'Air filter', number: '110130752' },
         { name: 'Pre-filter', number: '110137046' },
         { name: 'Fuel filter', number: '490190031' },
         { name: 'Spark plug', number: 'NGK BPR4ES (#6578)' },
         { name: 'Ignition coil', number: 'Coi-0743-2 / X003U3OI0N' },
+        { name: 'Deck belt (48" XDX)', number: 'Hustler 771634' },
         { name: 'Hydraulic fluid', number: 'Mobil 1 15w-50' },
       ],
       log: [
@@ -2138,7 +2142,10 @@
         { date: '2024-08-25', service: 'Sharpened blades', notes: '20 hrs, ordered 2nd set' },
         { date: '2025-02-01', service: 'Blades replaced', notes: '' },
         { date: '2025-07-20', service: 'Trans fluid & filters changed', notes: '60.7 hrs. Next due ~July 2027' },
-        { date: '2026-07-03', service: 'Replaced ignition coil & spark plug', notes: '70 hrs. NGK BPR4ES (#6578) + coil Coi-0743-2 (X003U3OI0N). Verified good coil.' },
+        { date: '2026-07-01', service: 'Cleaned original air filter & reinstalled', notes: '102 hrs. Spare air filter kit RP0278R1 on hand for next change.' },
+        { date: '2026-07-03', service: 'Full service — oil & filter, ignition coil, spark plug', notes: '70 hrs. Oil filter Russo L29 (Kawasaki 49065-7010); 10W-30 ~1.8 qt w/ filter; NGK BPR4ES plug (#6578); coil Coi-0743-2 (X003U3OI0N). Used oil dropped at AutoZone, Jim Redman Pkwy, Plant City. Coil box annotated "FR651V, Good Coils only, 70 hrs" retained. Verified good coil. (Oil change was missed in the original log — added 9/14/26.)' },
+        { date: '2026-09-10', service: 'Ordered replacement blades', notes: 'Order #500108076 (Hustler Lawn Mower Parts). Blade 601123-PK3 ×2 packs (6 blades), $101.56 total. Restocks the spare.' },
+        { date: '2026-09-13', service: 'Blades replaced', notes: '120 hrs. Installed the spare set on hand. Replacements already reordered 9/10/26 (order #500108076) — spare restocked.' },
       ]
     },
     {
