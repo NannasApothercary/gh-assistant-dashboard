@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-11",
+  "generated": "2026-09-16",
   "projects": [
     {
       "name": "GT Precision Website",
@@ -7,9 +7,9 @@
       "status": "active",
       "bullets": [
         "Website/SEO review (6/23): #1-2 'precision sheet metal Tampa', named first in AI answers. GSC 231 clicks/25.8K impr/0.9% CTR 3mo. GBP 4.7star/12 reviews, 702 interactions, 863 views/mo. Monthly auto-review live (1st).",
-        "GSC 404 (9/11): verified the 6-row CSV is still NOT imported - all 6 live-tested, still 404. Structural question ANSWERED: Wix group redirects cannot map many URLs to one page, so the 2-rule fix is impossible."
+        "GSC 404 (9/15): 6-row redirect CSV CONFIRMED IMPORTED - all 6 live-tested, all now 301 to /services. Sweep now QUARTERLY (next 12/01); validation restarts retired. FabBridge Phase 1 target mid-2027."
       ],
-      "updated": "2026-09-11"
+      "updated": "2026-09-15"
     }
   ]
 }
