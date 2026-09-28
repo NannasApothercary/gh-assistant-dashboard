@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-24",
+  "generated": "2026-09-28",
   "projects": [
     {
       "name": "GT Precision Website",
-      "icon": "\ud83c\udfed",
+      "icon": "🏭",
       "status": "active",
       "bullets": [
-        "Website/SEO review (6/23): #1-2 'precision sheet metal Tampa', named first in AI answers. GSC 231 clicks/25.8K impr/0.9% CTR 3mo. GBP 4.7star/12 reviews, 702 interactions, 863 views/mo. Monthly auto-review live (1st).",
+        "Website/SEO (9/1): #1-2 'precision sheet metal Tampa/FL'; AI names GT first for OEM queries. Weak on generic 'near me'. Last logged-in pull 8/27: GSC 65 clicks/6.1K impr/1.1%CTR; GBP 91 interactions, 4.7star/12 reviews.",
         "GSC 404 (9/15): 6-row redirect CSV CONFIRMED IMPORTED - all 6 live-tested, all now 301 to /services. Sweep now QUARTERLY (next 12/01); validation restarts retired. FabBridge Phase 1 target mid-2027."
       ],
-      "updated": "2026-09-15"
+      "updated": "2026-09-28"
     }
   ]
 }
