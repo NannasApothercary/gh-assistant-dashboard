@@ -2476,18 +2476,20 @@
       ]
     },
     {
-      id: 'guitar', name: 'Guitar', type: 'Annual restring + basic setup | DIY', icon: '🎸',
+      id: 'guitar', name: 'Guitar', type: 'Restring every 6 months + basic setup | DIY', icon: '🎸',
       maintenance: [
-        { name: 'Restring (full set)', intervalDays: 365, lastDone: '2025-12-01', parts: ['Fresh string set — check stock before starting'] },
-        { name: 'Clean & condition fretboard (strings off)', intervalDays: 365, lastDone: '2025-12-01', parts: ['Fretboard cleaner / lemon oil for rosewood'] },
-        { name: 'Check neck relief & action', intervalDays: 365, lastDone: '2025-12-01', parts: ['Truss-rod adjust only if needed'] },
+        { name: 'Restring (full set)', intervalDays: 182, lastDone: '2026-10-09', parts: ['D\u2019Addario EJ16 Phosphor Bronze Light \u2014 3-pack (EJ16-3D), 2 sets left'] },
+        { name: 'Clean & condition fretboard (strings off)', intervalDays: 182, lastDone: '2026-10-09', parts: ['Fretboard cleaner / lemon oil for rosewood \u2014 do it while strings are off at each restring'] },
+        { name: 'Check neck relief & action', intervalDays: 365, lastDone: '2026-10-09', parts: ['Truss-rod adjust only if needed'] },
       ],
       parts: [
-        { name: 'Cadence', number: 'Restring yearly, every December' },
-        { name: 'Baseline', number: 'Anchored to Dec 2025 so the first reminder lands ~Dec 2026' },
+        { name: 'Cadence', number: 'Restring every 6 months (next ~Apr 2027)' },
+        { name: 'Strings', number: 'D\u2019Addario EJ16 Phosphor Bronze Light \u2014 3-pack EJ16-3D \u00b7 2 sets on hand' },
+        { name: 'Players Circle code', number: 'nafe1-501f-c3fb-126063' },
       ],
       log: [
-        { date: '2026-07-24', service: 'Added to dashboard', notes: 'Annual restring maintenance item. Baseline lastDone set to 2025-12-01 so the first due date lands ~Dec 2026, then yearly. Update lastDone whenever you actually restring.' },
+        { date: '2026-10-09', service: 'Restrung (full set)', notes: 'New D\u2019Addario EJ16 Phosphor Bronze Light installed. Ordered via Players Circle code nafe1-501f-c3fb-126063 (item EJ16-3D, 3-pack) \u2014 2 sets remaining. Cadence changed from yearly to every 6 months; next restring due ~Apr 2027.' },
+        { date: '2026-07-24', service: 'Added to dashboard', notes: 'Restring maintenance item created.' },
       ]
     },
   ];
