@@ -2,7 +2,7 @@
 // Caches the shell so the app loads instantly even on slow connections.
 // Live data (tasks, calendar, email) always fetches fresh from the network.
 
-const CACHE_NAME = 'gh-assistant-v4';
+const CACHE_NAME = 'gh-assistant-v5';
 const SHELL_FILES = [
   '/',
   '/index.html',
@@ -33,7 +33,7 @@ self.addEventListener('fetch', event => {
   const url = event.request.url;
 
   // Always go to network for Google APIs (live data)
-  if (url.includes('script.google.com') || url.includes('googleapis.com')) {
+  if (url.includes('script.google.com') || url.includes('googleapis.com') || url.includes('api.weather.gov')) {
     event.respondWith(fetch(event.request));
     return;
   }

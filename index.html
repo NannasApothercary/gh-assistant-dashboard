@@ -104,6 +104,28 @@
   .section.collapsed .chevron { transform: rotate(-90deg); }
   .section.collapsed .section-body { display: none; }
   .section-body { padding: 0 18px 16px; }
+  /* ── Weather Watch ── */
+  .wx-strip { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px; }
+  .wx-day { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:8px 4px; text-align:center; font-size:0.78rem; }
+  .wx-day .d { font-weight:700; color:var(--text); }
+  .wx-day .ic { font-size:1.4rem; margin:2px 0; }
+  .wx-day .t { color:var(--text); font-weight:600; }
+  .wx-day .t span { color:var(--text-muted); font-weight:400; }
+  .wx-day .p { color:var(--accent-light); font-size:0.72rem; min-height:1em; }
+  .wx-day.gray { border-color:var(--warning); }
+  .wx-day.freeze { border-color:#38bdf8; box-shadow:inset 0 0 0 1px #38bdf8; }
+  .wx-flag { font-size:0.68rem; font-weight:700; margin-top:3px; }
+  .wx-alert { border-radius:10px; padding:10px 12px; margin-bottom:10px; font-size:0.88rem; line-height:1.4; border-left:4px solid; background:var(--bg); }
+  .wx-alert.batt { border-color:var(--warning); }
+  .wx-alert.freeze { border-color:#38bdf8; }
+  .wx-alert.nws { border-color:var(--danger); }
+  .wx-alert b { color:var(--text); }
+  .wx-alert .sub { color:var(--text-muted); font-size:0.78rem; margin-top:3px; }
+  .wx-alert button { margin-top:6px; background:var(--accent); color:#fff; border:0; border-radius:8px; padding:6px 10px; font-size:0.78rem; cursor:pointer; }
+  .wx-foot { font-size:0.72rem; color:var(--text-muted); margin-top:8px; }
+  @media (max-width:600px) {
+    .wx-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  }
 
   /* Top 3 Priority Banner */
   .top3-banner {
@@ -811,6 +833,19 @@
     </div>
   </div>
 
+  <!-- Weather Watch (NWS, Plant City 33563) -->
+  <div class="section" id="wxSection">
+    <div class="section-header" onclick="toggleSection('wxSection')">
+      <h2>&#127782; Weather Watch <span class="badge" id="wxCount">0</span></h2>
+      <span class="chevron">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <div id="wxAlerts"></div>
+      <div class="wx-strip" id="wxStrip"><div class="empty">Loading NWS forecast...</div></div>
+      <div class="wx-foot" id="wxFoot"></div>
+    </div>
+  </div>
+
   <!-- CoWork Project Status -->
   <div class="section" id="projectsSection">
     <div class="section-header" onclick="toggleSection('projectsSection')">
@@ -1263,7 +1298,7 @@
   // &#9472;&#9472; Refresh All &#8212; fires tasks + calendar &#9472;&#9472;
   async function refreshAll() {
     showSync('Refreshing all data...');
-    await Promise.all([loadTasksFromSheet()]);
+    await Promise.all([loadTasksFromSheet(), loadWeather()]);
   }
 
   // &#9472;&#9472; TASK ORDER (localStorage) &#9472;&#9472;
@@ -1629,6 +1664,137 @@
   updateDate();
   mergeUserAppts(); // restore user-added reminders after page load
   renderAppts();    // paint the calendar + "Recently Done" list even if the API is slow/offline
+  // ── Weather Watch (NWS) ──────────────────────────────────────────
+  // Rules match the "Winter Front Watch" scheduled task:
+  //  (a) 2+ consecutive gray (mostly cloudy / rainy) days  -> top off batteries
+  //  (b) NWS severe / wind / tornado watch or advisory for Hillsborough -> top off batteries
+  //  (c) overnight low <= 34F -> cover cold-sensitive trees
+  const WX = { lat: 28.0128, lon: -82.1185, zone: 'FLZ251', county: 'FLC057', freezeF: 34 };
+  const WX_HAZ = /tornado|severe|thunderstorm|wind|gale|tropical|hurricane|freeze|frost|cold/i;
+
+  function wxIcon(s) {
+    s = s.toLowerCase();
+    if (/thunder|storm/.test(s)) return '⛈️';
+    if (/rain|shower|drizzle/.test(s)) return '🌧️';
+    if (/snow|sleet|ice/.test(s)) return '🌨️';
+    if (/fog/.test(s)) return '🌫️';
+    if (/partly sunny|mostly cloudy|^cloudy|overcast/.test(s)) return '☁️';
+    if (/partly cloudy|mostly sunny/.test(s)) return '⛅';
+    return '☀️';
+  }
+  function wxIsGray(p) {
+    const s = (p.shortForecast || '').toLowerCase();
+    const pop = (p.probabilityOfPrecipitation && p.probabilityOfPrecipitation.value) || 0;
+    if (/partly cloudy|mostly sunny|^sunny|clear/.test(s) && pop < 50) return false;
+    if (/mostly cloudy|cloudy|overcast/.test(s) && !/partly cloudy/.test(s)) return true;
+    if (/rain|shower|storm|drizzle/.test(s) && pop >= 50) return true;
+    return false;
+  }
+  function wxFmtDay(iso) { return new Date(iso).toLocaleDateString('en-US', { weekday:'short', month:'numeric', day:'numeric' }); }
+  function wxYmd(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  function wxPrefill(title, ymd, hhmm) {
+    const f = document.getElementById('addApptForm');
+    if (!f) return;
+    f.classList.add('active');
+    document.getElementById('newApptTitle').value = title;
+    document.getElementById('newApptDate').value = ymd;
+    document.getElementById('newApptTime').value = hhmm;
+    document.getElementById('apptsSection').classList.remove('collapsed');
+    f.scrollIntoView({ behavior:'smooth', block:'center' });
+  }
+
+  async function wxGrid() {
+    try { const c = JSON.parse(localStorage.getItem('gh_wx_grid') || 'null'); if (c && c.forecast) return c; } catch (e) {}
+    const r = await fetch(`https://api.weather.gov/points/${WX.lat},${WX.lon}`, { headers: { Accept: 'application/geo+json' } });
+    if (!r.ok) throw new Error('points ' + r.status);
+    const j = await r.json();
+    const g = { forecast: j.properties.forecast };
+    try { localStorage.setItem('gh_wx_grid', JSON.stringify(g)); } catch (e) {}
+    return g;
+  }
+
+  async function loadWeather() {
+    const strip = document.getElementById('wxStrip'), box = document.getElementById('wxAlerts'), foot = document.getElementById('wxFoot');
+    try {
+      const g = await wxGrid();
+      const [fr, ar] = await Promise.all([
+        fetch(g.forecast, { headers: { Accept: 'application/geo+json' }, cache: 'no-store' }),
+        fetch(`https://api.weather.gov/alerts/active?zone=${WX.zone},${WX.county}`, { headers: { Accept: 'application/geo+json' }, cache: 'no-store' })
+      ]);
+      if (!fr.ok) { if (fr.status === 404) try { localStorage.removeItem('gh_wx_grid'); } catch (e) {} throw new Error('forecast ' + fr.status); }
+      const periods = (await fr.json()).properties.periods || [];
+      const alerts = ar.ok ? ((await ar.json()).features || []).map(f => f.properties).filter(a => WX_HAZ.test(a.event)) : [];
+      renderWeather(periods, alerts);
+    } catch (e) {
+      console.error('Weather load failed:', e);
+      strip.innerHTML = '<div class="empty">NWS forecast unavailable right now — tap Refresh to retry.</div>';
+      box.innerHTML = ''; foot.textContent = '';
+    }
+  }
+
+  function renderWeather(periods, alerts) {
+    // Pair periods into days: { day: daytime period, night: following night period }
+    const days = [];
+    periods.forEach(p => {
+      const key = p.startTime.slice(0,10);
+      let d = days.find(x => x.key === key);
+      if (!d) { d = { key }; days.push(d); }
+      if (p.isDaytime) d.day = p; else d.night = p;
+    });
+    const week = days.slice(0, 7);
+    week.forEach(d => { d.gray = d.day ? wxIsGray(d.day) : false; d.lo = d.night ? d.night.temperature : null; d.freeze = d.lo !== null && d.lo <= WX.freezeF; });
+
+    // (a) runs of 2+ gray days
+    const fronts = []; let run = [];
+    week.forEach((d, i) => {
+      if (d.gray) run.push(d);
+      if ((!d.gray || i === week.length - 1) && run.length) { if (run.length >= 2) fronts.push(run.slice()); run = []; }
+    });
+
+    const cards = [];
+    const now = new Date();
+    fronts.forEach(r => {
+      const start = new Date(r[0].day.startTime);
+      const eve = new Date(start); eve.setDate(eve.getDate() - 1);
+      const remind = wxYmd(eve);
+      cards.push(`<div class="wx-alert batt">🔋 <b>Top off the batteries ${remind === wxYmd(now) ? 'tonight' : 'the night of ' + wxFmtDay(eve)}.</b><br>
+        ${r.length} gray days forecast starting ${wxFmtDay(r[0].day.startTime)} (${r[0].day.shortForecast}). Raise EG4 overnight AC charge Stop SOC to 100% for the 22:00–05:00 window, then set it back once the front passes. A full bank carries the house ~1.5 days with no sun.
+        <div class="sub">Calendar reminder: ${wxFmtDay(eve)} at 12:00 PM</div>
+        <button onclick="wxPrefill('🔋 Top off batteries — front ${wxFmtDay(r[0].day.startTime)} (${r.length} gray days)','${remind}','12:00')">Add reminder</button></div>`);
+    });
+    alerts.forEach(a => {
+      const isCold = /freeze|frost|cold/i.test(a.event);
+      cards.push(`<div class="wx-alert ${isCold ? 'freeze' : 'nws'}">${isCold ? '🥶' : '⚠️'} <b>${a.event}</b> — Hillsborough County
+        <div class="sub">${a.onset ? 'From ' + new Date(a.onset).toLocaleString('en-US', { weekday:'short', hour:'numeric', minute:'2-digit' }) : ''}${a.ends || a.expires ? ' until ' + new Date(a.ends || a.expires).toLocaleString('en-US', { weekday:'short', hour:'numeric', minute:'2-digit' }) : ''}</div>
+        ${isCold ? '' : '<div class="sub">Top off the batteries tonight — these can knock out TECO.</div>'}</div>`);
+    });
+    week.filter(d => d.freeze).forEach(d => {
+      cards.push(`<div class="wx-alert freeze">🥶 <b>Cover the cold-sensitive trees ${wxYmd(new Date(d.night.startTime)) === wxYmd(now) ? 'tonight' : wxFmtDay(d.night.startTime) + ' evening'}.</b><br>
+        Forecast low ${d.lo}°F ${d.night.name.toLowerCase()} (${d.night.shortForecast}).
+        <div class="sub">Calendar reminder: ${wxFmtDay(d.night.startTime)} at 7:00 AM</div>
+        <button onclick="wxPrefill('🥶 Cover fruit trees — low ${d.lo}°F tonight','${wxYmd(new Date(d.night.startTime))}','07:00')">Add reminder</button></div>`);
+    });
+    document.getElementById('wxAlerts').innerHTML = cards.join('');
+    document.getElementById('wxCount').textContent = cards.length;
+    document.getElementById('wxCount').style.background = cards.length ? 'var(--warning)' : '';
+    if (!cards.length) document.getElementById('wxSection').classList.add('collapsed');
+
+    document.getElementById('wxStrip').innerHTML = week.map(d => {
+      const p = d.day || d.night;
+      const pop = p && p.probabilityOfPrecipitation && p.probabilityOfPrecipitation.value;
+      const flag = d.freeze ? '<div class="wx-flag" style="color:#38bdf8">FREEZE</div>' : d.gray ? '<div class="wx-flag" style="color:var(--warning)">GRAY</div>' : '';
+      return `<div class="wx-day ${d.gray ? 'gray' : ''} ${d.freeze ? 'freeze' : ''}" title="${p ? p.detailedForecast.replace(/"/g,'&quot;') : ''}">
+        <div class="d">${new Date(d.key + 'T12:00').toLocaleDateString('en-US', { weekday:'short' })}</div>
+        <div class="ic">${p ? wxIcon(p.shortForecast) : ''}</div>
+        <div class="t">${d.day ? d.day.temperature + '°' : '–'} <span>${d.lo !== null ? d.lo + '°' : ''}</span></div>
+        <div class="p">${pop ? pop + '%' : ''}</div>${flag}</div>`;
+    }).join('');
+
+    const m = now.getMonth() + 1;
+    const season = (m >= 11 || m <= 3) ? 'Winter front watch active (Nov 1–Mar 31).' : 'Winter front watch starts Nov 1 — calendar alerts not running yet.';
+    document.getElementById('wxFoot').textContent = `NWS Tampa Bay · Plant City 33563 · updated ${now.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' })}. ${season} Tap a day for the full forecast text.`;
+  }
+  loadWeather();
 
   // &#9472;&#9472; Section toggle &#9472;&#9472;
   function toggleSection(id) {
