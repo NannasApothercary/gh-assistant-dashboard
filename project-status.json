@@ -1,7 +1,8 @@
 {
-  "generated": "2026-10-26",
+  "generated": "2026-11-01",
   "projects": [
     {
+      "_comment": "MIRROR FILE for the GH dashboard GT Precision card. Maintained by GT working sessions (the real GT files live at OneDrive/GTPData/CUSTOMERS/GT Precision Mfg/Website Project, which is NOT mounted in scheduled/headless runs). The morning runner Section 17c reads THIS file for the GT card so it can refresh daily without the GTPData mount. Update bullets + 'updated' at the end of every GT session. 'updated' = the date GT content actually changed (honest staleness - do not bump to today unless content changed).",
       "name": "GT Precision Website",
       "icon": "🏭",
       "status": "active",
