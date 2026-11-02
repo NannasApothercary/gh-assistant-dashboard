@@ -796,6 +796,37 @@
     .header { padding: 24px 32px; }
     .container { padding: 20px; }
   }
+  /* ── 🌳 Garden ── */
+  .g-tabs { display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap; }
+  .g-tab { flex:1; min-width:90px; padding:8px 10px; background:var(--bg); color:var(--text-muted); border:1px solid var(--border); border-radius:10px; font-size:0.85rem; font-weight:600; cursor:pointer; }
+  .g-tab.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .g-row { display:flex; gap:10px; align-items:flex-start; padding:10px; border:1px solid var(--border); border-radius:10px; margin-bottom:8px; background:var(--bg); cursor:pointer; }
+  .g-row:hover { border-color:var(--accent); }
+  .g-row.done { opacity:0.55; }
+  .g-row.done .g-title { text-decoration:line-through; }
+  .g-check { flex:0 0 22px; width:22px; height:22px; border:2px solid var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:0.85rem; color:#fff; margin-top:2px; }
+  .g-check.on { background:var(--success); border-color:var(--success); }
+  .g-main { flex:1; min-width:0; }
+  .g-title { font-size:0.92rem; font-weight:600; }
+  .g-meta { font-size:0.74rem; color:var(--text-muted); margin-top:2px; }
+  .g-det { font-size:0.8rem; color:var(--text-muted); margin-top:4px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .g-chip { display:inline-block; padding:1px 8px; border-radius:999px; font-size:0.72rem; font-weight:600; background:var(--surface-hover); color:var(--text); margin-right:4px; }
+  .g-chip.todo { background:#334155; } .g-chip.done { background:#14532d; } .g-chip.logged { background:#1e3a8a; } .g-chip.skipped { background:#44403c; }
+  .g-form { display:grid; gap:8px; }
+  .g-form select, .g-form input, .g-form textarea, #gardenPlantPick, #gModalNote { width:100%; padding:9px 10px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:inherit; font-size:0.9rem; box-sizing:border-box; }
+  .g-form textarea, #gModalNote { min-height:70px; resize:vertical; }
+  .g-two { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .g-btn { padding:9px 16px; background:var(--accent); color:#fff; border:none; border-radius:8px; font-size:0.88rem; font-weight:600; cursor:pointer; }
+  .g-btn.ghost { background:transparent; border:1px solid var(--border); color:var(--text); }
+  .g-btn.ok { background:var(--success); }
+  .g-sub { font-size:0.8rem; color:var(--accent-light); margin:12px 0 6px; font-weight:700; }
+  .g-body { font-size:0.88rem; line-height:1.5; }
+  .g-body p, .g-body li { margin:4px 0; }
+  .g-body h5 { font-size:0.9rem; margin:10px 0 4px; color:var(--accent-light); }
+  .g-body a { color:var(--accent-light); }
+  .g-body ul { padding-left:18px; }
+  .g-hist { border-left:2px solid var(--border); padding-left:10px; margin-left:4px; }
+  .g-warn { padding:10px; border:1px solid var(--warning); border-radius:10px; font-size:0.84rem; color:var(--warning); margin-bottom:10px; }
 </style>
 </head>
 <body>
@@ -914,6 +945,44 @@
     </div>
   </div>
 
+  <!-- 🌳 Garden Log (Notion) -->
+  <div class="section" id="gardenSection">
+    <div class="section-header" onclick="toggleSection('gardenSection')">
+      <h2>&#127795; Garden <span class="badge" id="gardenCount">0</span></h2>
+      <span class="chevron">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <div id="gardenWarn"></div>
+      <div class="g-tabs">
+        <button class="g-tab active" id="gtab-todo" onclick="gardenTab('todo')">&#128467;&#65039; This month</button>
+        <button class="g-tab" id="gtab-history" onclick="gardenTab('history')">&#127807; Plant history</button>
+        <button class="g-tab" id="gtab-log" onclick="gardenTab('log')">&#10133; Log it</button>
+      </div>
+      <div id="gardenTodo"><div class="empty">Loading garden from Notion...</div></div>
+      <div id="gardenHistory" style="display:none">
+        <select id="gardenPlantPick" onchange="renderGardenHistory()"></select>
+        <div id="gardenHistoryList" style="margin-top:10px"></div>
+      </div>
+      <div id="gardenLog" style="display:none">
+        <div class="g-form">
+          <div class="g-two">
+            <select id="gLogPlant"></select>
+            <select id="gLogType"></select>
+          </div>
+          <input type="date" id="gLogDate">
+          <input type="text" id="gLogEntry" placeholder="What did you do or see? e.g. Spots on leaves — sprayed copper">
+          <textarea id="gLogDetails" placeholder="Details (optional): product, rate, where on the tree, what it looked like..."></textarea>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button class="g-btn" onclick="saveGardenLog()">Save to log</button>
+            <span id="gLogSaved" style="font-size:0.8rem;color:var(--success);opacity:0;transition:opacity .25s">&#10003; Saved &amp; syncing</span>
+          </div>
+          <div class="hint">Saved to the &#127795; Garden Log in Notion. It stays under that plant's history for good.</div>
+        </div>
+      </div>
+      <div class="hint" style="margin-top:10px">Synced with Notion &middot; <a href="https://www.notion.so/1d62914441654547a1df0b14a6f0e372" target="_blank" rel="noopener" style="color:var(--accent-light)">Open Garden Log in Notion</a></div>
+    </div>
+  </div>
+
   <!-- Completed (hidden by default) -->
   <div class="section collapsed" id="doneSection" style="display:none;">
     <div class="section-header" onclick="toggleSection('doneSection')">
@@ -978,6 +1047,27 @@
       <input type="text" id="logDesc" placeholder="Add maintenance entry..." onkeydown="if(event.key==='Enter')addLogEntry()">
       <button onclick="addLogEntry()">Add</button>
     </div>
+  </div>
+</div>
+
+<!-- 🌳 Garden Entry Modal -->
+<div class="modal-overlay" id="gardenModal" onclick="if(event.target===this)closeGardenModal()">
+  <div class="modal">
+    <button class="close-btn" onclick="closeGardenModal()">&#10005;</button>
+    <h3 id="gModalTitle"></h3>
+    <div id="gModalMeta" style="margin-bottom:10px"></div>
+    <div id="gModalActions" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px"></div>
+    <div class="g-sub">&#128214; How-to &amp; notes</div>
+    <div class="g-body" id="gModalBody"></div>
+    <div class="g-sub">&#128221; Add a note</div>
+    <textarea id="gModalNote" placeholder="e.g. Used 1 cup 8-3-9 around the drip line · cut back 3 crossing branches · spots spreading, re-spray in 2 weeks"></textarea>
+    <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+      <button class="g-btn" onclick="saveGardenNote()">Save note</button>
+      <span id="gModalNoteSaved" style="font-size:0.8rem;color:var(--success);opacity:0;transition:opacity .25s">&#10003; Saved to Notion</span>
+    </div>
+    <div class="g-sub" id="gModalHistHead">&#128220; Earlier on this plant</div>
+    <div id="gModalHist" class="g-hist"></div>
+    <div style="margin-top:14px"><a id="gModalLink" href="#" target="_blank" rel="noopener" style="color:var(--accent-light);font-size:0.85rem">Open in Notion &#8599;</a></div>
   </div>
 </div>
 
@@ -1076,6 +1166,10 @@
         // Without this, renderAppts() runs before applySheetSettings writes carryover to
         // localStorage, so new devices never see the synced carryover state.
         renderAppts();
+      }
+      // 🌳 Garden Log entries
+      if (data.garden) {
+        loadGardenFromResponse(data.garden);
       }
     } catch (err) {
       console.error('Failed to load from Notion:', err);
@@ -2944,6 +3038,294 @@
     showEquipDetail(id);
     renderEquipment();
   }
+
+  // ══════════════════════════════════════════════
+  // 🌳 GARDEN LOG — reads/writes the Notion Garden Log via Apps Script
+  // (added 2026-11-02; backend actions: gardenAdd / gardenStatus / gardenNote, GET ?gardenPage=)
+  // ══════════════════════════════════════════════
+  const GARDEN_PLANTS = ['Mango','Avocado','Hass avocado','Oh La La avocado','Loquat','Rio Grande cherry','Olive','Mulberry','Blueberry','Blackberry','Passion fruit','Maypop','Moringa','Bele','Pigeon pea','Ginger','Turmeric','Whole garden'];
+  const GARDEN_TYPES = ['Observation','Treatment','Pest/Disease','Pruning','Fertilizing','Harvest','Planting','Watering','To-do'];
+  const GARDEN_SPECIES = { 'Hass avocado':'Avocado', 'Oh La La avocado':'Avocado' };
+  const GARDEN_TYPE_ICON = { 'To-do':'🗓️','Pruning':'✂️','Fertilizing':'🌱','Pest/Disease':'🐛','Treatment':'🧴','Harvest':'🧺','Planting':'🪴','Watering':'💧','Observation':'👀' };
+  let garden = [];
+  let gardenError = null;
+  let gardenTabNow = 'todo';
+  let gardenOpenId = null;
+  const gardenBodyCache = {};
+
+  function gEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function gToday() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  function gFmtDate(s) {
+    if (!s) return '';
+    const p = s.slice(0,10).split('-').map(Number);
+    const d = new Date(p[0], p[1]-1, p[2]);
+    const opts = { month:'short', day:'numeric' };
+    if (p[0] !== new Date().getFullYear()) opts.year = 'numeric';
+    return d.toLocaleDateString(undefined, opts);
+  }
+  function gStatusChip(s) {
+    const cls = { 'To do':'todo', 'Done':'done', 'Logged':'logged', 'Skipped':'skipped' }[s] || '';
+    return s ? `<span class="g-chip ${cls}">${gEsc(s)}</span>` : '';
+  }
+  function gPlantMatches(e, plant) {
+    if (!plant) return true;
+    return e.plant === plant || (GARDEN_SPECIES[plant] && e.plant === GARDEN_SPECIES[plant]);
+  }
+
+  function loadGardenFromResponse(g) {
+    if (g && Array.isArray(g.entries)) {
+      const locals = garden.filter(e => String(e.id).startsWith('local_') && !g.entries.some(s => s.entry === e.entry && s.date === e.date));
+      garden = locals.concat(g.entries);
+      gardenError = null;
+      try { localStorage.setItem('gh_garden_cache', JSON.stringify(g.entries)); } catch(e) {}
+    } else if (g && g.error) {
+      gardenError = g.error;
+    }
+    renderGarden();
+  }
+
+  function restoreGardenCache() {
+    try { const c = JSON.parse(localStorage.getItem('gh_garden_cache') || 'null'); if (Array.isArray(c)) garden = c; } catch(e) {}
+  }
+
+  async function gardenPost(payload) {
+    if (!API_URL || API_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return false;
+    try {
+      await fetch(API_URL, { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain' }, body: JSON.stringify(payload) });
+      return true;
+    } catch (e) { console.error('gardenPost failed', e); return false; }
+  }
+
+  function gardenTab(t) {
+    gardenTabNow = t;
+    ['todo','history','log'].forEach(k => {
+      document.getElementById('gtab-' + k).classList.toggle('active', k === t);
+    });
+    document.getElementById('gardenTodo').style.display = t === 'todo' ? '' : 'none';
+    document.getElementById('gardenHistory').style.display = t === 'history' ? '' : 'none';
+    document.getElementById('gardenLog').style.display = t === 'log' ? '' : 'none';
+    if (t === 'history') renderGardenHistory();
+  }
+
+  function gRow(e, withCheck) {
+    const isDone = e.status === 'Done' || e.status === 'Skipped';
+    const icon = GARDEN_TYPE_ICON[e.type] || '🌿';
+    const check = withCheck
+      ? `<div class="g-check ${e.status === 'Done' ? 'on' : ''}" onclick="event.stopPropagation();toggleGardenDone('${gEsc(e.id)}')" title="Mark done">${e.status === 'Done' ? '✓' : ''}</div>`
+      : `<div style="flex:0 0 22px;font-size:1.05rem;text-align:center">${icon}</div>`;
+    return `<div class="g-row ${withCheck && isDone ? 'done' : ''}" onclick="openGardenEntry('${gEsc(e.id)}')">
+      ${check}
+      <div class="g-main">
+        <div class="g-title">${gEsc(e.entry || '(untitled)')}</div>
+        <div class="g-meta">${e.plant ? '<span class="g-chip">' + gEsc(e.plant) + '</span>' : ''}${gEsc(e.type || '')}${e.date ? ' · ' + gFmtDate(e.date) : ''} ${withCheck ? '' : gStatusChip(e.status)}</div>
+        ${e.details ? `<div class="g-det">${gEsc(e.details)}</div>` : ''}
+      </div>
+    </div>`;
+  }
+
+  function renderGarden() {
+    const warn = document.getElementById('gardenWarn');
+    if (!warn) return;
+    if (gardenError && garden.length === 0) {
+      const notShared = /object_not_found|shared with your integration/i.test(gardenError);
+      warn.innerHTML = `<div class="g-warn">${notShared
+        ? '⚠ The dashboard can\'t see the Garden Log yet. In Notion, open 🌳 Garden Log → ••• → Connections → add <b>GH Dashboard</b>, then reload.'
+        : '⚠ Garden Log unavailable: ' + gEsc(gardenError)}</div>`;
+    } else {
+      warn.innerHTML = '';
+    }
+    const todo = garden.filter(e => e.status === 'To do').sort((a,b) => (a.date||'').localeCompare(b.date||''));
+    const ym = gToday().slice(0,7);
+    const doneThisMonth = garden.filter(e => (e.status === 'Done' || e.status === 'Skipped') && e.type === 'To-do' && (e.date||'').slice(0,7) === ym);
+    document.getElementById('gardenCount').textContent = todo.length;
+    let html = '';
+    if (todo.length === 0 && !gardenError) html += '<div class="empty">Nothing open in the garden. 🌤️</div>';
+    html += todo.map(e => gRow(e, true)).join('');
+    if (doneThisMonth.length) {
+      html += `<div class="g-sub">✅ Done this month (${doneThisMonth.length})</div>` + doneThisMonth.map(e => gRow(e, true)).join('');
+    }
+    const recentLogs = garden.filter(e => e.status === 'Logged').slice(0, 3);
+    if (recentLogs.length) {
+      html += `<div class="g-sub">🕐 Recent log entries</div>` + recentLogs.map(e => gRow(e, false)).join('');
+    }
+    document.getElementById('gardenTodo').innerHTML = html;
+    if (gardenTabNow === 'history') renderGardenHistory();
+  }
+
+  function fillGardenSelects() {
+    const pick = document.getElementById('gardenPlantPick');
+    const lp = document.getElementById('gLogPlant');
+    const lt = document.getElementById('gLogType');
+    if (!pick || pick.options.length) return;
+    pick.innerHTML = '<option value="">All plants (whole log)</option>' + GARDEN_PLANTS.map(p => `<option>${gEsc(p)}</option>`).join('');
+    lp.innerHTML = GARDEN_PLANTS.map(p => `<option>${gEsc(p)}</option>`).join('');
+    lp.value = 'Hass avocado';
+    lt.innerHTML = GARDEN_TYPES.map(t => `<option>${gEsc(t)}</option>`).join('');
+    lt.value = 'Observation';
+    document.getElementById('gLogDate').value = gToday();
+  }
+
+  function renderGardenHistory() {
+    const plant = document.getElementById('gardenPlantPick').value;
+    const list = garden.filter(e => gPlantMatches(e, plant)).sort((a,b) => (b.date||'').localeCompare(a.date||''));
+    const el = document.getElementById('gardenHistoryList');
+    if (!list.length) { el.innerHTML = '<div class="empty">No entries yet for this plant. Use ➕ Log it to start its history.</div>'; return; }
+    let html = '', last = null;
+    list.forEach(e => {
+      const ym = (e.date || '').slice(0,7);
+      if (ym !== last) {
+        last = ym;
+        const p = ym.split('-').map(Number);
+        const label = ym ? new Date(p[0], p[1]-1, 1).toLocaleDateString(undefined, { month:'long', year:'numeric' }) : 'Undated';
+        html += `<div class="g-sub">${gEsc(label)}</div>`;
+      }
+      html += gRow(e, false);
+    });
+    el.innerHTML = html;
+  }
+
+  async function toggleGardenDone(id) {
+    const e = garden.find(x => x.id === id);
+    if (!e || String(id).startsWith('local_')) return;
+    const next = e.status === 'Done' ? 'To do' : 'Done';
+    e.status = next;
+    renderGarden();
+    if (gardenOpenId === id) openGardenEntry(id);
+    showSync(next === 'Done' ? 'Marked done — syncing to Notion...' : 'Reopened — syncing...');
+    const ok = await gardenPost({ action:'gardenStatus', pageId:id, status:next });
+    showSync(ok ? '✓ Garden updated' : 'Saved here — Notion offline', ok ? 'success' : 'error', 2000);
+  }
+
+  async function setGardenStatusUI(id, status) {
+    const e = garden.find(x => x.id === id);
+    if (!e || String(id).startsWith('local_')) return;
+    e.status = status;
+    renderGarden();
+    openGardenEntry(id);
+    const ok = await gardenPost({ action:'gardenStatus', pageId:id, status });
+    showSync(ok ? '✓ Garden updated' : 'Notion offline', ok ? 'success' : 'error', 2000);
+  }
+
+  function gRenderBlocks(blocks) {
+    if (!blocks || !blocks.length) return '<div style="color:var(--text-muted);font-size:0.84rem">No extra detail on this entry yet.</div>';
+    const rt = r => (r || []).map(t => {
+      let s = gEsc(t.text);
+      if (t.bold) s = '<b>' + s + '</b>';
+      if (t.href) s = `<a href="${gEsc(t.href)}" target="_blank" rel="noopener">${s}</a>`;
+      return s;
+    }).join('');
+    let html = '', inList = false;
+    blocks.forEach(b => {
+      const isLi = b.type === 'bulleted_list_item' || b.type === 'numbered_list_item' || b.type === 'to_do';
+      if (isLi && !inList) { html += '<ul>'; inList = true; }
+      if (!isLi && inList) { html += '</ul>'; inList = false; }
+      if (b.type.startsWith('heading')) html += `<h5>${rt(b.rich)}</h5>`;
+      else if (b.type === 'to_do') html += `<li style="list-style:none;margin-left:-16px">${b.checked ? '☑' : '☐'} ${rt(b.rich)}</li>`;
+      else if (isLi) html += `<li>${rt(b.rich)}</li>`;
+      else if (b.type === 'divider') html += '<hr style="border:0;border-top:1px solid var(--border);margin:8px 0">';
+      else if (b.url) html += `<p><a href="${gEsc(b.url)}" target="_blank" rel="noopener">${gEsc(b.url)}</a></p>`;
+      else if (b.rich && b.rich.length) html += `<p>${rt(b.rich)}</p>`;
+    });
+    if (inList) html += '</ul>';
+    return html;
+  }
+
+  async function loadGardenBody(id) {
+    const body = document.getElementById('gModalBody');
+    if (String(id).startsWith('local_')) { body.innerHTML = '<div style="color:var(--text-muted);font-size:0.84rem">Syncing to Notion…</div>'; return; }
+    if (gardenBodyCache[id]) { body.innerHTML = gRenderBlocks(gardenBodyCache[id]); return; }
+    body.innerHTML = '<div style="color:var(--text-muted);font-size:0.84rem">Loading how-to from Notion…</div>';
+    try {
+      const r = await fetch(API_URL + '?gardenPage=' + encodeURIComponent(id));
+      const d = await r.json();
+      if (d.error) throw new Error(d.error);
+      gardenBodyCache[id] = d.blocks || [];
+      if (gardenOpenId === id) body.innerHTML = gRenderBlocks(gardenBodyCache[id]);
+    } catch (err) {
+      if (gardenOpenId === id) body.innerHTML = '<div style="color:var(--text-muted);font-size:0.84rem">Couldn\'t load detail right now — use "Open in Notion" below.</div>';
+    }
+  }
+
+  function openGardenEntry(id) {
+    const e = garden.find(x => x.id === id);
+    if (!e) return;
+    gardenOpenId = id;
+    document.getElementById('gModalTitle').textContent = e.entry || '(untitled)';
+    document.getElementById('gModalMeta').innerHTML =
+      (e.plant ? `<span class="g-chip">${gEsc(e.plant)}</span>` : '') +
+      `<span style="font-size:0.8rem;color:var(--text-muted)">${gEsc(GARDEN_TYPE_ICON[e.type] || '')} ${gEsc(e.type || '')}${e.date ? ' · ' + gFmtDate(e.date) : ''}</span> ` + gStatusChip(e.status);
+    let actions = '';
+    if (e.status === 'To do') {
+      actions = `<button class="g-btn ok" onclick="toggleGardenDone('${gEsc(id)}')">✓ Mark done</button><button class="g-btn ghost" onclick="setGardenStatusUI('${gEsc(id)}','Skipped')">Skip this month</button>`;
+    } else if (e.status === 'Done' || e.status === 'Skipped') {
+      actions = `<button class="g-btn ghost" onclick="setGardenStatusUI('${gEsc(id)}','To do')">↺ Reopen</button>`;
+    }
+    document.getElementById('gModalActions').innerHTML = actions;
+    document.getElementById('gModalNote').value = '';
+    document.getElementById('gModalNoteSaved').style.opacity = '0';
+    document.getElementById('gModalLink').href = e.url || 'https://www.notion.so/1d62914441654547a1df0b14a6f0e372';
+    const plant = e.plant && e.plant !== 'Whole garden' ? e.plant : null;
+    const hist = plant ? garden.filter(x => x.id !== id && gPlantMatches(x, plant)).sort((a,b) => (b.date||'').localeCompare(a.date||'')).slice(0, 6) : [];
+    document.getElementById('gModalHistHead').style.display = plant ? '' : 'none';
+    document.getElementById('gModalHist').innerHTML = !plant ? '' : (hist.length
+      ? hist.map(x => `<div style="font-size:0.82rem;margin:6px 0;cursor:pointer" onclick="openGardenEntry('${gEsc(x.id)}')"><b>${gFmtDate(x.date)}</b> · ${gEsc(GARDEN_TYPE_ICON[x.type] || '')} ${gEsc(x.entry)}${x.details ? `<div style="color:var(--text-muted)">${gEsc(x.details.slice(0,140))}${x.details.length > 140 ? '…' : ''}</div>` : ''}</div>`).join('')
+      : '<div style="font-size:0.82rem;color:var(--text-muted)">Nothing earlier yet — this builds up as you log.</div>');
+    loadGardenBody(id);
+    document.getElementById('gardenModal').classList.add('active');
+  }
+
+  function closeGardenModal() {
+    gardenOpenId = null;
+    document.getElementById('gardenModal').classList.remove('active');
+  }
+
+  async function saveGardenNote() {
+    const id = gardenOpenId;
+    const ta = document.getElementById('gModalNote');
+    const note = ta.value.trim();
+    if (!id || !note) return;
+    if (String(id).startsWith('local_')) { showSync('Still syncing this entry — try again in a moment', 'warning', 2500); return; }
+    const ok = await gardenPost({ action:'gardenNote', pageId:id, note });
+    if (ok) {
+      const blk = { type:'paragraph', rich:[{ text:'📝 ' + gToday() + ' — ', bold:true, href:null }, { text:note, bold:false, href:null }] };
+      gardenBodyCache[id] = (gardenBodyCache[id] || []).concat([blk]);
+      document.getElementById('gModalBody').innerHTML = gRenderBlocks(gardenBodyCache[id]);
+      ta.value = '';
+      const s = document.getElementById('gModalNoteSaved');
+      s.style.opacity = '1'; setTimeout(() => { s.style.opacity = '0'; }, 2500);
+    } else {
+      showSync('Notion offline — note not saved', 'error', 3000);
+    }
+  }
+
+  async function saveGardenLog() {
+    const entry = document.getElementById('gLogEntry').value.trim();
+    if (!entry) { document.getElementById('gLogEntry').focus(); return; }
+    const type = document.getElementById('gLogType').value;
+    const rec = {
+      id: 'local_' + Date.now(), entry,
+      plant: document.getElementById('gLogPlant').value, type,
+      date: document.getElementById('gLogDate').value || gToday(),
+      details: document.getElementById('gLogDetails').value.trim(),
+      status: type === 'To-do' ? 'To do' : 'Logged', url: ''
+    };
+    garden.unshift(rec);
+    renderGarden();
+    const ok = await gardenPost({ action:'gardenAdd', entry:rec.entry, plant:rec.plant, type:rec.type, date:rec.date, details:rec.details, status:rec.status });
+    if (ok) {
+      document.getElementById('gLogEntry').value = '';
+      document.getElementById('gLogDetails').value = '';
+      const s = document.getElementById('gLogSaved');
+      s.style.opacity = '1'; setTimeout(() => { s.style.opacity = '0'; }, 2500);
+      setTimeout(() => loadTasksFromSheet(), 4000); // pick up the real Notion id
+    } else {
+      showSync('Notion offline — entry not saved', 'error', 3000);
+    }
+  }
+
+  fillGardenSelects();
+  restoreGardenCache();
+  renderGarden();
 
   // ── Initial render ──
   loadProjectStatus(); // fetches project-status.json, then calls renderProjects()
