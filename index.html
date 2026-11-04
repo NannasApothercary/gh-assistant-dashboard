@@ -58,6 +58,10 @@
     font-size: 0.85rem;
     color: var(--text-muted);
   }
+  .header { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .countdown59 { text-align:right; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18); border-radius:10px; padding:6px 12px; line-height:1.15; }
+  .countdown59 .cd-num { font-size:1.5rem; font-weight:800; color:#fbbf24; }
+  .countdown59 .cd-lbl { font-size:0.72rem; color:var(--text-muted); }
 
   .container {
     max-width: 900px;
@@ -832,9 +836,26 @@
 <body>
 
 <div class="header">
+  <div>
   <h1>&#128075; Good morning, GH</h1>
   <div class="date" id="currentDate"></div>
+  </div>
+  <div class="countdown59" title="Countdown to 59&frac12; &mdash; Oct 17, 2029">
+    <div class="cd-num" id="cd59Num">&ndash;</div>
+    <div class="cd-lbl">days to 59&frac12; &middot; 10/17/2029</div>
+  </div>
 </div>
+<script>
+(function(){
+  function upd(){
+    var n=new Date();
+    var d=Math.round((Date.UTC(2029,9,17)-Date.UTC(n.getFullYear(),n.getMonth(),n.getDate()))/86400000);
+    var el=document.getElementById('cd59Num'); if(!el) return;
+    el.textContent = d>0 ? d.toLocaleString() : (d===0 ? 'Today!' : '59\u00BD \u2713');
+  }
+  upd(); setInterval(upd, 3600000);
+})();
+</script>
 
 <div class="container">
 
